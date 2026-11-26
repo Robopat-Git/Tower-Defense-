@@ -142,7 +142,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
   <h1 class="big">LUNAR VAULT</h1>
   <h2 style="color:#9fc3ff">Grid Defence</h2>
   <p>Intruders are pouring out of a moon-rock tunnel and heading for the vault.
-  Build <b style="color:#ffb35c">Cameras</b>, <b style="color:#6fd3ff">Detectors</b> and <b style="color:#c08cff">EACS</b> access control units anywhere on the grid to shape their route and stop them.</p>
+  Build <b style="color:#ffb35c">Cameras</b>, <b style="color:#6fd3ff">Sensors</b> and <b style="color:#c08cff">EACS</b> access control units anywhere on the grid to shape their route and stop them.</p>
   <p style="font-size:clamp(11px,2.7vh,16px);color:#8e9ab3">Tap a defence to upgrade it · double-click / double-tap it to remove it (70% refund) · you can't seal the route completely.</p>
   <button class="btn" id="bPlay">Start defence</button><button class="btn alt" id="bHow">How to play</button>
 </div></div>
@@ -213,40 +213,45 @@ const DOCK=[];
 const SQ2=Math.SQRT2,STAGES=8,WAVES=5,REFUND=0.7,TAU=Math.PI*2;
 const STAGE_NAMES=['Stage 1: Goons at the gate','Stage 2: The crooks are getting organised','Stage 3: The suits have arrived','Stage 4: The great lunar heist',
   'Stage 5: The night shift','Stage 6: An inside job','Stage 7: The syndicate','Stage 8: The last heist'];
-const STAGE_SUB=['Small-time chancers testing our perimeter. Build a maze!','Bigger crews, the first Suitmen, and a getaway van at the end.','Slow, armoured and well funded. Upgrade your defences.','Everyone wants the vault, and the van is back. Hold the line!',
-  'Professional crews working in the dark. Keep every corner covered.','Someone leaked the vault plans. Expect tougher crews and a faster van.','Organised, armoured and relentless. Every cell of your maze counts.','The biggest crew on the Moon, with their toughest getaway van. Hold the vault!'];
-// boss: the Getaway Van, at the end of every second stage (2, 4, 6, 8)
-const isBossStage=s=>s%2===1,BOSS_DELAY=8;
-// one boss per appearance (stages 2, 4, 6, 8). All original homages, procedurally drawn.
+const STAGE_SUB=['Small-time chancers testing our perimeter, and Mech-209 stomps in at the end. Build a maze!','Bigger crews, the first Suitmen, and a getaway van at the end.','Slow, armoured and well funded, with a Spider Clown skittering in behind. Upgrade your defences.','Everyone wants the vault, and the Wasteland Rig is coming. Hold the line!',
+  'Professional crews working in the dark, then the Keynote Boss takes the stage. Keep every corner covered.','Someone leaked the vault plans. Expect tougher crews and the Inferno Rider.','Organised, armoured and relentless, and the Ice Cream Truck freezes your defences. Every cell counts.','The biggest crew on the Moon, and Lunakaiju wakes up. Hold the vault!'];
+// v13: a boss at the end of EVERY stage, 8 s after the last intruder of wave 5 leaves the tunnel
+const isBossStage=s=>s>=0&&s<STAGES,BOSS_DELAY=8;
+// one boss per stage (index = stage). All original homages, procedurally drawn.
+// immune: {sensor} ignores Sensor slows, {ai} ignores AI Core slows. stops: route fractions where it halts.
 const BOSSES=[
+ {t:'mech', name:'Mech-209',         short:'Mech-209',     icon:'🤖',speed:0.5, reward:100,size:2.2,top:0.12,warn:'Mech-209 is stomping in'},
  {t:'van',  name:'The Getaway Van',  short:'Getaway Van',  icon:'🚐',speed:0.55,reward:150,size:2.1,warn:'The Getaway Van is on its way'},
+ {t:'clown',name:'The Spider Clown', short:'Spider Clown', icon:'🤡',speed:0.9, reward:200,size:2.2,top:0.05,immune:{sensor:true},warn:'The Spider Clown is skittering in'},
  {t:'rig',  name:'The Wasteland Rig',short:'Wasteland Rig',icon:'🛻',speed:0.6,reward:250,size:2.3,warn:'The Wasteland Rig is rumbling in'},
+ {t:'keynote',name:'The Keynote Boss',short:'Keynote Boss',icon:'🎤',speed:1.2,reward:300,size:2.0,top:0.05,immune:{ai:true},stops:[0.2,0.5,0.7],stopFor:3,warn:'The Keynote Boss is taking the stage'},
  {t:'rider',name:'The Inferno Rider',short:'Inferno Rider',icon:'🔥',speed:1.9,reward:350,size:2.1,warn:'The Inferno Rider is roaring in',bombs:4},
+ {t:'icecream',name:'The Ice Cream Truck',short:'Ice Cream Truck',icon:'🍦',speed:0.6,reward:450,size:2.4,top:0.04,stops:[0.15,0.30,0.45,0.60,0.75,0.90],ccX:3,warn:'The Ice Cream Truck is jingling in'},
  {t:'kaiju',name:'Lunakaiju',        short:'Lunakaiju',    icon:'🦖',speed:0.5,reward:600,size:2.9,warn:'Lunakaiju is waking up'}];
-const BOSS_HPF=[2400,13000,8000,140000]/* explicit HP per appearance */;
-BOSSES.forEach((b,i)=>Object.assign(b,{hp:BOSS_HPF[i],lives:5,top:0.30,boss:true/* v12.3: no slow resistance, bosses take every slow in full */}));
-const BOSS=BOSSES[0],VULN_T=6,VULN_X=3,BOMB_FLIGHT=1.0,UNLOCK_STAGE=4/* 0-based: stage 5 (Command Centre) */,AI_UNLOCK=2/* 0-based: AI Core unlocks on stage 3 */,CC_UNLOCK=UNLOCK_STAGE;
+const BOSS_HPF=[2500,2800,2800,13000,10000,8000,50000,140000]/* explicit HP per appearance */;
+BOSSES.forEach((b,i)=>Object.assign(b,{hp:BOSS_HPF[i],lives:5,top:b.top??0.30,boss:true/* v12.3: no slow resistance, bosses take every slow in full */}));
+const BOSS=BOSSES[1]/* the Getaway Van */,ICE_X=3/* Ice Cream Truck: x3 from Command Centre vehicles */,FREEZE_T=3/* s a defence stays frozen after a cone hit */,CONE_FLIGHT=0.9,VULN_T=6,VULN_X=3,BOMB_FLIGHT=1.0,UNLOCK_STAGE=4/* 0-based: stage 5 (Command Centre) */,AI_UNLOCK=2/* 0-based: AI Core unlocks on stage 3 */,CC_UNLOCK=UNLOCK_STAGE;
 const TOWERS={
  camera:{name:'Camera',col:'#ffb35c',desc:'90° cone: hurts all inside',levels:[
   {cost:60, dmg:5,rate:3.0,range:2.6},
   {cost:70, dmg:9,rate:3.5,range:2.9},
   {cost:110,dmg:16,rate:4.0,range:3.2}]},
- detector:{name:'Detector',col:'#6fd3ff',desc:'Short-range pulse + slow',levels:[
-  {cost:40,dmg:4,rate:2.0,range:1.0,slow:0.20,slowT:1.0},
-  {cost:35,dmg:7,rate:2.5,range:1.3,slow:0.30,slowT:1.3},
-  {cost:55,dmg:11,rate:3.0,range:1.6,slow:0.40,slowT:1.6}]},
+ detector:{name:'Sensor',col:'#6fd3ff',desc:'Short-range pulse + 5–12% slow',levels:[// v13: shown as "Sensor" (internal key stays 'detector')
+  {cost:40,dmg:4,rate:2.0,range:1.0,slow:0.05,slowT:1.0},
+  {cost:35,dmg:7,rate:2.5,range:1.3,slow:0.08,slowT:1.3},
+  {cost:55,dmg:11,rate:3.0,range:1.6,slow:0.12,slowT:1.6}]},
  // EACS: electronic access control system. v12.1: no damage. Always-on field that
- // locks the 2 / 3 / 5 intruders closest to the vault (by level) and slows them 65% / 75% / 85% while in reach + a short linger
- // (bosses take the full effect too; speed never reaches zero: 85% leaves 15%)
- eacs:{name:'EACS',col:'#c08cff',desc:'No damage: 65–85% lock on 2/3/5',levels:[// v12.1: pure slow/lock unit, zero damage
-  {cost:60, range:0.8,slow:0.65,targets:2,linger:0.3},
-  {cost:70, range:1.0,slow:0.75,targets:3,linger:0.4},
-  {cost:110,range:1.2,slow:0.85,targets:5,linger:0.5}]},
- // AI Core: every defence within range deals x1.5 / x2 / x3 damage by level (several AIs never stack: the strongest wins); intruders in range are slowed 20%
- ai:{name:'AI Core',col:'#4ff0ff',desc:'Boosts nearby damage + 20% slow',unlock:AI_UNLOCK,max:2,levels:[
-  {cost:250,range:2.0,boost:1.5,slow:0.20},
-  {cost:300,range:2.5,boost:2,slow:0.20},
-  {cost:400,range:3.0,boost:3,slow:0.20}]},
+ // locks the 2 / 3 / 5 intruders closest to the vault (by level) and slows them 30% / 40% / 55% (v13) while in reach + a short linger
+ // (bosses take the full effect too; speed never reaches zero)
+ eacs:{name:'EACS',col:'#c08cff',desc:'No damage: 30–55% lock on 2/3/5',levels:[// v12.1: pure slow/lock unit, zero damage
+  {cost:60, range:0.8,slow:0.30,targets:2,linger:0.3},
+  {cost:70, range:1.0,slow:0.40,targets:3,linger:0.4},
+  {cost:110,range:1.2,slow:0.55,targets:5,linger:0.5}]},
+ // AI Core: every defence within range deals x1.5 / x2 / x3 damage by level (several AIs never stack: the strongest wins); intruders in range are slowed 10% (v13)
+ ai:{name:'AI Core',col:'#4ff0ff',desc:'Boosts nearby damage + 10% slow',unlock:AI_UNLOCK,max:2,levels:[
+  {cost:250,range:2.0,boost:1.5,slow:0.10},
+  {cost:300,range:2.5,boost:2,slow:0.10},
+  {cost:400,range:3.0,boost:3,slow:0.10}]},
  // Command Centre (one per board, single level): +10% damage to every defence within 4 cells, and when an intruder is in range
  // and it is ready, dispatches a response van (left to right) and a police car (right to left)
  cc:{name:'Command Centre',col:'#ff5a5a',desc:'One per board: +10% aura + dispatch',unlock:CC_UNLOCK,max:1,levels:[
@@ -262,7 +267,7 @@ const ENEMIES={
  crook:  {name:'Crook',  hp:55, speed:1.4,reward:9,lives:1,top:0.27},
  suitman:{name:'Suitman',hp:164,speed:0.85,reward:25,lives:2,top:0.12}
 };
-const START_CREDITS=500,START_LIVES=20;
+const START_CREDITS=350,START_LIVES=20;
 // ================= layout =================
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),safeEl=document.getElementById('safe');
 let L={cs:40,ox:0,oy:0,fw:0,fh:0,vw:0,vh:0,compact:false,P:{x:0,y:0,w:0,h:0},hud:null},dpr=1;const UI={};
@@ -476,7 +481,7 @@ function drawVan(g,s){
     g.strokeStyle='#4a505d';g.lineWidth=1.3;for(let i=0;i<4;i++){const a=s*TAU+i*Math.PI/2;g.beginPath();g.moveTo(wx,wy);g.lineTo(wx+Math.cos(a)*4.2,wy+Math.sin(a)*4.2);g.stroke()}
     g.fillStyle='rgba(255,255,255,.2)';g.beginPath();g.arc(wx,wy,7.6,-2.6,-1.6);g.lineTo(wx,wy);g.fill()}
 }
-const DRAW={goon:drawGoon,crook:drawCrook,suitman:drawSuit},SCALE={goon:0.86,crook:0.92,suitman:1.12,van:1,rig:1,rider:1,kaiju:1};
+const DRAW={goon:drawGoon,crook:drawCrook,suitman:drawSuit},SCALE={goon:0.86,crook:0.92,suitman:1.12,van:1,rig:1,rider:1,kaiju:1,mech:1,clown:1,keynote:1,icecream:1};
 // ================= defences =================
 const LVLCOL=[['#6d7689','#3a4050','#9aa3b4'],['#5a7aa8','#243552','#8fb2e6'],['#9a8448','#3d311b','#ffd76a']];
 function drawBase(g,type,lvl){
@@ -582,6 +587,8 @@ function buildSprites(){
     const n=sprite(S,g=>{g.translate(50,92);g.scale(SCALE[t],SCALE[t]);g.translate(-50,-92);DRAW[t](g,f/8)});
     arr.push({n,h:tint(n,'#ffffff',0.55),f:tint(n,'#a6e2ff',0.36,true),r:tint(n,'#8c1f1f',0.42)})}SPR.enemy[t]=arr}
   SPR.bossS={};for(const B of BOSSES){const S2=L.cs*B.size;SPR.bossS[B.t]=S2;const arr=[];for(let f=0;f<8;f++){const n=sprite(S2,g=>DRAWBOSS[B.t](g,f/8));arr.push({n,h:tint(n,'#ffffff',0.22),f:tint(n,'#a6e2ff',0.16),r:tint(n,'#8c1f1f',0.26)})/* lighter frost so the boss art stays readable */}SPR.enemy[B.t]=arr}
+  {const S2=SPR.bossS.keynote,arr=[];for(let f=0;f<8;f++){const n=sprite(S2,g=>drawKeynote(g,f/8,true));arr.push({n,h:tint(n,'#ffffff',0.22),f:tint(n,'#a6e2ff',0.16),r:tint(n,'#8c1f1f',0.26)})}SPR.enemy.keynoteW=arr}// v13: Keynote Boss waving frames
+  SPR.cone=sprite(L.cs*0.42,drawConeIcon);SPR.splat=sprite(L.cs*0.9,drawSplat);
   SPR.redGlow=sprite(L.cs*1.2,g=>{const gr=g.createRadialGradient(50,50,4,50,50,50);gr.addColorStop(0,'rgba(190,30,30,.9)');gr.addColorStop(0.55,'rgba(150,20,20,.45)');gr.addColorStop(1,'rgba(120,10,10,0)');g.fillStyle=gr;g.fillRect(0,0,100,100)});/* dull red camera glow */SPR.shadow=sprite(L.cs*0.6,g=>{g.fillStyle='rgba(0,0,0,.32)';g.beginPath();g.ellipse(50,50,50,50,0,0,Math.PI*2);g.fill()});SPR.vanS=SPR.bossS.van;SPR.vehS=L.cs*3.9;/* v12: 30% larger than v11 *//* dispatch vehicles: 2x the v9 size */SPR.respVan=sprite(SPR.vehS,drawRespVan);SPR.police=sprite(SPR.vehS,drawPolice);
   SPR.base={};SPR.head={};
   for(const t of BUILD_KEYS){SPR.base[t]=[];SPR.head[t]=[];for(let l=0;l<3;l++){
@@ -740,7 +747,111 @@ function drawCcHead(g,lvl){
   // antenna (+1 per level)
   for(let i=0;i<=lvl;i++){const x=62+i*5;g.strokeStyle=OUT;g.lineWidth=1.8;g.beginPath();g.moveTo(x,40);g.lineTo(x,22-i*3);g.stroke();g.beginPath();g.arc(x,22-i*3,1.8,0,TAU);g.fillStyle='#ffd76a';g.fill()}
 }
-const DRAWBOSS={van:drawVan,rig:drawRig,rider:drawRider,kaiju:drawKaiju};
+const DRAWBOSS={van:drawVan,rig:drawRig,rider:drawRider,kaiju:drawKaiju,mech:(g,s)=>drawMech(g,s),clown:(g,s)=>drawClown(g,s),keynote:(g,s)=>drawKeynote(g,s,false),icecream:(g,s)=>drawIceCream(g,s)};// v13: four new bosses (drawn in part2c)
+// ================= v13 art: four new bosses (original homages, procedurally drawn; facing right, feet on y~78) =================
+function thickLine(g,pts,w,col){g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)g.lineTo(pts[i][0],pts[i][1]);
+  g.strokeStyle=OUT;g.lineWidth=w+2.4;g.stroke();g.strokeStyle=col;g.lineWidth=w;g.stroke()}
+function drawMech(g,s){
+  // "Mech-209": a chunky bipedal enforcement mech - reverse-jointed legs, twin arm gun pods, dome visor
+  const w=s*TAU,b=Math.abs(Math.sin(w))*1.6,M='#8e98a6',M2='#5b6370',D='#3a4049';
+  for(const i of [0,1]){const p=w+i*Math.PI,hx=i?60:40,fx=(i?68:32)+Math.sin(p)*6,lift=Math.max(0,Math.cos(p))*4.5,ky=63-lift*0.5,kx=hx-9+Math.sin(p)*2;
+    const col=i?M:M2;thickLine(g,[[hx,50-b],[kx,ky],[fx,77-lift]],5.4,col);
+    g.beginPath();g.arc(kx,ky,3,0,TAU);fillOut(g,D,1.2);rrect(g,fx-7,74.5-lift,15,4.5,2);fillOut(g,D,1.4)}
+  // hip block
+  rrect(g,33,44-b,34,11,3);fillOut(g,lg(g,0,44,0,55,[M,M2]),2);
+  // rear gun pod (behind the body)
+  rrect(g,14,31-b,16,19,3);fillOut(g,lg(g,0,31,0,50,[M2,D]),2);
+  // torso / head: a wide wedge with a dome visor
+  g.beginPath();g.moveTo(26,44-b);g.lineTo(28,26-b);g.quadraticCurveTo(46,14-b,66,22-b);g.lineTo(76,30-b);g.lineTo(74,44-b);g.closePath();fillOut(g,lg(g,0,16,0,44,['#b9c2cd',M,M2]),2.4);
+  g.beginPath();g.ellipse(62,29-b,10,6.5,0,Math.PI,TAU);g.closePath();fillOut(g,lg(g,0,22,0,30,['#3b4660','#11151f']),1.6);
+  g.fillStyle='rgba(255,60,50,.95)';g.fillRect(55,26.5-b,15,2.2);g.fillStyle='rgba(255,170,150,.9)';g.fillRect(60,26.9-b,4,1.2);
+  g.fillStyle=D;for(const [x,y] of [[34,30],[40,27],[34,38],[46,38],[58,38],[68,37]]){g.beginPath();g.arc(x,y-b,1.1,0,TAU);g.fill()}
+  g.fillStyle='#d6b236';g.fillRect(30,41-b,42,2);// hazard trim
+  // front arm pod with twin barrels
+  rrect(g,66,32-b,17,20,3);fillOut(g,lg(g,0,32,0,52,[M,M2]),2.2);
+  for(const y of [36,45]){rrect(g,82,y-b,12,4,1.5);fillOut(g,'#2b3038',1.2);g.fillStyle='#ffb35c';g.fillRect(93,y+1-b,1.6,2)}
+}
+function drawClown(g,s){
+  // "Spider Clown": a creepy clown head with a frilly ruff on eight skittering spider legs
+  const w=s*TAU*2,b=Math.sin(w)*1.2;
+  const REACH=[6,13,20,27];
+  const leg=(bx,by,dir,i,front)=>{const p=w+i*1.7+(dir>0?0:Math.PI),lift=Math.max(0,Math.sin(p))*4,r=REACH[i],kx=bx+dir*(r*0.55+4),ky=26+Math.abs(1.5-i)*4-lift,fx=bx+dir*(r+8)+Math.cos(p)*2.5;
+    thickLine(g,[[bx,by],[kx,ky],[fx,78-lift]],front?2.2:1.8,front?'#5a4f63':'#3a3240');g.beginPath();g.arc(kx,ky,front?1.6:1.3,0,TAU);g.fillStyle=front?'#c0262d':'#7a1a1e';g.fill()};
+  for(let i=0;i<4;i++)leg(46,54+b,1,i,false);for(let i=0;i<4;i++)leg(40,54+b,-1,i,false);
+  // striped abdomen behind
+  g.beginPath();g.ellipse(32,52+b,17,12,-0.15,0,TAU);fillOut(g,lg(g,15,40,49,64,['#e9e2d6','#b9b0a3']),2.2);
+  g.save();g.beginPath();g.ellipse(32,52+b,17,12,-0.15,0,TAU);g.clip();g.fillStyle='#c0262d';for(let i=0;i<4;i++){g.fillRect(18+i*8,38+b,4,30)}g.restore();
+  g.beginPath();g.ellipse(32,52+b,17,12,-0.15,0,TAU);g.lineWidth=2.2;g.strokeStyle=OUT;g.stroke();
+  for(let i=0;i<4;i++)leg(48,56+b,1,i,true);
+  // frilly ruff collar
+  const cx=58,cy=44+b;g.beginPath();for(let i=0;i<=16;i++){const a=i/16*TAU,r=i%2?9:14;g.lineTo(cx+Math.cos(a)*r*1.15,cy+Math.sin(a)*r*0.55)}g.closePath();fillOut(g,'#f4f0e8',1.6);
+  // head: white face, red tufts, yellow eyes, red nose, toothy grin
+  for(const [x,y] of [[45,26],[71,26]]){g.beginPath();g.arc(x,y+b,6,0,TAU);fillOut(g,'#d8352f',1.6)}
+  g.beginPath();g.ellipse(58,28+b,13,14,0,0,TAU);fillOut(g,rg(g,58,26+b,2,15,['#ffffff','#e7e3dc']),2.2);
+  g.fillStyle='#c62a2a';g.beginPath();g.moveTo(52,16+b);g.quadraticCurveTo(58,8+b,64,16+b);g.closePath();g.fill();
+  for(const x of [53,63]){g.beginPath();g.ellipse(x,25+b,3.2,2.4,x<58?0.3:-0.3,0,TAU);fillOut(g,'#ffd21f',1.2);g.fillStyle='#1a1010';g.fillRect(x-0.5,23.6+b,1.1,2.8)}
+  g.strokeStyle='#c62a2a';g.lineWidth=1.4;for(const x of [53,63]){g.beginPath();g.moveTo(x,20+b);g.lineTo(x,17+b);g.stroke()}
+  g.beginPath();g.moveTo(49,33+b);g.quadraticCurveTo(58,42+b,68,33+b);g.quadraticCurveTo(58,37+b,49,33+b);fillOut(g,'#8e1414',1.4);
+  g.fillStyle='#fff8e8';for(let i=0;i<5;i++){g.beginPath();g.moveTo(51.5+i*3.4,34.3+b+(i===0||i===4?-0.4:0.4));g.lineTo(53+i*3.4,37.6+b);g.lineTo(54.5+i*3.4,34.8+b);g.fill()}
+  g.beginPath();g.arc(59,30+b,3,0,TAU);fillOut(g,rg(g,58,29+b,0.5,3,['#ff6b6b','#c41212']),1.2);
+}
+function drawKeynote(g,s,wave){
+  // "Keynote Boss": a silver-haired tech exec in a black leather jacket, black tee and jeans (wave=true: arm raised, waving)
+  const w=s*TAU,sw=wave?0:Math.sin(w),b=wave?Math.sin(w*2)*0.6:Math.abs(Math.sin(w))*1.2,SKIN='#e2b48e';
+  // legs (dark jeans) + shoes
+  for(const i of [0,1]){const a=(i?1:-1)*sw*0.42;g.save();g.translate(i?53:47,52-b);g.rotate(a);rrect(g,-4,0,8,22,3);fillOut(g,i?'#2b3446':'#222a3a',1.8);rrect(g,-4.5,20,11,5,2.2);fillOut(g,'#151515',1.4);g.restore()}
+  // back arm
+  if(!wave){g.save();g.translate(43,32-b);g.rotate(sw*0.5);rrect(g,-3.5,0,7,19,3.4);fillOut(g,'#141417',1.8);g.beginPath();g.arc(0,20,3,0,TAU);fillOut(g,SKIN,1.2);g.restore()}
+  else{g.save();g.translate(43,32-b);g.rotate(0.15);rrect(g,-3.5,0,7,19,3.4);fillOut(g,'#141417',1.8);g.beginPath();g.arc(0,20,3,0,TAU);fillOut(g,SKIN,1.2);g.restore()}
+  // torso: black tee under an open leather jacket with a sheen and zip
+  rrect(g,40,28-b,20,27,5);fillOut(g,lg(g,40,28,60,55,['#3c3c42','#0d0d10','#2a2a2f']),2.2);
+  g.fillStyle='#1d1d22';g.beginPath();g.moveTo(47,29-b);g.lineTo(53,29-b);g.lineTo(52,50-b);g.lineTo(48,50-b);g.closePath();g.fill();
+  g.strokeStyle='rgba(255,255,255,.28)';g.lineWidth=1.3;g.beginPath();g.moveTo(43,31-b);g.quadraticCurveTo(42,42-b,44,52-b);g.stroke();
+  g.strokeStyle='#8a8f98';g.lineWidth=0.8;g.beginPath();g.moveTo(54,31-b);g.lineTo(54.5,52-b);g.stroke();
+  g.fillStyle='#0a0a0c';for(const d of [-1,1]){g.beginPath();g.moveTo(50+d*3,28.5-b);g.lineTo(50+d*8,30-b);g.lineTo(50+d*4,36-b);g.closePath();g.fill()}
+  // head: silver swept hair, friendly grin
+  rrect(g,47.5,23-b,5,5,2);fillOut(g,SKIN,1);
+  g.beginPath();g.ellipse(51,17-b,8,9,0,0,TAU);fillOut(g,rg(g,52,16-b,1,9,['#f0c8a2',SKIN]),2);
+  g.beginPath();g.moveTo(43,17-b);g.quadraticCurveTo(42,8.5-b,50,8-b);g.quadraticCurveTo(57,7.4-b,59.4,12-b);g.quadraticCurveTo(54,10.4-b,49,11.6-b);g.quadraticCurveTo(45.4,12.6-b,44.6,18-b);g.closePath();fillOut(g,lg(g,0,7,0,17,['#e4e6ea','#a3a8b0']),1.4);
+  g.strokeStyle='rgba(110,115,125,.7)';g.lineWidth=0.6;for(const [x0,x1] of [[45,52],[47,55],[49,58]]){g.beginPath();g.moveTo(x0,11.5-b);g.quadraticCurveTo((x0+x1)/2,8.2-b,x1,9.6-b);g.stroke()}
+  g.fillStyle='#2a2020';for(const x of [49,55]){g.beginPath();g.arc(x,17-b,1,0,TAU);g.fill()}
+  g.strokeStyle='#7a3b2c';g.lineWidth=1.1;g.beginPath();g.arc(52.4,19.5-b,3,0.25,Math.PI-0.25);g.stroke();
+  // front arm: swinging, or raised and waving
+  if(!wave){g.save();g.translate(57,32-b);g.rotate(-sw*0.5);rrect(g,-3.5,0,7,19,3.4);fillOut(g,lg(g,0,0,0,19,['#2e2e33','#0f0f12']),1.8);g.beginPath();g.arc(0,20,3,0,TAU);fillOut(g,SKIN,1.2);g.restore()}
+  else{const a=-2.55+Math.sin(w*2)*0.45;g.save();g.translate(57,31-b);g.rotate(-0.9);rrect(g,-3.5,-1,7,13,3.4);fillOut(g,'#1a1a1e',1.8);g.translate(0,11);g.rotate(a+0.9);rrect(g,-3.2,0,6.4,12,3);fillOut(g,'#1a1a1e',1.6);
+    g.beginPath();g.ellipse(0,14.5,3.6,4.2,0,0,TAU);fillOut(g,SKIN,1.2);g.strokeStyle='#b88a68';g.lineWidth=0.8;for(const d of [-1.6,0,1.6]){g.beginPath();g.moveTo(d,15);g.lineTo(d*1.3,18);g.stroke()}g.restore()}
+}
+function drawIceCream(g,s){
+  // "Ice Cream Truck": a pastel ice cream van with a giant cone on the roof and a striped serving hatch
+  const b=Math.sin(s*TAU*2)*0.6,y0=40+b;
+  // giant cone on the roof: waffle cone + three scoops + a cherry
+  g.beginPath();g.moveTo(34,24+b);g.lineTo(54,24+b);g.lineTo(44,40+b);g.closePath();fillOut(g,lg(g,34,24,54,40,['#f0c27a','#c98d3e']),1.8);
+  g.save();g.beginPath();g.moveTo(34,24+b);g.lineTo(54,24+b);g.lineTo(44,40+b);g.closePath();g.clip();g.strokeStyle='rgba(120,70,20,.55)';g.lineWidth=0.8;
+  for(let i=-3;i<6;i++){g.beginPath();g.moveTo(30+i*5,24+b);g.lineTo(42+i*5,42+b);g.stroke();g.beginPath();g.moveTo(58-i*5,24+b);g.lineTo(46-i*5,42+b);g.stroke()}g.restore();
+  for(const [x,y,r,c] of [[38,20,6,'#ffb3cf'],[50,20,6,'#a8f0d0'],[44,13,6.2,'#fff3d6']]){g.beginPath();g.arc(x,y+b,r,0,TAU);fillOut(g,rg(g,x-1.5,y-1.5+b,0.5,r,['#ffffff',c]),1.6)}
+  g.beginPath();g.arc(44.5,6+b,2.4,0,TAU);fillOut(g,'#e0233a',1.2);g.strokeStyle='#2f6b2f';g.lineWidth=1;g.beginPath();g.moveTo(45,4+b);g.quadraticCurveTo(47,1+b,49,2+b);g.stroke();
+  // body (pastel pink box) + mint cab
+  rrect(g,6,y0,66,27,4);fillOut(g,lg(g,0,y0,0,y0+27,['#ffd1e1','#f59bbd']),2.4);
+  g.beginPath();g.moveTo(70,y0+3);g.lineTo(82,y0+3);g.quadraticCurveTo(90,y0+7,93,y0+16);g.lineTo(94,y0+27);g.lineTo(70,y0+27);g.closePath();fillOut(g,lg(g,0,y0,0,y0+27,['#c9f7e4','#86d9b8']),2.4);
+  g.beginPath();g.moveTo(73,y0+6);g.lineTo(82,y0+6);g.quadraticCurveTo(87,y0+9,89,y0+15);g.lineTo(73,y0+15);g.closePath();fillOut(g,lg(g,0,y0+6,0,y0+15,['#e8f8ff','#7fb0d6']),1.3);
+  // serving hatch with a striped awning
+  rrect(g,18,y0+7,32,12,2);fillOut(g,'#5a3a4a',1.4);g.fillStyle='#ffe9a8';g.fillRect(21,y0+15,26,3);
+  for(let i=0;i<8;i++){g.fillStyle=i%2?'#ffffff':'#8fd8ff';g.beginPath();g.moveTo(16+i*4.5,y0+3);g.lineTo(20.5+i*4.5,y0+3);g.lineTo(20.5+i*4.5,y0+8);g.quadraticCurveTo(18.25+i*4.5,y0+10,16+i*4.5,y0+8);g.closePath();g.fill()}
+  g.strokeStyle=OUT;g.lineWidth=1;g.strokeRect(16,y0+3,36,5);
+  // sprinkles + trim
+  const R=rng(7);for(let i=0;i<14;i++){g.fillStyle=['#ff5a7a','#ffd84d','#59c9ff','#7ee08a'][i%4];g.save();g.translate(9+R()*58,y0+21+R()*4);g.rotate(R()*3);g.fillRect(-1.2,-0.4,2.4,0.9);g.restore()}
+  g.fillStyle='#ffffff';g.fillRect(6,y0+20,88,1.6);
+  g.beginPath();g.arc(92,y0+21,2.2,0,TAU);g.fillStyle='#fff6c8';g.fill();
+  // wheels
+  for(const wx of [22,76]){g.beginPath();g.arc(wx,y0+30,8,0,TAU);fillOut(g,'#15171c',2);g.beginPath();g.arc(wx,y0+30,3.6,0,TAU);fillOut(g,'#f3c6d8',1);
+    g.strokeStyle='#9aa0ab';g.lineWidth=0.9;for(let i=0;i<4;i++){const a=s*TAU*2+i*Math.PI/2;g.beginPath();g.moveTo(wx,y0+30);g.lineTo(wx+Math.cos(a)*3.4,y0+30+Math.sin(a)*3.4);g.stroke()}}
+}
+// a small ice cream cone (projectile / splat art), drawn in a 100 box
+function drawConeIcon(g){g.beginPath();g.moveTo(30,42);g.lineTo(70,42);g.lineTo(50,96);g.closePath();fillOut(g,lg(g,30,42,70,96,['#f0c27a','#c98d3e']),4);
+  g.beginPath();g.arc(50,34,22,0,TAU);fillOut(g,rg(g,44,28,2,22,['#ffffff','#ffb3cf']),4);g.beginPath();g.arc(50,10,6,0,TAU);fillOut(g,'#e0233a',3)}
+function drawSplat(g){const R=rng(11);g.fillStyle='rgba(255,190,214,.92)';g.beginPath();for(let i=0;i<=18;i++){const a=i/18*TAU,r=i%2?30+R()*8:40+R()*8;g.lineTo(50+Math.cos(a)*r,50+Math.sin(a)*r)}g.closePath();g.fill();
+  g.lineWidth=3;g.strokeStyle='rgba(200,90,130,.8)';g.stroke();g.fillStyle='rgba(255,255,255,.85)';g.beginPath();g.arc(42,42,10,0,TAU);g.fill();
+  for(const [x,y,c] of [[58,40,'#59c9ff'],[46,60,'#ffd84d'],[62,58,'#7ee08a'],[36,52,'#ff5a7a']]){g.fillStyle=c;g.fillRect(x-4,y-1.5,8,3)}}
 // ================= background =================
 const bg=document.createElement('canvas');
 function buildBg(){
@@ -796,7 +907,7 @@ function newGame(){
   blocked.fill(0);DOCK.forEach(([c,r])=>blocked[idx(c,r)]=1);
   G={st:'title',stage:0,wave:0,waveActive:false,countdown:-1,credits:START_CREDITS,lives:START_LIVES,score:0,
     towers:[],enemies:[],queue:[],spawnT:0,fx:[],floats:[],beams:[],build:null,sel:null,hover:null,msg:null,banner:null,
-    speed:1,paused:false,time:0,stats:newStats(),dispatch:[],bombs:[],scorch:[],unlockMsg:null,bossT:null,bossSpawned:false,boss:null,totals:{kills:0,leaks:0,built:0},flowDist:null,lastTap:{t:0,c:-1,r:-1},pressing:false,shake:0};
+    speed:1,paused:false,time:0,stats:newStats(),dispatch:[],bombs:[],cones:[],scorch:[],unlockMsg:null,bossT:null,bossSpawned:false,boss:null,totals:{kills:0,leaks:0,built:0},flowDist:null,lastTap:{t:0,c:-1,r:-1},pressing:false,shake:0};
   G.flowDist=computeFlow();
 }
 function newStats(){return{kills:0,leaks:0,earned:0,built:0,upgrades:0,score0:0,boss:null,bossRw:0,bombed:0,dispatches:0,vulnOpen:0,vulnDmg:0}}
@@ -856,7 +967,7 @@ function swarmOf(s,w){
   if(s===6&&w===1)return{g:0,k:200,u:0,hf:SWARM_F[1][0],rf:SWARM_F[1][1]};
   if(s===7)return{g:100,k:100,u:100,hf:SWARM_F[2][0],rf:SWARM_F[2][1]};
   return null}
-function hpMultAt(stage,wave){const gw=stage*WAVES+wave,s=stage;return (1+0.17*gw+0.004*gw*gw)*[1.4,1.35,3.8,4.4,5.0,6.0,6.3,6.0][s]*(s>=2?1+0.08*(gw%5):1)}
+function hpMultAt(stage,wave){const gw=stage*WAVES+wave,s=stage;return (1+0.17*gw+0.004*gw*gw)*[1.05,1.0,3.0,3.6,4.2,5.0,5.3,4.4][s]*(s>=2?1+0.08*(gw%5):1)}
 const hpMult=()=>hpMultAt(G.stage,G.wave);
 const waveBonus=(w,s)=>15+4*w+10*s,stageGrant=s=>40+30*s,EARLY_PER_SEC=1;
 function startWave(){
@@ -870,13 +981,13 @@ function spawn(t,hf=1,rf=1){
     face:1,walk:Math.random(),flash:0,jx:(Math.random()-.5)*0.22,jy:(Math.random()-.5)*0.16,id:Math.random()});
 }
 const SWARM_E={};// shared per-type entries with the swarm reward (no per-intruder allocation)
-function bossIndex(s=G.stage){return (s-1)>>1}
+function bossIndex(s=G.stage){return s}// v13: one boss per stage
 function bossDef(s=G.stage){return BOSSES[Math.max(0,Math.min(BOSSES.length-1,bossIndex(s)))]}
 function bossStats(s=G.stage){const B=bossDef(s);return{name:B.name,t:B.t,hp:B.hp,speed:B.speed,reward:B.reward,lives:B.lives,bombs:B.bombs||0,size:B.size}}
 function spawnBoss(){
   const B=bossDef(),r=CAVE[0][1],E=Object.assign({},B);
   const e={t:B.t,E,boss:true,hp:B.hp,max:B.hp,speed:B.speed,x:-0.35,y:r+0.5,c:CAVE[0][0],r,tc:CAVE[0][0],tr:r,slowT:0,slowF:0,dead:false,
-    face:1,walk:0,flash:0,jx:0,jy:-0.05,id:Math.random(),travel:0,bombsLeft:B.bombs||0,bombN:0,vuln:0};
+    face:1,walk:0,flash:0,jx:0,jy:-0.05,id:Math.random(),travel:0,bombsLeft:B.bombs||0,bombN:0,vuln:0,stopN:0,waveT:0};
   G.enemies.push(e);G.boss=e;G.bossSpawned=true;G.bossSpawnAt=G.time;G.bossT=0;G.shake=B.t==='kaiju'?0.6:0.35;sfx('wave');
   floatText(1.8,r-0.9,B.name+'!','#ffb35c',2.4);
 }
@@ -896,8 +1007,28 @@ function bombImpact(b){
   for(let i=0;i<30;i++){const a=Math.random()*TAU,v=1+Math.random()*3.5;G.fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.5+Math.random()*.3,max:.8,fire:true,s:0.08+Math.random()*0.1})}
   for(let i=0;i<12;i++){const a=Math.random()*TAU,v=0.4+Math.random();G.fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-0.5,life:1.2,max:1.2,smoke:true,s:0.14})}
 }
+// ---- v13 Ice Cream Truck: at every 15% of its route it stops and lobs 3 cones at random defences (never the Command Centre).
+// A defence that is hit is frozen (does nothing at all) for FREEZE_T s. With no target it splats on the ground nearby.
+const ICE_STOP=1.5,ICE_GAP=0.3;
+function throwCone(e){
+  const cand=G.towers.filter(t=>t.type!=='cc'&&!t.doomed),t=cand.length?cand[(Math.random()*cand.length)|0]:null;
+  const x1=t?t.c+.5:Math.max(0.5,Math.min(COLS-0.5,e.x+(Math.random()-.5)*3)),y1=t?t.r+.5:Math.max(0.5,Math.min(ROWS-0.5,e.y+(Math.random()-.5)*2));
+  G.cones.push({x0:e.x,y0:e.y-1.4,x1,y1,t:0,T:CONE_FLIGHT,tower:t,spin:Math.random()*TAU});G.stats.cones=(G.stats.cones||0)+1;sfx('shot');
+}
+function coneImpact(k){
+  const t=k.tower;if(t&&G.towers.includes(t)){t.frozen=FREEZE_T;t.frozenMax=FREEZE_T;G.stats.frozen=(G.stats.frozen||0)+1;floatText(k.x1,k.y1-0.4,'Frozen!','#ffd1e1',1.2)}
+  G.fx.push({splat:true,x:k.x1,y:k.y1,life:.5,max:.5});
+  for(let i=0;i<12;i++){const a=Math.random()*TAU,v=0.6+Math.random()*1.6;G.fx.push({x:k.x1,y:k.y1,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.45,max:.45,spark:true,col:['#ffb3cf','#fff3d6','#a8f0d0'][i%3]})}
+}
 // ---- Command Centre dispatch: a response van drives left to right and a police car right to left along the targeted lanes ----
-const DISPATCH_SPD=2.88,VEH_HALF_L=1.56,VEH_HALF_H=0.52;/* v12: 20% slower than v11's 3.6 cells/s; vehicles 30% larger (hit box scaled to match) */
+const DISPATCH_SPD=2.88;/* v12: 20% slower than v11's 3.6 cells/s */
+// v13: hit box = the vehicle's full visual bounding box (from the sprite art: van x 6-95 / y 29-78, police x 4-96 / y 33-79 of 100,
+// drawn VEH_S cells square, centred on v.x, sprite top at v.y+0.62-0.78*VEH_S). Offsets in cells relative to (v.x, v.y).
+const VEH_S=3.9,vbox=(u0,u1,w0,w1)=>({x0:(u0/100-0.5)*VEH_S,x1:(u1/100-0.5)*VEH_S,y0:0.62+(w0/100-0.78)*VEH_S,y1:0.62+(w1/100-0.78)*VEH_S}),
+  VEH_BOX={van:vbox(6,95,29,78),police:vbox(4,96,33,78.6)};
+// an intruder's visual body box (cells): sprite drawn S cells square around (x+jx, y+jy), its head at E.top of the sprite
+function bodyBox(e){const S=e.boss?e.E.size:1.3,sc=e.boss?1:(SCALE[e.t]||1),hw=(e.boss?0.42:0.22*sc)*S,x=e.x+(e.jx||0),y=e.y+(e.jy||0);
+  return{x0:x-hw,x1:x+hw,y0:y-(0.78-e.E.top)*S,y1:y+0.2*S}}
 function dispatch(t,e1,e2){
   const S=tStats(t),dmg=S.dmg*(t.aiB||1),lane=e=>Math.max(0,Math.min(ROWS-1,Math.floor(e.y)))+0.5;
   G.dispatch.push({kind:'van',x:-1.6,y:lane(e1),vx:DISPATCH_SPD,dmg,hit:new Set(),boosted:t.aiB>1});
@@ -950,7 +1081,7 @@ function stageComplete(){
 }
 const tile=(a,b)=>`<div><span>${a}</span><b>${b}</b></div>`;
 function beginStage(){
-  G.st='play';G.wave=0;G.waveActive=false;G.countdown=-1;G.stats=newStats();G.stats.score0=G.score;G.bossT=null;G.bossSpawned=false;G.boss=null;G.bossSpawnAt=null;G.bossWarnAt=null;G.dispatch=[];G.bombs=[];G.scorch=[];
+  G.st='play';G.wave=0;G.waveActive=false;G.countdown=-1;G.stats=newStats();G.stats.score0=G.score;G.bossT=null;G.bossSpawned=false;G.boss=null;G.bossSpawnAt=null;G.bossWarnAt=null;G.dispatch=[];G.bombs=[];G.cones=[];G.scorch=[];
   G.towers.forEach(t=>{t.doomed=false;t.doomT=0});G.unlockMsg=unlocksAt(G.stage).length?{t:6.5,delay:3.2,names:unlocksAt(G.stage)}:null;
   G.banner={title:STAGE_NAMES[G.stage],sub:STAGE_SUB[G.stage],t:3.2};
   if(G.stage>0){const grant=stageGrant(G.stage);addCredits(grant);floatText(COLS/2,ROWS-1.2,`Stage supply drop +${grant} credits`,'#9fffb0',3)}
@@ -1112,35 +1243,36 @@ function spriteURL(kind,type){
 function buildInfo(){
   const T=TOWERS,EN=ENEMIES,f=n=>Number.isInteger(n)?n:n.toFixed(2).replace(/0$/,'');
   const eacsCard=()=>{const t=T.eacs;let spent=0;const rows=t.levels.map((l,i)=>{spent+=l.cost;return `<tr><td>Lv ${i+1}</td><td><b>¢${l.cost}</b>${i?' upgrade':''}</td><td>${l.range.toFixed(1)}</td><td>Always on</td><td>${Math.round(l.slow*100)}% on ${l.targets} intruders, +${l.linger.toFixed(1)} s</td></tr>`}).join('');
-    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','eacs')}"><div><div class="un">${t.name}</div><div class="ud">Electronic access control system. A pure crowd-control unit: it does <b>no damage</b>. Its field is always on and locks the intruders within reach that are closest to the vault (2 at level 1, 3 at level 2, <b>5 at level 3</b>), slowing them by <b>65% / 75% / 85%</b> (bosses included). AI Core and Command Centre boosts don't apply to it.</div></div></div>
+    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','eacs')}"><div><div class="un">${t.name}</div><div class="ud">Electronic access control system. A pure crowd-control unit: it does <b>no damage</b>. Its field is always on and locks the intruders within reach that are closest to the vault (2 at level 1, 3 at level 2, <b>5 at level 3</b>), slowing them by <b>30% / 40% / 55%</b> (bosses included). AI Core and Command Centre boosts don't apply to it.</div></div></div>
     <table><tr><th>Level</th><th>Cost</th><th>Range</th><th>Field</th><th>Lock</th></tr>${rows}</table>
-    <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Range is in grid cells and counts the intruder's body, like the Detector. The lock lasts while the intruder is in reach plus the short linger shown. Slows never stack: an intruder hit by a Detector and an EACS gets the stronger slow. Fully upgraded cost: ¢${spent}, refund ¢${Math.floor(spent*REFUND)}.</p></div>`};
+    <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Range is in grid cells and counts the intruder's body, like the Sensor. The lock lasts while the intruder is in reach plus the short linger shown. Slows never stack: an intruder hit by a Sensor and an EACS gets the stronger slow. Fully upgraded cost: ¢${spent}, refund ¢${Math.floor(spent*REFUND)}.</p></div>`};
   const towerCard=(k)=>{const t=T[k];let spent=0;const rows=t.levels.map((l,i)=>{spent+=l.cost;return `<tr><td>Lv ${i+1}</td><td><b>¢${l.cost}</b>${i?' upgrade':''}</td><td>${l.dmg}${k==='detector'?' (all in range)':''}</td><td>${l.range.toFixed(1)}</td><td>${k==='camera'?l.rate+' shots/s':l.rate+' pulses/s'}</td>${k==='detector'?`<td>${Math.round(l.slow*100)}% for ${l.slowT.toFixed(1)} s</td>`:''}</tr>`}).join('');
-    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower',k)}"><div><div class="un">${t.name}</div><div class="ud">${k==='camera'?'Watches a <b>90° view cone</b> (the translucent wedge) over its whole range. It does not shoot: <b>every intruder inside the cone</b> takes its damage at its rate, and glows a dull red while it is being hit. It turns to bring the intruder closest to the vault into view; when idle it sweeps slowly.':'Cheap short-range motion detector. Its pulse damages and slows every intruder within reach.'}</div></div></div>
+    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower',k)}"><div><div class="un">${t.name}</div><div class="ud">${k==='camera'?'Watches a <b>90° view cone</b> (the translucent wedge) over its whole range. It does not shoot: <b>every intruder inside the cone</b> takes its damage at its rate, and glows a dull red while it is being hit. It turns to bring the intruder closest to the vault into view; when idle it sweeps slowly.':'Cheap short-range motion sensor. Its pulse damages and slows every intruder within reach.'}</div></div></div>
     <table><tr><th>Level</th><th>Cost</th><th>Damage</th><th>Range</th><th>${k==='camera'?'Rate':'Pulses'}</th>${k==='detector'?'<th>Slow</th>':''}</tr>${rows}</table>
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Range is in grid cells${k==='detector'?'; the pulse catches any intruder whose body touches the ring, so a range of 1.0 covers the neighbouring cells':''}. Fully upgraded cost: ¢${spent}, refund ¢${Math.floor(spent*REFUND)}.</p></div>`};
   const enemyCard=(k,desc)=>{const e=EN[k];return `<div class="ucard"><div class="uh"><img alt="${e.name}" src="${spriteURL('enemy',k)}"><div><div class="un">${e.name}</div><div class="ud">${desc}</div></div></div>
     <table><tr><th>Base HP</th><th>Speed</th><th>Reward</th><th>Lives cost</th></tr><tr><td><b>${e.hp}</b></td><td>${f(e.speed)} cells/s</td><td>¢${e.reward}</td><td>${e.lives}</td></tr></table>
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">HP on stage 1 wave 1: ${Math.round(e.hp*hpMultAt(0,0))} · stage ${STAGES} wave ${WAVES}: ${Math.round(e.hp*hpMultAt(STAGES-1,WAVES-1))}</p></div>`};
   const wb=[...Array(STAGES).keys()].map(s=>`¢${waveBonus(0,s)}–${waveBonus(WAVES-1,s)}`);
-  const bossRows=[1,3,5,7].map(s=>{const b=bossStats(s);return `<tr><td>Stage ${s+1}</td><td>${b.name}</td><td><b>${b.hp}</b></td><td>${b.speed} cells/s</td><td>¢${b.reward}</td><td>${b.lives}</td></tr>`}).join('');
+  const TRAIT=['Plain armour: just stop it','Big and slow','Immune to Sensor slows','Very tough','Immune to AI Core slow; stops 3× to wave','Firebombs 4 defences','Freezes defences; ×3 from Command Centre','Vulnerable ×3 after Command Centre hits'];
+  const bossRows=BOSSES.map((B,s)=>{const b=bossStats(s);return `<tr><td>Stage ${s+1}</td><td>${b.name}</td><td><b>${b.hp.toLocaleString('en-GB')}</b></td><td>${b.speed} cells/s</td><td>¢${b.reward}</td><td>${b.lives}</td><td>${TRAIT[s]}</td></tr>`}).join('');
   const lockNote=k=>`<span style="color:#ffd866">Unlocks on stage ${TOWERS[k].unlock+1}.</span>`;
   const aiCard=()=>{const t=T.ai;let spent=0;const rows=t.levels.map((l,i)=>{spent+=l.cost;return `<tr><td>Lv ${i+1}</td><td><b>¢${l.cost}</b>${i?' upgrade':''}</td><td>${l.range.toFixed(1)}</td><td>×${l.boost} damage</td><td>${Math.round(l.slow*100)}%</td></tr>`}).join('');
-    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','ai')}"><div><div class="un">${t.name}</div><div class="ud">A glowing neural processor. Every defence within its range deals <b>×1.5 damage at level 1, ×2 at level 2 and ×3 at level 3</b> (shown by cyan links), and intruders inside its range are slowed by 20%. <b>At most ${t.max} on the board at any time</b>; removing one frees a slot. ${lockNote('ai')}</div></div></div>
+    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','ai')}"><div><div class="un">${t.name}</div><div class="ud">A glowing neural processor. Every defence within its range deals <b>×1.5 damage at level 1, ×2 at level 2 and ×3 at level 3</b> (shown by cyan links), and intruders inside its range are slowed by 10%. <b>At most ${t.max} on the board at any time</b>; removing one frees a slot. ${lockNote('ai')}</div></div></div>
     <table><tr><th>Level</th><th>Cost</th><th>Range</th><th>Boost</th><th>Slow</th></tr>${rows}</table>
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Several AI Cores never stack (the strongest boost wins), and its slow never stacks with other slows (the strongest wins). It boosts the Command Centre's vehicles too, and multiplies with the Command Centre's +10% (for example ×2 × 1.1 = ×2.2). Fully upgraded cost: ¢${spent}, refund ¢${Math.floor(spent*REFUND)}.</p></div>`};
   const ccCard=()=>{const t=T.cc,l=t.levels[0];
     return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','cc')}"><div><div class="un">${t.name}</div><div class="ud">An Ademco monitoring hub. <b>Only one on the board at a time</b> (removing it frees the slot). Every defence within its range deals <b>+${Math.round(l.aura*100)}% damage</b> (red links). When an intruder comes within range it dispatches a big <b>red response van</b> (left to right, with its siren) and a <b>police car</b> (right to left, two-tone siren) along the lanes of the two nearest intruders. Each vehicle hits every intruder it touches once, for <b>${l.dmg} HP</b>. ${lockNote('cc')}</div></div></div>
     <table><tr><th>Cost</th><th>Range</th><th>Aura</th><th>Contact damage</th><th>Recovery</th></tr><tr><td><b>¢${l.cost}</b></td><td>${l.range.toFixed(1)}</td><td>+${Math.round(l.aura*100)}%</td><td>${l.dmg} HP per vehicle</td><td>${l.cd} s</td></tr></table>
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Single level, no upgrades. The vehicles drive ${DISPATCH_SPD} cells/s over defences without blocking anything. The radial timer on the unit shows its recovery time. Inside an AI Core's range the contact damage is multiplied by the AI Core's boost (×1.5 / ×2 / ×3). Refund ¢${Math.floor(l.cost*REFUND)}.</p></div>`};
-  const bossCard=(i,desc)=>{const B=BOSSES[i];return `<div class="ucard"><div class="uh"><img alt="${B.name}" src="${spriteURL('enemy',B.t)}"><div><div class="un">${B.icon} ${B.name} · stage ${i*2+2}</div><div class="ud">${desc}</div></div></div>
+  const bossCard=(i,desc)=>{const B=BOSSES[i];return `<div class="ucard"><div class="uh"><img alt="${B.name}" src="${spriteURL('enemy',B.t)}"><div><div class="un">${B.icon} ${B.name} · stage ${i+1}</div><div class="ud">${desc}</div></div></div>
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">HP <b>${B.hp}</b> · speed ${B.speed} cells/s · reward ¢${B.reward} · escape costs ${B.lives} lives</p></div>`};
   document.getElementById('infoBody').innerHTML=`
   <h3>The goal</h3><p>Intruders come out of a one-cell <b>tunnel</b> on the left edge of the lunar grid and walk to the <b>vault</b> on the right. Stop them with security defences before they get there. You start with <b>${START_LIVES} lives</b>; each Goon or Crook that reaches the vault costs 1 life and each Suitman costs 2. Lose them all and the vault is breached.</p>
   <h3>Open grid and mazing</h3><p>There is no fixed path. Every defence fills one grid cell and blocks it, and intruders always take the shortest open route, re-routing instantly (even mid-walk) when you build or remove something. The dotted line shows their current route. Build a long winding maze so they stay in range for longer.</p>
   <p>You can <b>never seal the route completely</b>: a placement that would cut the tunnel off from the vault, or trap an intruder, is refused with a red message. The whole grid is open to you: you just can't build on the tunnel exit, the vault or a cell an intruder is standing in.</p>
   <h3>Building, upgrading and removing</h3><ul>
-  <li><b>Build:</b> tap the Camera, Detector, EACS, AI Core or Command Centre icon in the strip on the right, then tap grid cells. The AI Core is locked (padlock) until stage ${AI_UNLOCK+1} and the Command Centre until stage ${CC_UNLOCK+1}. The green <b>▶ wave button</b> sits in the strip on the right, just above the small buttons, so it never covers the board and is always in reach of your right thumb. Lives, credits, stage and wave, and score are shown in the bar above the board. The highlighted icon stays selected so you can keep building; tap it again (or press Esc) to stop. On desktop a preview with the range follows the mouse.</li>
+  <li><b>Build:</b> tap the Camera, Sensor, EACS, AI Core or Command Centre icon in the strip on the right, then tap grid cells. The AI Core is locked (padlock) until stage ${AI_UNLOCK+1} and the Command Centre until stage ${CC_UNLOCK+1}. The green <b>▶ wave button</b> sits in the strip on the right, just above the small buttons, so it never covers the board and is always in reach of your right thumb. Lives, credits, stage and wave, and score are shown in the bar above the board. The highlighted icon stays selected so you can keep building; tap it again (or press Esc) to stop. On desktop a preview with the range follows the mouse.</li>
   <li><b>Select and upgrade:</b> tap a built defence to show its range and a small popup with <b>Upgrade</b> (3 levels; the Command Centre has one) and <b>Remove</b>.</li><li><b>Limits:</b> at most 2 AI Cores and 1 Command Centre on the board at any time; their icons show how many are built.</li>
   <li><b>Remove:</b> double-tap (or double-click) a defence, or use Remove in the popup. You get back <b>${Math.round(REFUND*100)}%</b> of everything spent on it, upgrades included.</li></ul>
   <h3>Credits, lives and score</h3><ul>
@@ -1152,16 +1284,16 @@ function buildInfo(){
   <li>The overlay in the top-left corner of the board shows ♥ lives, ¢ credits, stage and wave (S1 W2/5) and ★ score.</li></ul>
   <h3>Waves and stages</h3><p>There are <b>${STAGES} stages</b> of <b>${WAVES} waves</b>. The first wave of each stage waits for you to press the green wave button; after that the next wave starts automatically after 12 seconds. Intruders get tougher every wave (HP ×${hpMultAt(0,0).toFixed(2)} on stage 1 wave 1, up to ×${hpMultAt(STAGES-1,WAVES-1).toFixed(2)} on the final wave). Defences carry over between stages.</p>
   <ul>${STAGE_NAMES.map((n,i)=>`<li><b>${n}</b>${isBossStage(i)?' '+bossDef(i).icon:''}: ${STAGE_SUB[i]}</li>`).join('')}</ul>
-  <h3>Bosses</h3><p>A boss ends stages 2, 4, 6 and 8. It comes out of the tunnel <b>${BOSS_DELAY} seconds</b> after the last intruder of wave ${WAVES}, with a <b>BOSS INCOMING</b> countdown first and a big HP bar at the top of the board. Bosses follow the same route as everyone else, slows work on them in <b>full</b>, just like everyone else, the stage only ends once the boss has been stopped or has escaped, and an escape costs 5 lives.</p>
-  <table><tr><th>Appears</th><th>Boss</th><th>HP</th><th>Speed</th><th>Reward</th><th>Lives cost</th></tr>${bossRows}</table>
-  <div class="ucards" style="margin-top:10px">${bossCard(0,'A retro flower-power camper full of loot-hungry crooks. Big and slow.')}${bossCard(1,'A dark, rusty armoured war truck with spikes, welded plates and smoking exhaust stacks. Slow, and very hard to stop.')}${bossCard(2,'A flaming-skull biker on a long chopper. Much faster than the other bosses, with less armour. At 20%, 40%, 60% and 80% of its route it <b>stops</b>, hurls a <b>firebomb</b> at a random defence and then <b>celebrates for 2 seconds</b> before riding on: the target flashes red, then it is destroyed with <b>no refund</b>. Hit it hard while it gloats, then rebuild quickly!')}${bossCard(3,'A giant reptilian moon monster with glowing dorsal plates and a ground-shaking stomp, and the most HP of all. Its weak spot: every time a <b>Command Centre vehicle</b> hits it, it becomes <b>VULNERABLE ×3</b> for ${VULN_T} seconds. While vulnerable, damage from AI-boosted defences and from dispatch vehicles is tripled.')}</div>
+  <h3>Bosses</h3><p>A boss ends <b>every stage</b>, 1 to 8. It comes out of the tunnel <b>${BOSS_DELAY} seconds</b> after the last intruder of wave ${WAVES}, with a <b>BOSS INCOMING</b> countdown first and a big HP bar at the top of the board. Bosses follow the same route as everyone else, slows work on them in <b>full</b>, just like everyone else, the stage only ends once the boss has been stopped or has escaped, and an escape costs 5 lives.</p>
+  <table><tr><th>Appears</th><th>Boss</th><th>HP</th><th>Speed</th><th>Reward</th><th>Lives cost</th><th>Trait</th></tr>${bossRows}</table>
+  <div class="ucards" style="margin-top:10px">${bossCard(0,'A chunky bipedal enforcement mech on reverse-jointed legs, with twin arm gun pods and a dome visor. Slow and steady, with no special tricks: a first test of your maze.')}${bossCard(1,'A retro flower-power camper full of loot-hungry crooks. Big and slow.')}${bossCard(2,'A creepy clown head with a frilly ruff, scuttling on eight spider legs. Quick for a boss and <b>immune to Sensor slows</b>; the EACS and the AI Core still slow it.')}${bossCard(3,'A dark, rusty armoured war truck with spikes, welded plates and smoking exhaust stacks. Slow, and very hard to stop.')}${bossCard(4,'A silver-haired tech executive in a black leather jacket. Fast, and <b>immune to the AI Core slow</b> (Sensors and the EACS still work). At 20%, 50% and 70% of his route he <b>stops for 3 seconds to wave</b> to the crowd: the perfect moment to pile on the damage.')}${bossCard(5,'A flaming-skull biker on a long chopper. Much faster than the other bosses, with less armour. At 20%, 40%, 60% and 80% of its route it <b>stops</b>, hurls a <b>firebomb</b> at a random defence and then <b>celebrates for 2 seconds</b> before riding on: the target flashes red, then it is destroyed with <b>no refund</b>. Hit it hard while it gloats, then rebuild quickly!')}${bossCard(6,`A pastel ice cream van with a giant cone on the roof, and plenty of HP. At every 15% of its route (15%, 30% … 90%) it <b>stops and throws 3 ice cream cones</b> at random defences. A defence that is hit is <b>frozen for ${FREEZE_T} seconds</b> and does nothing. The <b>Command Centre is immune</b>. Its weakness: <b>Command Centre vehicles do ×${ICE_X} damage</b> to it (450 × 3 = 1,350 HP per hit, and more with an AI Core boost).`)}${bossCard(7,'A giant reptilian moon monster with glowing dorsal plates and a ground-shaking stomp, and the most HP of all. Its weak spot: every time a <b>Command Centre vehicle</b> hits it, it becomes <b>VULNERABLE ×3</b> for ${VULN_T} seconds. While vulnerable, damage from AI-boosted defences and from dispatch vehicles is tripled.')}</div>
   <h3>Controls</h3><div class="legend">
   <div><span>▶</span>Start / send the next wave</div><div><span>❚❚</span>Pause / resume</div><div><span>1×</span>Toggle 2× speed</div>
-  <div><span>🔊</span>Sound on / off</div><div><span>i</span>Open this page (pauses the game)</div><div><span>1–5</span>Keyboard: pick Camera / Detector / EACS / AI Core / Command Centre</div>
+  <div><span>🔊</span>Sound on / off</div><div><span>i</span>Open this page (pauses the game)</div><div><span>1–5</span>Keyboard: pick Camera / Sensor / EACS / AI Core / Command Centre</div>
   <div><span>Space</span>Keyboard: start wave</div><div><span>P</span>Keyboard: pause</div><div><span>Esc</span>Cancel building / close</div></div>
   <h3>Defences</h3><div class="ucards">${towerCard('camera')}${towerCard('detector')}${eacsCard()}${aiCard()}${ccCard()}</div>
   <h3>Intruders</h3><div class="ucards">${enemyCard('goon','Hooded thug in a balaclava. Weak but quick, and arrives in big groups.')}${enemyCard('crook','Burglar in a striped top with a mask and a loot bag. Middle of the road.')}${enemyCard('suitman','The big boss in a dark suit and sunglasses. Slow and very tough, and costs 2 lives if he reaches the vault.')}</div>
-  <p style="margin-top:14px;color:#8e9ab3">Tip: Detectors are cheap and slow everything right next to them, so line the tight corners of your maze with them and cover those corners with Cameras. An EACS on a corner grips the front-runners at a crawl (65–85% slower), holding them inside your Cameras' view cones for longer. From stage ${AI_UNLOCK+1}, put an AI Core in the middle of your densest cluster of Cameras. Stages 6 to 8 send huge crowds (up to 300 intruders in a wave), so area damage is king.</p>`;
+  <p style="margin-top:14px;color:#8e9ab3">Tip: Sensors are cheap and slow everything right next to them, so line the tight corners of your maze with them and cover those corners with Cameras. An EACS on a corner grips the front-runners (30–55% slower), holding them inside your Cameras' view cones for longer. From stage ${AI_UNLOCK+1}, put an AI Core in the middle of your densest cluster of Cameras. Stages 6 to 8 send huge crowds (up to 300 intruders in a wave), so area damage is king.</p>`;
 }
 function openInfo(){if(infoOpen)return;infoOpen=true;infoWasPaused=G.paused;G.paused=true;buildInfo();show('ovInfo');document.getElementById('infoBody').scrollTop=0}
 function closeInfo(){if(!infoOpen)return;infoOpen=false;hide('ovInfo');G.paused=infoWasPaused}
@@ -1184,12 +1316,14 @@ function update(dt){
       else{G.bossT-=dt;if(G.bossT<=1e-6)spawnBoss()}}}
   // firebombs in flight
   for(const b of G.bombs){b.t+=dt;if(b.t>=b.T&&!b.done){b.done=true;bombImpact(b)}}G.bombs=G.bombs.filter(b=>!b.done);
+  for(const k of G.cones){k.t+=dt;if(k.t>=k.T&&!k.done){k.done=true;coneImpact(k)}}G.cones=G.cones.filter(k=>!k.done);
+  for(const t of G.towers)if(t.frozen>0)t.frozen=Math.max(0,t.frozen-dt);
   for(const t of G.towers)if(t.doomT>0)t.doomT=Math.max(0,t.doomT-dt);
-  const AIs=G.towers.filter(t=>t.type==='ai');
+  const AIs=G.towers.filter(t=>t.type==='ai'&&!(t.frozen>0));// a frozen AI Core neither boosts nor slows
   for(const e of G.enemies){
     if(e.camT>0)e.camT-=dt;if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slowF=0}if(e.lockT>0){e.lockT-=dt;if(e.lockT<=0){e.lockT=0;e.lockF=0}}e.flash=Math.max(0,e.flash-dt);if(e.vuln>0)e.vuln=Math.max(0,e.vuln-dt);
-    let aiF=0;for(const a of AIs){const A=tStats(a);if(Math.hypot(e.x-a.c-.5,e.y-a.r-.5)<=A.range+BODY_R)aiF=Math.max(aiF,A.slow)}e.aiF=aiF;
-    e.curSlow=Math.max(e.slowF||0,e.lockF||0,aiF);// strongest slow wins, never stacked
+    let aiF=0;const IM=e.E.immune;if(!(IM&&IM.ai))for(const a of AIs){const A=tStats(a);if(Math.hypot(e.x-a.c-.5,e.y-a.r-.5)<=A.range+BODY_R)aiF=Math.max(aiF,A.slow)}e.aiF=aiF;
+    e.curSlow=Math.max(IM&&IM.sensor?0:(e.slowF||0),e.lockF||0,aiF);// strongest slow wins, never stacked
     let move=e.stopT>0?0:e.speed*(1-e.curSlow)*dt;const mv0=move;e.walk+=move*1.9;let guard=0;
     while(move>0&&guard++<4){
       const tx=e.tc+.5,ty=e.tr+.5,dx=tx-e.x,dy=ty-e.y,dd=Math.hypot(dx,dy);
@@ -1210,10 +1344,11 @@ function update(dt){
       if(t.type!=='cc')for(const q of CCs)if(Math.hypot(q.c-t.c,q.r-t.r)<=tStats(q).range+1e-6){c=1+tStats(q).aura;break}}
     t.aiB=b;t.ccB=c;t.boost=b*c}
   // dispatch vehicles (2x size): 450 HP (x AI boost) once to every intruder they touch on this pass, with a small spark burst (no comic pop)
-  for(const v of G.dispatch){v.x+=v.vx*dt;for(const e of G.enemies){if(e.dead||v.hit.has(e))continue;const bx=e.boss?0.35*e.E.size:0.3,by=e.boss?0.25*e.E.size:0.25;
-    if(Math.abs(e.x-v.x)<=VEH_HALF_L+bx&&Math.abs(e.y-v.y)<=VEH_HALF_H+by){v.hit.add(e);damage(e,v.dmg,false,'cc');G.stats.vhits=(G.stats.vhits||0)+1;if(G.fx.length<FX_CAP)for(let i=0;i<5;i++)G.fx.push({x:e.x,y:e.y-0.2,vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3,life:.3,max:.3,spark:true,col:v.kind==='van'?'#ff7070':'#7fb4ff'})}}}
+  for(const v of G.dispatch){v.x+=v.vx*dt;const VB=VEH_BOX[v.kind],vx0=v.x+VB.x0,vx1=v.x+VB.x1,vy0=v.y+VB.y0,vy1=v.y+VB.y1;for(const e of G.enemies){if(e.dead||v.hit.has(e))continue;const b=bodyBox(e);
+    if(b.x1>=vx0&&b.x0<=vx1&&b.y1>=vy0&&b.y0<=vy1){/* v13: any contact with the vehicle's full visual box */v.hit.add(e);damage(e,v.dmg,false,'cc');G.stats.vhits=(G.stats.vhits||0)+1;if(G.fx.length<FX_CAP)for(let i=0;i<5;i++)G.fx.push({x:e.x,y:e.y-0.2,vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3,life:.3,max:.3,spark:true,col:v.kind==='van'?'#ff7070':'#7fb4ff'})}}}
   G.dispatch=G.dispatch.filter(v=>{const keep=v.x>-2.8&&v.x<COLS+2.8;if(!keep)sirenStop(v);return keep});
   for(const t of G.towers){
+    if(t.frozen>0){t.target=null;t.nIn=0;t.locks=[];continue}// v13: frozen by an ice cream cone - does nothing (the Command Centre is never hit)
     const S=tStats(t),tx=t.c+.5,ty=t.r+.5,R=S.range,src=t.aiB>1?'ai':null;t.cd-=dt;
     if(t.type==='camera'){
       // v11: no laser. Every intruder inside the 90 degree view cone (and range) takes the camera's damage at its rate (area damage);
@@ -1231,7 +1366,7 @@ function update(dt){
     }else if(t.type==='eacs'){
       t.spin+=dt*(1.6+t.lvl*0.4);
       const inR=G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-tx,e.y-ty)<=R+BODY_R);
-      // v12.1: no damage at all; lock the 2 / 3 / 5 in reach that are closest to the vault at 65% / 75% / 85% slow
+      // v12.1: no damage at all; lock the 2 / 3 / 5 in reach that are closest to the vault at 30% / 40% / 55% slow
       const live=inR.filter(e=>!e.dead).sort((a,b)=>a.prog-b.prog).slice(0,S.targets);
       for(const e of live){e.lockF=Math.max(e.lockF||0,S.slow);e.lockT=Math.max(e.lockT||0,S.linger)}
       t.locks=live;t.hum=(t.hum||0)+(inR.length?dt:0);if(inR.length&&t.hum>0.6){t.hum=0;sfx('pulse')}
@@ -1243,7 +1378,7 @@ function update(dt){
       t.spin+=dt*0.25;// slow, calm rotation; the soft breathing ring is drawn from G.time
       if(t.cd<=0){const inR=G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-tx,e.y-ty)<=R+BODY_R);// reach counts any intruder whose body touches the ring
         if(inR.length){t.cd=1/S.rate;t.hits=(t.hits||0)+1;
-          for(const e of inR){damage(e,S.dmg*t.boost,false,src);if(!e.dead){e.slowF=Math.max(e.slowF,S.slow);e.slowT=Math.max(e.slowT,S.slowT)}}
+          for(const e of inR){damage(e,S.dmg*t.boost,false,src);if(!e.dead&&!(e.E.immune&&e.E.immune.sensor)){e.slowF=Math.max(e.slowF,S.slow);e.slowT=Math.max(e.slowT,S.slowT)}}
           if(G.time-(G.detSfx||-9)>DET_BREATH){G.detSfx=G.time;sfx('pulse')}}}
     }
   }
@@ -1255,6 +1390,16 @@ function update(dt){
 const RIDER_WIND=0.6,RIDER_PARTY=2;
 function bossTick(e,moved,dt){
   e.travel+=moved;
+  if(e.t==='keynote'||e.t==='icecream'){
+    // v13: stops at fixed fractions of its route. Keynote Boss: 3 s waving to the crowd. Ice Cream Truck: throws 3 cones at defences.
+    if(e.stopT>0){e.stopT-=dt;if(e.waveT>0)e.waveT=Math.max(0,e.waveT-dt);
+      if(e.throwQ>0){e.throwT-=dt;if(e.throwT<=0){e.throwQ--;e.throwT=ICE_GAP;throwCone(e)}}
+      if(e.stopT<=0){e.stopT=0;e.waveT=0}}
+    else{const S=e.E.stops,f=e.travel/Math.max(0.01,e.travel+e.prog);
+      if(e.stopN<S.length&&f>=S[e.stopN]){e.stopN++;e.stops=(e.stops||0)+1;
+        if(e.t==='keynote'){e.stopT=e.E.stopFor;e.waveT=e.E.stopFor;floatText(e.x,e.y-2.2,['Hello, Moon!','Thank you!','One more thing…'][(e.stopN-1)%3],'#9ff0ff',1.8)}
+        else{e.stopT=ICE_STOP;e.throwQ=3;e.throwT=ICE_GAP;floatText(e.x,e.y-2.4,'Ice cream!','#ffb3cf',1.4)}}}
+    return}
   if(e.t==='rider'){
     // v11: at 20/40/60/80% of its route it stops, winds up and throws (RIDER_WIND s), then celebrates for RIDER_PARTY s before riding on
     if(e.stopT>0){e.stopT-=dt;
@@ -1272,6 +1417,7 @@ function damage(e,d,quiet,src){
   // Lunakaiju: each Command Centre hit opens a 6 s window in which damage from AI-boosted defences and dispatch vehicles is x3
   if(e.t==='kaiju'&&src){if(src==='cc'){if(!(e.vuln>0))floatText(e.x,e.y-2.4,`VULNERABLE ×${VULN_X}`,'#ff6ef2',1.6);e.vuln=VULN_T;G.stats.vulnOpen++}
     if(e.vuln>0){d*=VULN_X;G.stats.vulnDmg+=d}}
+  if(e.t==='icecream'&&src==='cc'){d*=ICE_X;G.stats.iceCcDmg=(G.stats.iceCcDmg||0)+d;floatText(e.x,e.y-2.6,`×${ICE_X}!`,'#ff9a9a',0.9)}// v13: weak to Command Centre vehicles
   e.hp-=d;if(!quiet)e.flash=0.05;
   if(e.hp<=0){e.dead=true;const rw=e.E.reward;addCredits(rw);G.score+=rw*10;if(e.boss){G.stats.boss='stopped';G.stats.bossRw=rw;G.boss=null;G.shake=0.6;floatText(e.x,e.y-1,`${e.E.short} stopped!`,'#ffd866',2.4);for(let i=0;i<26;i++)G.fx.push({x:e.x,y:e.y-0.3,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,life:.7,max:.7,dust:true,s:0.16})}G.stats.kills++;G.totals.kills++;floatText(e.x,e.y-0.4,`+${rw}`,'#ffd866');sfx('die');
     const big=e.boss?2.2:e.t==='suitman'?1.4:1;if(G.fx.length>FX_CAP&&!e.boss)return;
@@ -1311,9 +1457,9 @@ function drawTowerAt(type,lvl,px,py,size,ang,alpha=1,t=null){
     for(const [lx,ly] of lenses){const gl=0.5+0.5*Math.sin(G.time*3+(t?t.c*1.7+t.r:0));
       ctx.beginPath();ctx.arc(lx*s-s*0.02,ly*s-s*0.022,Math.max(1,s*0.022),0,TAU);ctx.fillStyle=`rgba(255,255,255,${0.5+gl*0.5})`;ctx.fill();
       if(t&&t.flash>0){const a=t.flash/0.07;ctx.fillStyle=rgCtx(lx*s+s*0.04,ly*s,s*0.2,['rgba(255,240,200,'+a+')','rgba(255,90,40,'+a*0.6+')','rgba(255,60,30,0)']);ctx.beginPath();ctx.arc(lx*s+s*0.04,ly*s,s*0.2,0,TAU);ctx.fill()}}
-  }else if(type==='eacs'){// glowing status LED: green idle, violet while locking
+  }else if(type==='eacs'){// glowing status LED (v13: always green, just blinks faster while locking; no purple effects)
     const busy=t&&t.locks&&t.locks.length,gl=0.6+0.4*Math.sin(G.time*(busy?9:3)+(t?t.c:0));
-    ctx.fillStyle=rgCtx(0,s*0.245,s*0.09,[busy?'rgba(240,210,255,'+gl+')':'rgba(200,255,220,'+gl+')',busy?'rgba(192,140,255,'+gl*0.8+')':'rgba(89,255,154,'+gl*0.8+')','rgba(0,0,0,0)']);
+    ctx.fillStyle=rgCtx(0,s*0.245,s*0.09,['rgba(200,255,220,'+gl+')','rgba(89,255,154,'+gl*0.8+')','rgba(0,0,0,0)']);
     ctx.beginPath();ctx.arc(0,s*0.245,s*0.09,0,TAU);ctx.fill();
   }else if(type==='ai'){// pulsing neural core
     const gl=0.55+0.45*Math.sin(G.time*4+(t?t.c*1.3:0));ctx.fillStyle=rgCtx(0,0,s*0.2,['rgba(220,255,255,'+gl+')','rgba(79,240,255,'+gl*0.7+')','rgba(79,240,255,0)']);ctx.beginPath();ctx.arc(0,0,s*0.2,0,TAU);ctx.fill();
@@ -1362,11 +1508,10 @@ function drawEnemyGround(e){const {S,px,py,sc}=enemyGeom(e);
   if(e.camT>0){ctx.globalAlpha=Math.min(1,e.camT/0.2)*0.55;ctx.drawImage(SPR.redGlow,px-S*0.42,py-S*0.72,S*0.84,S*0.84);ctx.globalAlpha=1}
   if(e.boss||DRAWQ.length<=CROWD_LOD)ctx.drawImage(SPR.shadow,px-S*0.2*sc,py+S*0.14-S*0.065*sc,S*0.4*sc,S*0.13*sc)}
 const CROWD_LOD=150;// above this many intruders on screen the small ground shadows are skipped (bosses keep theirs)
-function drawEnemyRing(e){if(!(e.lockF>0)&&!(e.slowF>0))return;const {S,px,py,sc}=enemyGeom(e);
-  if(e.lockF>0){ctx.strokeStyle='rgba(200,150,255,.85)';ctx.lineWidth=2.4;ctx.beginPath();ctx.ellipse(px,py+S*0.14,S*0.29*sc,S*0.1*sc,0,0,TAU);ctx.stroke()}
-  else{ctx.strokeStyle='rgba(140,220,255,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(px,py+S*0.14,S*0.26*sc,S*0.09*sc,0,0,TAU);ctx.stroke()}}
+function drawEnemyRing(e){if(!(e.slowF>0))return;const {S,px,py,sc}=enemyGeom(e);// v13: Sensor slow ring only (EACS shows a no-entry sign instead)
+  {ctx.strokeStyle='rgba(140,220,255,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(px,py+S*0.14,S*0.26*sc,S*0.09*sc,0,0,TAU);ctx.stroke()}}
 function drawEnemy(e){
-  const {S,px,py,rot}=enemyGeom(e),fr=SPR.enemy[e.t][(((e.walk%1)+1)%1*8)|0],img=e.flash>0?fr.h:e.camT>0?fr.r:((e.curSlow||e.slowF)>0?fr.f:fr.n);
+  const {S,px,py,rot}=enemyGeom(e),fr=e.waveT>0?SPR.enemy.keynoteW[((G.time*1.5%1)*8)|0]:SPR.enemy[e.t][(((e.walk%1)+1)%1*8)|0],img=e.flash>0?fr.h:e.camT>0?fr.r:((e.slowF>0||e.aiF>0)?fr.f:fr.n);// v13: EACS locks don't frost-tint (no-entry sign only)
   if(e.t==='kaiju'&&e.vuln>0){const p=0.5+0.5*Math.sin(G.time*14);ctx.fillStyle=rgCtx(px,py-S*0.35,S*0.55,['rgba(255,110,242,'+(0.35+0.25*p)+')','rgba(255,110,242,0)']);ctx.beginPath();ctx.arc(px,py-S*0.35,S*0.55,0,TAU);ctx.fill()}
   if(e.t==='rider'){ctx.fillStyle=rgCtx(px-e.face*S*0.05,py-S*0.62,S*0.3,['rgba(255,150,40,.35)','rgba(255,90,20,0)']);ctx.beginPath();ctx.arc(px-e.face*S*0.05,py-S*0.62,S*0.3,0,TAU);ctx.fill()}
   if(!rot&&e.t!=='kaiju'){// fast path: one setTransform instead of save/translate/scale/restore
@@ -1377,6 +1522,12 @@ function drawEnemy(e){
     ctx.globalCompositeOperation='source-over'}
   ctx.restore()}
 const KAIJU_DOTS=[[22,54],[28,44],[34,34],[42,26],[51,20],[58,16]];
+// v13: red circle with a white horizontal bar above every intruder an EACS is currently holding (cached sprite, one drawImage each)
+function noEntrySprite(){const k=SPR.key;if(SPR.noEntry&&SPR.noEntryK===k)return SPR.noEntry;SPR.noEntryK=k;
+  return SPR.noEntry=sprite(L.cs*0.5,g=>{g.beginPath();g.arc(50,50,46,0,TAU);g.fillStyle='#ffffff';g.fill();g.beginPath();g.arc(50,50,41,0,TAU);g.fillStyle='#e02424';g.fill();
+    g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.35)';g.beginPath();g.arc(50,50,46,0,TAU);g.stroke();g.fillStyle='#ffffff';g.fillRect(20,42,60,16)})}
+function drawNoEntry(){let img=null;for(const e of DRAWQ){if(e.dead||!(e.lockF>0))continue;img=img||noEntrySprite();const {S,px,py}=enemyGeom(e),z=Math.max(14,L.cs*(e.boss?0.5:0.36)),top=py-S*0.78+S*e.E.top-(e.boss?4:12);
+  ctx.drawImage(img,px-z/2,top-z,z,z)}}
 function drawEnemyBars(){// HP bars in two batched fills: all dark backs, then each colour band (the boss has its own big bar in the top bar)
   ctx.fillStyle='rgba(0,0,0,.65)';for(const e of DRAWQ){if(e.boss||e.dead)continue;const {S,px,py}=enemyGeom(e),bw=S*0.46;ctx.fillRect(px-bw/2-1,py-S*0.78+S*e.E.top-8,bw+2,6)}
   for(const [lo,hi,col] of HPBANDS){ctx.fillStyle=col;for(const e of DRAWQ){if(e.boss||e.dead)continue;const f=Math.max(0,e.hp/e.max);if(f<=lo||f>hi)continue;const {S,px,py}=enemyGeom(e),bw=S*0.46;ctx.fillRect(px-bw/2,py-S*0.78+S*e.E.top-7,bw*f,4)}}}
@@ -1452,13 +1603,13 @@ function draw(){
   ctx.save();ctx.beginPath();ctx.rect(L.ox,L.oy,L.fw,L.fh);ctx.clip();
   for(const t of G.towers)if(t.type==='camera')drawCamCone(t);
   for(const t of G.towers)if(t.type==='detector')drawDetBreath(t);
-  for(const t of G.towers)if(t.type==='eacs')drawEacsField(t);
+  // v13: no EACS field disc / pulse ring (range circle only when selected or placing, like the other units)
   for(const t of G.towers)if(t.type==='ai')drawAiField(t);
   ctx.restore();
   if(G.sel)drawRange(G.sel.c,G.sel.r,tStats(G.sel).range,TOWERS[G.sel.type].col);
   for(const t of G.towers)drawTowerAt(t.type,t.lvl,X(t.c+.5),Y(t.r+.5),cs,t.type==='camera'?t.ang:t.type==='eacs'?0:t.spin,1,t);
   drawBoostLinks();
-  for(const t of G.towers){if(t.type==='cc')drawCcTimer(t);if(t.doomT>0)drawDoom(t)}
+  for(const t of G.towers){if(t.type==='cc')drawCcTimer(t);if(t.doomT>0)drawDoom(t);if(t.frozen>0)drawFrozen(t)}
   if(G.sel){ctx.strokeStyle='#ffd866';ctx.lineWidth=3;rr(X(G.sel.c)+2,Y(G.sel.r)+2,cs-4,cs-4,8);ctx.stroke()}
   if(G.build&&G.hover&&(G.st==='play'||G.st==='stageEnding')){const [c,r]=G.hover;if(!towerAt(c,r)){
     const ok=!placementProblem(c,r)&&G.credits>=TOWERS[G.build].levels[0].cost;
@@ -1466,10 +1617,11 @@ function draw(){
     ctx.fillStyle=ok?'rgba(80,255,140,.18)':'rgba(255,60,60,.25)';ctx.fillRect(X(c),Y(r),cs,cs);
     drawTowerAt(G.build,0,X(c+.5),Y(r+.5),cs,-Math.PI/2,0.6)}}
   DRAWQ.length=0;for(const e of G.enemies)DRAWQ.push(e);DRAWQ.sort(byDepth);for(const e of DRAWQ)drawEnemyGround(e);for(const e of DRAWQ)drawEnemyRing(e);for(const e of DRAWQ)drawEnemy(e);drawEnemyBars();// reused buffer: no per-frame array copies
-  for(const t of G.towers)if(t.type==='eacs')drawEacsLocks(t);
-  drawDispatch();drawBombs();
+  drawNoEntry();// v13: the only EACS visual - a no-entry sign over each intruder it is holding
+  drawDispatch();drawBombs();drawCones();
   for(const f of G.fx){const a=f.life/f.max;
-    if(f.boom){const k=1-a,r=cs*(0.35+k*1.25);ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=rgCtx(X(f.x),Y(f.y),r,['rgba(255,250,210,'+a+')','rgba(255,150,40,'+a*0.9+')','rgba(200,40,10,'+a*0.5+')','rgba(120,20,0,0)']);ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,0,TAU);ctx.fill();ctx.restore();
+    if(f.splat){const k=1-f.life/f.max,z=cs*(0.5+k*0.6);ctx.globalAlpha=f.life/f.max;ctx.drawImage(SPR.splat,X(f.x)-z/2,Y(f.y)-z/2,z,z);ctx.globalAlpha=1}
+    else if(f.boom){const k=1-a,r=cs*(0.35+k*1.25);ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=rgCtx(X(f.x),Y(f.y),r,['rgba(255,250,210,'+a+')','rgba(255,150,40,'+a*0.9+')','rgba(200,40,10,'+a*0.5+')','rgba(120,20,0,0)']);ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,0,TAU);ctx.fill();ctx.restore();
       ctx.strokeStyle=`rgba(255,200,120,${a*0.8})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(X(f.x),Y(f.y),cs*(0.3+k*1.8),0,TAU);ctx.stroke()}
     else if(f.smoke){const r=f.s*cs*(1+(1-a)*2.2);ctx.fillStyle=`rgba(70,66,64,${a*0.45})`;ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,0,TAU);ctx.fill()}
     else if(f.fire){const r=f.s*cs*(0.6+a*0.8);ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=rgCtx(X(f.x),Y(f.y),r,['rgba(255,240,170,'+a+')','rgba(255,120,30,'+a*0.8+')','rgba(255,60,10,0)']);ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,0,TAU);ctx.fill();ctx.restore()}
@@ -1535,6 +1687,15 @@ function drawDoom(t){
   ctx.strokeStyle='#ffd23f';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x+cs/2,y+cs/2,cs*0.3*(0.7+0.3*t.doomT/BOMB_FLIGHT),0,TAU);ctx.stroke();
   ctx.font=`900 ${Math.round(cs*0.5)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='#000';ctx.strokeText('!',x+cs/2,y-cs*0.15);ctx.fillStyle='#ffd23f';ctx.fillText('!',x+cs/2,y-cs*0.15);ctx.restore();
 }
+// v13: ice cream cones in flight (arc + spin) and frozen defences (pink splat, frosty tint and a 3 s countdown ring)
+function drawCones(){const cs=L.cs;
+  for(const k of G.cones){const u=Math.min(1,k.t/k.T),x=k.x0+(k.x1-k.x0)*u,yg=k.y0+(k.y1-k.y0)*u,h=2.2*4*u*(1-u),z=cs*0.42;
+    ctx.save();ctx.translate(X(x),Y(yg-h));ctx.rotate(k.spin+u*TAU*1.6);ctx.drawImage(SPR.cone,-z/2,-z/2,z,z);ctx.restore()}}
+function drawFrozen(t){const x=X(t.c),y=Y(t.r),cs=L.cs,f=t.frozen/(t.frozenMax||FREEZE_T);ctx.save();
+  ctx.fillStyle='rgba(200,235,255,.35)';rr(x+1,y+1,cs-2,cs-2,8);ctx.fill();ctx.drawImage(SPR.splat,x+cs*0.05,y+cs*0.05,cs*0.9,cs*0.9);
+  ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=5;ctx.beginPath();ctx.arc(x+cs/2,y+cs/2,cs*0.4,0,TAU);ctx.stroke();
+  ctx.strokeStyle='#ffffff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x+cs/2,y+cs/2,cs*0.4,-Math.PI/2,-Math.PI/2+TAU*f);ctx.stroke();
+  ctx.font=`900 ${Math.round(cs*0.34)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='#5a2140';const s=Math.ceil(t.frozen)+'';ctx.strokeText(s,x+cs/2,y+cs/2);ctx.fillStyle='#fff';ctx.fillText(s,x+cs/2,y+cs/2);ctx.restore()}
 function drawBombs(){
   for(const b of G.bombs){const u=Math.min(1,b.t/b.T),x=b.x0+(b.x1-b.x0)*u,yg=b.y0+(b.y1-b.y0)*u,h=1.8*4*u*(1-u),px=X(x),py=Y(yg-h),cs=L.cs;
     ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(X(x),Y(yg),cs*0.14,cs*0.06,0,0,TAU);ctx.fill();
@@ -1606,7 +1767,7 @@ const POLICE_STROBE=1.6,GOOD_JOB_T=1;// "Good job!" shows for the last second of
 // seconds per red/blue cycle
 function drawDispatch(){
   for(const v of G.dispatch){const S=SPR.vehS,px=X(v.x),py=Y(v.y+0.62)/* body centred on the lane */,img=v.kind==='van'?SPR.respVan:SPR.police,left=false/* the police sprite is already drawn facing left */;
-    ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(px,py+S*0.02,S*0.44,S*0.07,0,0,TAU);ctx.fill();
+    // v13: no dark oval under the vehicles
     ctx.save();ctx.translate(px,py);if(left)ctx.scale(-1,1);ctx.drawImage(img,-S/2,-S*0.78,S,S);
     const on=Math.sin(G.time*22)>0;
     if(v.kind==='police'){// v12: slow strobe: red and blue lamps cross-fade over a 1.6 s cycle, each with a soft glow
@@ -1615,7 +1776,6 @@ function drawDispatch(){
         ctx.fillStyle=rgCtx(qx,qy,S*0.26,['rgba('+col+','+(0.42*ww).toFixed(3)+')','rgba('+col+','+(0.16*ww).toFixed(3)+')','rgba('+col+',0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.26,0,TAU);ctx.fill();
         ctx.fillStyle=rgCtx(qx,qy,S*0.07,['rgba(255,255,255,'+(0.25+0.75*w).toFixed(3)+')','rgba('+col+','+(0.35+0.65*w).toFixed(3)+')','rgba('+col+',0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.07,0,TAU);ctx.fill()}}
     else{const qx=(0.42-0.5)*S,qy=(0.315-0.78)*S;ctx.fillStyle=rgCtx(qx,qy,S*0.1,[on?'rgba(255,200,60,1)':'rgba(255,120,40,.8)','rgba(255,160,40,0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.1,0,TAU);ctx.fill()}
-    if(v.boosted){ctx.strokeStyle='rgba(79,240,255,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,-S*0.05,S*0.5,S*0.12,0,0,TAU);ctx.stroke()}
     ctx.restore()}
 }
 function drawSelPop(){
@@ -1623,7 +1783,7 @@ function drawSelPop(){
   ctx.save();ctx.fillStyle='rgba(10,14,26,.94)';rr(sp.x,sp.y,sp.w,sp.h,12);ctx.fill();ctx.strokeStyle=T.col;ctx.lineWidth=2;ctx.stroke();
   ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle=T.col;ctx.font='bold 15px sans-serif';ctx.fillText(`${T.name} · Level ${t.lvl+1}${N?'':' (max)'}${t.boost>1?' · ×'+(+t.boost.toFixed(2)):''}`,sp.x+10,sp.y+14,sp.w-64);
   ctx.fillStyle='#c9d3e3';ctx.font='12px sans-serif';
-  const line=t.type==='ai'?`Boost ×${S.boost}${N?'→×'+N.boost:''} · slow 20% · range ${S.range}${N?'→'+N.range:''}`:t.type==='cc'?`+${Math.round(S.aura*100)}% aura · vehicles ${S.dmg} HP · ${S.cd} s · range ${S.range}`:t.type==='eacs'?`No damage · ${Math.round(S.slow*100)}%${N?'→'+Math.round(N.slow*100)+'%':''} lock ×${S.targets}${N?'→'+N.targets:''} · range ${S.range}${N?'→'+N.range:''}`:t.type==='camera'?`Cone dmg ${S.dmg}${N?'→'+N.dmg:''} · ${S.rate}/s · range ${S.range}${N?'→'+N.range:''}`:`Pulse ${S.dmg}${N?'→'+N.dmg:''} · slow ${Math.round(S.slow*100)}% · range ${S.range}${N?'→'+N.range:''}`;
+  const line=t.type==='ai'?`Boost ×${S.boost}${N?'→×'+N.boost:''} · slow ${Math.round(S.slow*100)}% · range ${S.range}${N?'→'+N.range:''}`:t.type==='cc'?`+${Math.round(S.aura*100)}% aura · vehicles ${S.dmg} HP · ${S.cd} s · range ${S.range}`:t.type==='eacs'?`No damage · ${Math.round(S.slow*100)}%${N?'→'+Math.round(N.slow*100)+'%':''} lock ×${S.targets}${N?'→'+N.targets:''} · range ${S.range}${N?'→'+N.range:''}`:t.type==='camera'?`Cone dmg ${S.dmg}${N?'→'+N.dmg:''} · ${S.rate}/s · range ${S.range}${N?'→'+N.range:''}`:`Pulse ${S.dmg}${N?'→'+N.dmg:''} · slow ${Math.round(S.slow*100)}% · range ${S.range}${N?'→'+N.range:''}`;
   ctx.fillText(line,sp.x+10,sp.y+33,sp.w-64);
   {const c=sp.close;ctx.fillStyle='rgba(255,255,255,.06)';rr(c.x+4,c.y+4,c.w-8,c.h-8,9);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;ctx.stroke();
    ctx.fillStyle='#fff';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.fillText('✕',c.x+c.w/2,c.y+c.h/2+1)}
@@ -1719,7 +1879,7 @@ function frame(now){
 }
 newGame();layout();requestAnimationFrame(frame);
 window.__TD={get G(){return G},get L(){return L},blocked,computeFlow,placementProblem,tryPlace,sellTower,upgradeTower,startWave,handleCellTap,stageComplete,update,layout,
-  cellCenter:(c,r)=>({x:X(c+.5),y:Y(r+.5)}),selPop,UI,TOWERS,ENEMIES,COLS,ROWS,SPR,openInfo,closeInfo,bossStats,hpMultAt,BOSS,BOSSES,TOBY_MSG,swarmOf,SWARM_F,RIDER_PARTY,RIDER_WIND,pickBuild,SIREN,get sirensActive(){return SIRENS.size},setMuted:v=>{muted=!!v},get winScreen(){return winScreen},showWin,WIN_AUTO,WIN_TAP_DELAY,get muted(){return muted},waveList,atLimit,countOf,CAM_FOV,DISPATCH_SPD,DOCK,isLocked,damage,dispatch,throwBomb,spawnBoss,BUILD_KEYS,VULN_T,draw,DANCE_RUN,DANCE_T,GOOD_JOB_T,endDance,CAVE,VAULT,AI_UNLOCK,CC_UNLOCK,POLICE_STROBE,tobyHead,get infoOpen(){return infoOpen}};
+  cellCenter:(c,r)=>({x:X(c+.5),y:Y(r+.5)}),selPop,UI,TOWERS,ENEMIES,COLS,ROWS,SPR,openInfo,closeInfo,bossStats,ICE_X,FREEZE_T,VEH_BOX,bodyBox,throwCone,STAGE_SUB,isBossStage,hpMultAt,BOSS,BOSSES,TOBY_MSG,swarmOf,SWARM_F,RIDER_PARTY,RIDER_WIND,pickBuild,SIREN,get sirensActive(){return SIRENS.size},setMuted:v=>{muted=!!v},get winScreen(){return winScreen},showWin,WIN_AUTO,WIN_TAP_DELAY,get muted(){return muted},waveList,atLimit,countOf,CAM_FOV,DISPATCH_SPD,DOCK,isLocked,damage,dispatch,throwBomb,spawnBoss,BUILD_KEYS,VULN_T,draw,DANCE_RUN,DANCE_T,GOOD_JOB_T,endDance,CAVE,VAULT,AI_UNLOCK,CC_UNLOCK,POLICE_STROBE,tobyHead,get infoOpen(){return infoOpen}};
 })();
 </script>
 </body>
