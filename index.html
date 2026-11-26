@@ -46,6 +46,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
 .legend div{font-size:clamp(13px,3.3vh,15px);color:#c9d3e3}.legend span{display:inline-block;min-width:34px;text-align:center;background:#1b2234;border:1px solid #3e5a86;border-radius:8px;padding:2px 6px;margin-right:6px;color:#fff;font-weight:700}
 .logo-plate{background:#fff;border-radius:12px;padding:clamp(6px,1.6vh,12px) 24px;display:inline-block;margin:0 0 clamp(6px,1.8vh,14px)}
 .logo-plate img{display:block;height:clamp(24px,6.4vh,46px);width:auto}
+.title-logo{margin:0 0 clamp(4px,1.4vh,12px);padding:clamp(5px,1.4vh,10px) clamp(16px,3vw,28px)}.title-logo img{height:clamp(26px,8.5vh,58px)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(4px,1.2vh,10px);margin:clamp(6px,1.6vh,12px) 0 2px}
 .stats div{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:clamp(3px,1vh,8px) 6px}
 .stats span{display:block;font-size:clamp(10px,2.4vh,13px);color:#9fb0cc;letter-spacing:.5px}
@@ -112,6 +113,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
 .vbubble.congrats{font-size:clamp(28px,12vh,64px);font-weight:900;color:#d4145a;line-height:1.05}
 .vbubble.thanks{font-size:clamp(14px,5vh,24px);font-weight:700}
 .vbubble.thanks a{display:block;font-weight:900;color:#0b62c4;text-decoration:none;font-size:clamp(15px,5.6vh,28px);margin-top:clamp(2px,1vh,8px);padding:2px 0}.vbubble.thanks a:hover{text-decoration:underline}
+.vbubble .credit{display:block;margin-top:clamp(4px,1.6vh,12px);padding-top:clamp(3px,1.2vh,8px);border-top:1px solid #e3e7ef;font-size:clamp(11px,3.4vh,16px);font-weight:700;font-style:italic;color:#5a6378}
 .vtag{color:#9fe8ff;letter-spacing:2.5px;font-weight:700;font-size:clamp(10px,2.8vh,14px);text-transform:uppercase}
 .vtitle{margin:0;font-size:clamp(18px,7vh,38px);font-weight:900;line-height:1.1;background:linear-gradient(90deg,#ffe066,#ff9a3d,#ff5d8f,#7dffb0,#ffe066);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3s linear infinite}
 .vstats{display:grid;grid-template-columns:repeat(4,auto);gap:clamp(4px,1vw,10px);width:100%}
@@ -135,10 +137,11 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
 <canvas id="cv"></canvas>
 <div id="safe"></div>
 <div class="ov show" id="ovTitle"><div class="card">
-  <div class="tag">UltraSenSync · Lunar Security Division</div>
+  <div class="logo-plate title-logo"><img id="titleLogo" alt="Ademco Security Group" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARkAAAA5CAMAAAA1Fa+nAAAAsVBMVEVHcEzDKCi/KCjCKCjFKSnEKCjCKSjDKSjDKCjEKCjCKCjDKCi/ICDHKCjDKinDKSjDKSfDKSnBKCjDKSe/JSXDJyfFJSW/MDDEKijCKSfCKSnDKSnPICDFKirCKCjDKinDJyfCKSnCJibDKijDKijCKinDKSfBJyfEKSnDKSnEKSnDKCjDKim/KirBKSfCKirCJyfFKirEKSfFKCjCKijDJibCKSnEKSe/KCjCKSjDKSjZzuOjAAAAOnRSTlMAfyA/H5/fv0BfYL8QIO/f729frzBvMBCfj4/PEE+fz69QUH+A789wj69wgJAwcE+PMI9gYC+vz0CgdOKNYQAAB81JREFUaN61m+dW6zgQgF1iuZeQkAqEBMjeALdv1fs/2JLYlqXRqNg4+sE5eBxL+jxN0thxtO158vHnv4XTu0VTt27TJJJkhyRJprUwOUSLO3jDIooSoR2ic2uGEbmsHXL+Z3ftrz7uzRxR8islBSXprwM62rskSI/kmM5+iU/UgKHzj79hlfcFk1CuATR7CtsxFjsgFG1pLXW5S4/cr5YFJ/D5eT9zknIlTUaQ05XNZPO6B0KPfcmE/IxuRdkUm/XbMDJERZwj87PU9WWWY61sydA/epLhXwINRJmLTrvMh5ChnNVscDKHQv8aEPnKNL3Xj5vieqA97WkpdLQVhRt83mU3SfyGVkEEMnOFnjIyeYE8iXvRqPyLwZaKjkz7vmz9r9BPJQoDxcRnQ8jE3XN3KJkSexL3olE5jbTTW7U9F2AI5gZcycSKTDecHmTWDs7Tx0KBZJhKeZkZw0vcdlllPcjMxH7u7cikA8h0wclDyZSKZ2UG+a16cnelSMZke+rQBLthZD5Smh9BiJhG+/9LGIanoG7n9AUhQxQW7EsX078m3x/gkDj5Osv8B/ktye2dAjIG21OHJhicAtHIvI00HP3wXPTlAwv24b011m9gSFMg32BBT0plIBn7pGYBVHOrI8MNt400inCPkpnjIc8HZu0CO9+CsbgwW5xoUhmmdUis6xOaYHCSyHTG5/cnE+MW7IOL0OMShXyDJdEwlWEskVhnF5oI+gLGJbNGg3b7pB2c+V68oCQHokZnSyVGxjqpaVSWTNFuAjiaT5F5xAOaD7JpSZ0V8j2SKEmpDCNDLBMgONN0gQYnIxmvDxmC+zYVmYWosGpysWmlLJIpsz6hKcBf/rhk2iCyR8lQ2JdnILPQkylVZJiLtwpNLjPz7RXJzNGrlmTU8hjflVGSoXmP0HTPIFTDyKxtyMRo2n0VMjnVkEl7hCa/S6Qmg8i4NmTWaNptJDMfQOakI2OzspwxD4DGwJHJPKJpt4qM49+c23c/609GXH1KZCxWliEzIQ8LTmOR2fHBaUktyYitD5m81JOxWFkWzPCWmC8di8yaf0wEcssrkHmnBjLGpGbJqTlBgtNYZKa8D2v+2StWYCOQyamRTGoZmlzO5VRXIOPxc6jXOxUIPSYyXg8ypZmMaWU55bzuBlnU25OBAxHJtFbrdo9IAZnleGQSakHG4IQ3nEJPERMcjUzI+bDaHbuAjDcamby0IWNwwiGnJtgCbTQyGy44NWqqJJN9ksyKWpHRO+GCcy1YOjsamaR7TrMgmSvJTD5H5ie1JJNahKZUcIGPVyCz6Gbd6KZzLTKlLRmdE44ELSHyMetoZJadq3eb3OBKZJ4VAwqRoyy1E94Lae9MNvTRyLTYb9tu0iuRQc8x1zgZzdHvRlgqbeRj1vHIzFhwCpvBXofMCjscO7/qpOhzvjkTUCRyT/Zkjr7/dXJuGZbpMezb1uvfXocMco750iwEPcTTKM9YdkJfCzk42ZPRnzexIVetx/GvQuZOdr+px6RP9k5YdLlLOTiNR4YFp6hVU+Xq4BNknhUKk9e3eA+WTngBZiUHJw2ZeT8yLfY4aa+YybhuXa+W4WTkHfIcV5hzoVZZ3zQnVpnwHuw7zCQOGjKTfmRa7Otp62+MZJaCetqQ2QGFqSv9DrWJlQvUpCLduF146De5ApnmUdWqvd1IRtzttCAD3O/6omt5CMr6vJ05E251pJzV5ZcnacNzRDLScaU9mYkdGXElSWpHKFQ8lrXDTYjJCYfUVJEyIpkE9jA6GSGVcS8KE5VoiaHgiTEnXKjIBFcgI1UTjU0mkj3vO1bXl8Pk5ouxQAQpFRmRjANPKyEZqegjsiVzD1aSTahO8DffRKlEc9AdKclU1yBDQAeQDNGTcdRkfDGV+Rt6Xmm5BEwqNdQuYnWMGjJOXzIBUMpxybCVZON5XwuqaW9ichM7VsW+vH6NSQZW2ivJzGEQzkRrQ8msRM/7D9U3MbmB1RFqdWPBSU2m6k0mAatxSAZW5nQoTfU1c5b9pl+VnldrUi6+1dl9T7KCa0qJzO9CdNI9yPDB6R4hE0Ay4CXMYCXDn9wDTpznjUpq03hPLJaoLeWTNw+uKSGZV5g69iDjgHIRSIa5vVkm9pWClXLz2cNvLtBd1Ochs1aYZuY5e/AaC02PSIZDIJmzRgWzQqomYNOr0jSdKeuBHRCcMn5ZNIGhsozvnGgFTbuTV6K8uniZY61qh4L2aG/tElxI96ZI5QsBG57KGnKCVoNzDSETgF/DWLRTPMozJKYPHyJSvylNqFaYVJ0L+SRGQtMtspJq44OSTDyAjAtMEZJ5Uk5cKz+Ta1zTa0F7N+TrsRA4PCGQx/rAfnQGkElAhZG064DO64XtyeHyTud7K4zgiZGtzjl2IuyilUHMGrwhZBbAc0h7Ht+0q1vFxypsLEMUBlcb7Bh5AdaUrgFMLzJLUEsk724+6c4hcDkbyzsd3socg7DFInl7FSWTZs4gMjDLRfZ9nzQag2oVA5OQ4WCI4H/ZVucjujFRqciQk4+itCEDdlOxHXFxD7tOaYV9cgHAiwvS+knTfGNr70Q2Z7z6K+0bUeT73y9lg82Qzt9bTy8XbvzLgZKcyyla9/vuv3/rf27az3bcukARjuu0/Zj+Czn9QL+08N0gvLTgBxv7/4MW4paSMQCmAAAAAElFTkSuQmCC"></div>
+  <div class="tag">Lunar Security Division</div>
   <h1 class="big">LUNAR VAULT</h1>
   <h2 style="color:#9fc3ff">Grid Defence</h2>
-  <p>Intruders are pouring out of the crater cave and heading for the vault.
+  <p>Intruders are pouring out of a moon-rock tunnel and heading for the vault.
   Build <b style="color:#ffb35c">Cameras</b>, <b style="color:#6fd3ff">Detectors</b> and <b style="color:#c08cff">EACS</b> access control units anywhere on the grid to shape their route and stop them.</p>
   <p style="font-size:clamp(11px,2.7vh,16px);color:#8e9ab3">Tap a defence to upgrade it · double-click / double-tap it to remove it (70% refund) · you can't seal the route completely.</p>
   <button class="btn" id="bPlay">Start defence</button><button class="btn alt" id="bHow">How to play</button>
@@ -189,7 +192,8 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
       <div class="vbubble thanks" id="winThanks">Thanks for playing! Visit us at
         <a href="https://www.ademcosecurity.com" target="_blank" rel="noopener noreferrer">AdemcoSecurity.com</a>
         <a href="https://www.verifsuite.com" target="_blank" rel="noopener noreferrer">VerifSuite.com</a>
-        <a href="https://www.ultrasensync.com" target="_blank" rel="noopener noreferrer">UltraSenSync.com</a></div>
+        <a href="https://www.ultrasensync.com" target="_blank" rel="noopener noreferrer">UltraSenSync.com</a>
+        <span class="credit">Game play and game development by Patrick.</span></div>
       <button class="btn vbtn" id="bWinAgain">Play again</button>
     </div>
   </section>
@@ -203,9 +207,9 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
 (()=>{
 'use strict';
 // ================= constants =================
-const COLS=15,ROWS=8,CAVE=[[0,3],[0,4]],VAULT=[[14,3],[14,4]];
-// launch pad under the floating wave button (bottom-right corner, 2 cells): never buildable or walkable.
-const DOCK=[[13,7],[14,7]];
+const COLS=15,ROWS=8,CAVE=[[0,3]]/* one-cell tunnel exit */,VAULT=[[14,3]]/* v12.1: one-cell vault, same row as the tunnel */;
+// v11: the wave button lives in the side strip, off the board, so there is no launch pad any more (DOCK kept, empty, for the code paths)
+const DOCK=[];
 const SQ2=Math.SQRT2,STAGES=8,WAVES=5,REFUND=0.7,TAU=Math.PI*2;
 const STAGE_NAMES=['Stage 1: Goons at the gate','Stage 2: The crooks are getting organised','Stage 3: The suits have arrived','Stage 4: The great lunar heist',
   'Stage 5: The night shift','Stage 6: An inside job','Stage 7: The syndicate','Stage 8: The last heist'];
@@ -219,33 +223,34 @@ const BOSSES=[
  {t:'rig',  name:'The Wasteland Rig',short:'Wasteland Rig',icon:'🛻',speed:0.6,reward:250,size:2.3,warn:'The Wasteland Rig is rumbling in'},
  {t:'rider',name:'The Inferno Rider',short:'Inferno Rider',icon:'🔥',speed:1.9,reward:350,size:2.1,warn:'The Inferno Rider is roaring in',bombs:4},
  {t:'kaiju',name:'Lunakaiju',        short:'Lunakaiju',    icon:'🦖',speed:0.5,reward:600,size:2.9,warn:'Lunakaiju is waking up'}];
-const BOSS_HPF=[2400,18000,11000,120000]/* explicit HP per appearance */;
-BOSSES.forEach((b,i)=>Object.assign(b,{hp:BOSS_HPF[i],lives:5,top:0.30,slowRes:0.5,boss:true}));
-const BOSS=BOSSES[0],VULN_T=5,VULN_X=3,BOMB_FLIGHT=1.0,UNLOCK_STAGE=4/* 0-based: stage 5 */;
+const BOSS_HPF=[2400,13000,8000,140000]/* explicit HP per appearance */;
+BOSSES.forEach((b,i)=>Object.assign(b,{hp:BOSS_HPF[i],lives:5,top:0.30,boss:true/* v12.3: no slow resistance, bosses take every slow in full */}));
+const BOSS=BOSSES[0],VULN_T=6,VULN_X=3,BOMB_FLIGHT=1.0,UNLOCK_STAGE=4/* 0-based: stage 5 (Command Centre) */,AI_UNLOCK=2/* 0-based: AI Core unlocks on stage 3 */,CC_UNLOCK=UNLOCK_STAGE;
 const TOWERS={
- camera:{name:'Camera',col:'#ffb35c',desc:'Fast single target',levels:[
-  {cost:60, dmg:9,  rate:3.0,range:2.6},
-  {cost:70, dmg:16, rate:3.5,range:2.9},
-  {cost:110,dmg:28, rate:4.0,range:3.2}]},
+ camera:{name:'Camera',col:'#ffb35c',desc:'90° cone: hurts all inside',levels:[
+  {cost:60, dmg:5,rate:3.0,range:2.6},
+  {cost:70, dmg:9,rate:3.5,range:2.9},
+  {cost:110,dmg:16,rate:4.0,range:3.2}]},
  detector:{name:'Detector',col:'#6fd3ff',desc:'Short-range pulse + slow',levels:[
   {cost:40,dmg:4,rate:2.0,range:1.0,slow:0.20,slowT:1.0},
   {cost:35,dmg:7,rate:2.5,range:1.3,slow:0.30,slowT:1.3},
   {cost:55,dmg:11,rate:3.0,range:1.6,slow:0.40,slowT:1.6}]},
- // EACS: electronic access control system. Always-on field (dmg = damage per second to all in reach),
- // locks the 2 intruders closest to the vault and slows them 50% while in reach + a short linger
- eacs:{name:'EACS',col:'#c08cff',desc:'Always-on field + 2-target lock',levels:[
-  {cost:60, dmg:3,range:0.8,slow:0.50,targets:2,linger:0.3},
-  {cost:70, dmg:5,range:1.0,slow:0.50,targets:2,linger:0.4},
-  {cost:110,dmg:8,range:1.2,slow:0.50,targets:2,linger:0.5}]},
- // AI Core: every defence within range deals 2x damage (several AIs never stack past 2x); intruders in range are slowed 20%
- ai:{name:'AI Core',col:'#4ff0ff',desc:'Doubles nearby damage + 20% slow',unlock:UNLOCK_STAGE,max:2,levels:[
-  {cost:180,range:3.0,boost:2,slow:0.20},
-  {cost:210,range:3.3,boost:2,slow:0.20},
-  {cost:330,range:3.6,boost:2,slow:0.20}]},
+ // EACS: electronic access control system. v12.1: no damage. Always-on field that
+ // locks the 2 / 3 / 5 intruders closest to the vault (by level) and slows them 65% / 75% / 85% while in reach + a short linger
+ // (bosses take the full effect too; speed never reaches zero: 85% leaves 15%)
+ eacs:{name:'EACS',col:'#c08cff',desc:'No damage: 65–85% lock on 2/3/5',levels:[// v12.1: pure slow/lock unit, zero damage
+  {cost:60, range:0.8,slow:0.65,targets:2,linger:0.3},
+  {cost:70, range:1.0,slow:0.75,targets:3,linger:0.4},
+  {cost:110,range:1.2,slow:0.85,targets:5,linger:0.5}]},
+ // AI Core: every defence within range deals x1.5 / x2 / x3 damage by level (several AIs never stack: the strongest wins); intruders in range are slowed 20%
+ ai:{name:'AI Core',col:'#4ff0ff',desc:'Boosts nearby damage + 20% slow',unlock:AI_UNLOCK,max:2,levels:[
+  {cost:250,range:2.0,boost:1.5,slow:0.20},
+  {cost:300,range:2.5,boost:2,slow:0.20},
+  {cost:400,range:3.0,boost:3,slow:0.20}]},
  // Command Centre (one per board, single level): +10% damage to every defence within 4 cells, and when an intruder is in range
  // and it is ready, dispatches a response van (left to right) and a police car (right to left)
- cc:{name:'Command Centre',col:'#ff5a5a',desc:'One per board: +10% aura + dispatch',unlock:UNLOCK_STAGE,max:1,levels:[
-  {cost:500,range:4.0,aura:0.10,dmg:25,cd:20}]}
+ cc:{name:'Command Centre',col:'#ff5a5a',desc:'One per board: +10% aura + dispatch',unlock:CC_UNLOCK,max:1,levels:[
+  {cost:500,range:4.0,aura:0.10,dmg:450,cd:15}]}
 };
 const BUILD_KEYS=['camera','detector','eacs','ai','cc'];
 const isLocked=k=>!!(TOWERS[k].unlock&&G&&G.stage<TOWERS[k].unlock);
@@ -253,11 +258,11 @@ const countOf=k=>G?G.towers.filter(t=>t.type===k).length:0,atLimit=k=>!!(TOWERS[
 const limitMsg=k=>k==='cc'?'Only one Command Centre at a time. Remove it to build another.':`Only ${TOWERS[k].max} ${TOWERS[k].name}s at a time. Remove one to build another.`;
 const CAM_FOV=Math.PI/2/* 90 degree view cone */,CAM_TURN=5/* rad/s */,DET_BREATH=1.4/* s, detector visual cycle */;
 const ENEMIES={
- goon:   {name:'Goon',   hp:21, speed:2.0,reward:5, lives:1,top:0.30},
- crook:  {name:'Crook',  hp:50, speed:1.4,reward:9,lives:1,top:0.27},
- suitman:{name:'Suitman',hp:149,speed:0.85,reward:25,lives:2,top:0.12}
+ goon:   {name:'Goon',   hp:23, speed:2.0,reward:5, lives:1,top:0.30},
+ crook:  {name:'Crook',  hp:55, speed:1.4,reward:9,lives:1,top:0.27},
+ suitman:{name:'Suitman',hp:164,speed:0.85,reward:25,lives:2,top:0.12}
 };
-const START_CREDITS=180,START_LIVES=20;
+const START_CREDITS=500,START_LIVES=20;
 // ================= layout =================
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),safeEl=document.getElementById('safe');
 let L={cs:40,ox:0,oy:0,fw:0,fh:0,vw:0,vh:0,compact:false,P:{x:0,y:0,w:0,h:0},hud:null},dpr=1;const UI={};
@@ -269,36 +274,39 @@ function viewSize(){
   return{vw:w,vh:h};
 }
 function layout(){
-  const {vw,vh}=viewSize();dpr=Math.min(window.devicePixelRatio||1,3);
+  const {vw,vh}=viewSize();dpr=Math.min(window.devicePixelRatio||1,2);// capped at 2: crisp on phones, and far less fill work for 300-strong crowds
   document.documentElement.style.setProperty('--app-h',vh+'px');document.documentElement.style.setProperty('--app-w',vw+'px');
   const sc=getComputedStyle(safeEl),si={t:parseFloat(sc.paddingTop)||0,r:parseFloat(sc.paddingRight)||0,b:parseFloat(sc.paddingBottom)||0,l:parseFloat(sc.paddingLeft)||0};
   cv.style.width=vw+'px';cv.style.height=vh+'px';cv.width=Math.round(vw*dpr);cv.height=Math.round(vh*dpr);
   const compact=vh<560||vw<900,m=compact?3:8,SW=compact?92:84,vm=compact?0:m;
-  const avW=vw-si.l-si.r-SW-3*m,avH=vh-si.t-si.b-2*vm;
+  // v11: a slim stats bar above the board (outside the grid); the board is scaled to fit underneath it
+  const TB=compact?24:34,TG=compact?3:6;
+  const avW=vw-si.l-si.r-SW-3*m,avH=vh-si.t-si.b-2*vm-m-TB-TG;
   const cs=Math.max(16,Math.floor(Math.min(avW/COLS,avH/ROWS)));
-  const ox=si.l+m+Math.floor((avW-COLS*cs)/2),oy=si.t+vm+Math.floor((avH-ROWS*cs)/2);
+  const ox=si.l+m+Math.floor((avW-COLS*cs)/2),spare=Math.max(0,avH-ROWS*cs),oy=si.t+vm+m+TB+TG+Math.floor(spare/2);
   const S={x:vw-si.r-m-SW,y:si.t+m,w:SW,h:vh-si.t-si.b-2*m};
-  L={vw,vh,cs,ox,oy,fw:COLS*cs,fh:ROWS*cs,compact,S,m,si};
+  const bar={x:ox-3,y:oy-TG-TB,w:COLS*cs+6,h:TB};
+  L={vw,vh,cs,ox,oy,fw:COLS*cs,fh:ROWS*cs,compact,S,m,si,bar};
   buildUI();buildSprites();buildBg();
   ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 function buildUI(){
-  // 1) the wave button floats in the board's bottom-right corner over its own two-cell launch pad (DOCK),
-  //    so nothing in the strip can ever cover it
-  const cs=L.cs,wh=Math.max(48,Math.min(76,cs-2)),ww=Math.max(80,Math.min(170,2*cs-6)),ins=3;
-  UI.wave={x:L.ox+L.fw-ww-ins,y:L.oy+L.fh-wh-ins,w:ww,h:wh};
+  // 1) v11: the wave button (and its "N left" wave panel) sits in the side strip, just above the small buttons,
+  //    so it never covers the board; it stays in reach of the right thumb
+  const WB=L.compact?52:64;
   // 2) slim strip, laid out like a shrinking flex column: unit icons on top, a grouped block of 4 small buttons at the bottom.
   //    Sizes shrink to fit the height; if 4 stacked buttons no longer fit they wrap into a 2x2 grid. Nothing ever overlaps.
   if(L.compact){// two columns: unit icons in a 2-wide grid on top, the 4 small buttons in a 2x2 block at the bottom
     const S=L.S,g=4,W=S.w,B=Math.floor((W-g)/2),NU=BUILD_KEYS.length,rows=Math.ceil(NU/2),gp=6;
     let ub=B,sb=B;// shrink only if the height really can't take it (never below 40 px)
-    const need=()=>rows*ub+(rows-1)*g+gp+2*sb+g;while(need()>S.h&&ub>40){ub--;sb=Math.max(40,Math.min(sb,ub))}
+    let wb=WB;const need=()=>rows*ub+(rows-1)*g+gp+wb+2*g+2*sb+g;while(need()>S.h&&ub>40){ub--;sb=Math.max(40,Math.min(sb,ub))}while(need()>S.h&&wb>48)wb--;
     BUILD_KEYS.forEach((k,i)=>{const col=i%2,row=(i/2)|0,last=i===NU-1&&NU%2;UI[k]={x:last?S.x+(W-ub)/2:S.x+(col?W-ub:0),y:S.y+row*(ub+g),w:ub,h:ub}});
     const keys=['info','pause','speed','mute'],y0=S.y+S.h-2*sb-g;keys.forEach((k,i)=>{UI[k]={x:S.x+(i%2)*(W-sb),y:y0+Math.floor(i/2)*(sb+g),w:sb,h:sb}});
+    UI.wave={x:S.x,y:y0-4-2*g-wb,w:W,h:wb};
     UI.group={x:S.x-1,y:y0-4,w:W+2,h:S.y+S.h-y0+4,grid:true};UI.stats=null;return}
   const S=L.S,g=L.compact?5:8,W=S.w,MIN=40,maxSm=Math.max(MIN,Math.min(48,Math.round(W*0.8))),gp=L.compact?8:14;
   // priority: unit icons stay >= 48 px, small buttons ideally >= 40 px, accepted down to 34 px (their touch area spans the full strip width)
-  const NU=BUILD_KEYS.length,avail=S.h-(NU-1)*g-gp-3*g,SMIN=34;let B=W,sm,grid=false;
+  const NU=BUILD_KEYS.length,avail=S.h-(NU-1)*g-gp-3*g-WB-2*g,SMIN=34;let B=W,sm,grid=false;
   const fitStack=b=>Math.floor((avail-NU*b)/4);
   sm=Math.min(maxSm,fitStack(B));
   if(sm<MIN){B=Math.max(48,Math.min(W,Math.floor((avail-4*MIN)/NU)));sm=Math.min(maxSm,fitStack(B))}
@@ -308,6 +316,7 @@ function buildUI(){
   if(!grid){let y=S.y+S.h-sm;for(const k of keys.slice().reverse()){UI[k]={x:S.x+(W-sm)/2,y,w:sm,h:sm,hit:{x:S.x,y:y-g/2,w:W,h:sm+g}};y-=sm+g}}
   else{const y0=S.y+S.h-2*sm-g;keys.forEach((k,i)=>{UI[k]={x:S.x+(i%2)*(sm+g),y:y0+Math.floor(i/2)*(sm+g),w:sm,h:sm}})}
   const gy=Math.min(...keys.map(k=>UI[k].y));UI.group={x:S.x-1,y:gy-4,w:W+2,h:S.y+S.h-gy+4,grid};
+  UI.wave={x:S.x,y:gy-4-g-WB,w:W,h:WB};
   UI.stats=null;
 }
 // ================= helpers =================
@@ -571,9 +580,9 @@ function buildSprites(){
   const S=L.cs*1.3;SPR.eS=S;SPR.enemy={};
   for(const t of Object.keys(DRAW)){const arr=[];for(let f=0;f<8;f++){
     const n=sprite(S,g=>{g.translate(50,92);g.scale(SCALE[t],SCALE[t]);g.translate(-50,-92);DRAW[t](g,f/8)});
-    arr.push({n,h:tint(n,'#ffffff',0.55),f:tint(n,'#a6e2ff',0.36,true)})}SPR.enemy[t]=arr}
-  SPR.bossS={};for(const B of BOSSES){const S2=L.cs*B.size;SPR.bossS[B.t]=S2;const arr=[];for(let f=0;f<8;f++){const n=sprite(S2,g=>DRAWBOSS[B.t](g,f/8));arr.push({n,h:tint(n,'#ffffff',0.22),f:tint(n,'#a6e2ff',0.16)})/* lighter frost so the boss art stays readable */}SPR.enemy[B.t]=arr}
-  SPR.vanS=SPR.bossS.van;SPR.vehS=L.cs*3.0;/* dispatch vehicles: 2x the v9 size */SPR.respVan=sprite(SPR.vehS,drawRespVan);SPR.police=sprite(SPR.vehS,drawPolice);
+    arr.push({n,h:tint(n,'#ffffff',0.55),f:tint(n,'#a6e2ff',0.36,true),r:tint(n,'#8c1f1f',0.42)})}SPR.enemy[t]=arr}
+  SPR.bossS={};for(const B of BOSSES){const S2=L.cs*B.size;SPR.bossS[B.t]=S2;const arr=[];for(let f=0;f<8;f++){const n=sprite(S2,g=>DRAWBOSS[B.t](g,f/8));arr.push({n,h:tint(n,'#ffffff',0.22),f:tint(n,'#a6e2ff',0.16),r:tint(n,'#8c1f1f',0.26)})/* lighter frost so the boss art stays readable */}SPR.enemy[B.t]=arr}
+  SPR.redGlow=sprite(L.cs*1.2,g=>{const gr=g.createRadialGradient(50,50,4,50,50,50);gr.addColorStop(0,'rgba(190,30,30,.9)');gr.addColorStop(0.55,'rgba(150,20,20,.45)');gr.addColorStop(1,'rgba(120,10,10,0)');g.fillStyle=gr;g.fillRect(0,0,100,100)});/* dull red camera glow */SPR.shadow=sprite(L.cs*0.6,g=>{g.fillStyle='rgba(0,0,0,.32)';g.beginPath();g.ellipse(50,50,50,50,0,0,Math.PI*2);g.fill()});SPR.vanS=SPR.bossS.van;SPR.vehS=L.cs*3.9;/* v12: 30% larger than v11 *//* dispatch vehicles: 2x the v9 size */SPR.respVan=sprite(SPR.vehS,drawRespVan);SPR.police=sprite(SPR.vehS,drawPolice);
   SPR.base={};SPR.head={};
   for(const t of BUILD_KEYS){SPR.base[t]=[];SPR.head[t]=[];for(let l=0;l<3;l++){
     SPR.base[t].push(sprite(L.cs,g=>drawBase(g,t,l)));SPR.head[t].push(sprite(L.cs,g=>t==='camera'?drawCamHead(g,l):t==='detector'?drawDetectorHead(g,l):t==='ai'?drawAiHead(g,l):t==='cc'?drawCcHead(g,l):drawEacsHead(g,l)))}}
@@ -739,7 +748,7 @@ function buildBg(){
   g.fillStyle=lg(g,0,0,0,L.vh,['#04050b','#0a0d1a']);g.fillRect(0,0,L.vw,L.vh);
   for(let i=0;i<L.vw*L.vh/2200;i++){const x=R()*L.vw,y=R()*L.vh,s=R();g.fillStyle=`rgba(255,255,255,${0.25+s*0.7})`;g.fillRect(x,y,s>0.92?2:1,s>0.92?2:1)}
   {// Earth in the free gap of the icon strip, if there is room
-    const top=Math.max(...BUILD_KEYS.map(k=>UI[k].y+UI[k].h))+10,bot=UI.group.y-10,er=Math.min(L.S.w*0.42,(bot-top)/2-4);
+    const top=Math.max(...BUILD_KEYS.map(k=>UI[k].y+UI[k].h))+10,bot=UI.wave.y-10,er=Math.min(L.S.w*0.42,(bot-top)/2-4);
     if(er>=18){const ex=L.S.x+L.S.w/2,ey=(top+bot)/2;
     g.fillStyle='rgba(120,180,255,.16)';g.beginPath();g.arc(ex,ey,er+6,0,TAU);g.fill();
     g.fillStyle=rg(g,ex,ey,4,er,['#7fc4ff','#2a6fd1','#0c2a66'],ex-er*.3,ey-er*.3);g.beginPath();g.arc(ex,ey,er,0,TAU);g.fill();
@@ -759,25 +768,24 @@ function buildBg(){
   // grid
   g.strokeStyle='rgba(20,24,34,.17)';g.lineWidth=1;g.beginPath();
   for(let c=0;c<=COLS;c++){g.moveTo(ox+c*cs+.5,oy);g.lineTo(ox+c*cs+.5,oy+FH)}for(let r=0;r<=ROWS;r++){g.moveTo(ox,oy+r*cs+.5);g.lineTo(ox+FW,oy+r*cs+.5)}g.stroke();
-  // cave (cells 0,3 and 0,4)
-  const cx0=ox,ccy=oy+4*cs;
-  g.fillStyle=rg(g,cx0+cs*0.3,ccy,cs*0.2,cs*1.6,['#6a6b71','#4a4b51','rgba(70,70,76,0)']);g.beginPath();g.ellipse(cx0+cs*0.3,ccy,cs*1.05,cs*1.45,0,0,TAU);g.fill();
-  [[0.1,-1.25,0.34],[0.6,-1.15,0.26],[0.62,1.15,0.28],[0.12,1.25,0.35],[0.9,-0.85,0.18],[0.9,0.85,0.18]].forEach(([a,b,r])=>{
-    g.beginPath();g.arc(cx0+cs*a,ccy+cs*b,cs*r,0,TAU);g.fillStyle=rg(g,cx0+cs*a,ccy+cs*b,1,cs*r,['#a5a6ab','#55575d'],cx0+cs*(a-0.1),ccy+cs*(b-0.1));g.fill();g.strokeStyle=OUT;g.lineWidth=1.5;g.stroke()});
-  g.fillStyle=rg(g,cx0+cs*0.25,ccy,1,cs*0.95,['#000','#0b0b0e','#26272c']);g.beginPath();g.ellipse(cx0+cs*0.3,ccy,cs*0.62,cs*0.88,0,0,TAU);g.fill();
-  g.strokeStyle=OUT;g.lineWidth=2;g.stroke();
-  g.restore();
+  // tunnel exit (one cell: 0,3): a small moon-rock tunnel mouth on the left edge
+  {const tx=ox+cs*0.34,ty=oy+3.5*cs;g.save();
+   g.fillStyle=rg(g,tx,ty,cs*0.1,cs*0.62,['#6a6b71','#4a4b51','rgba(70,70,76,0)']);g.beginPath();g.ellipse(tx,ty,cs*0.62,cs*0.62,0,0,TAU);g.fill();
+   [[-0.05,-0.44,0.17],[0.3,-0.36,0.13],[0.42,0.02,0.1],[0.3,0.38,0.13],[-0.05,0.45,0.17]].forEach(([a,b,r])=>{
+     g.beginPath();g.arc(tx+cs*a,ty+cs*b,cs*r,0,TAU);g.fillStyle=rg(g,tx+cs*a,ty+cs*b,1,cs*r,['#a5a6ab','#55575d'],tx+cs*(a-0.05),ty+cs*(b-0.05));g.fill();g.strokeStyle=OUT;g.lineWidth=1.3;g.stroke()});
+   g.fillStyle=rg(g,tx-cs*0.04,ty,1,cs*0.36,['#000','#0b0b0e','#26272c']);g.beginPath();g.ellipse(tx,ty,cs*0.26,cs*0.34,0,0,TAU);g.fill();g.strokeStyle=OUT;g.lineWidth=2;g.stroke();
+   g.restore()}
   g.strokeStyle='rgba(180,200,240,.35)';g.lineWidth=2;g.beginPath();g.roundRect(ox-3,oy-3,FW+6,FH+6,12);g.stroke();
-  // vault body (cells 14,3 and 14,4)
+  // vault body: one cell (14,3) on the right edge, a steel safe with a VAULT plate and a round door (handle animated in drawVaultDoor)
   const vx=ox+14*cs,vy=oy+3*cs;
-  g.save();g.shadowColor='rgba(0,0,0,.5)';g.shadowBlur=10;g.shadowOffsetY=5;
-  g.fillStyle=lg(g,vx,vy,vx+cs,vy+cs*2,['#e6ecf5','#a8b3c5','#6d788c']);rrect(g,vx+cs*0.06,vy+cs*0.04,cs*0.9,cs*1.92,cs*0.16);g.fill();g.restore();
-  rrect(g,vx+cs*0.06,vy+cs*0.04,cs*0.9,cs*1.92,cs*0.16);g.strokeStyle=OUT;g.lineWidth=2;g.stroke();
-  g.fillStyle='rgba(60,80,110,.35)';for(let i=0;i<3;i++){g.fillRect(vx+cs*0.2,vy+cs*0.16+i*cs*0.1,cs*0.62,cs*0.04);g.fillRect(vx+cs*0.2,vy+cs*1.62+i*cs*0.1,cs*0.62,cs*0.04)}
-  g.beginPath();g.arc(vx+cs*0.51,vy+cs*0.04,cs*0.24,Math.PI,0);g.fillStyle=rg(g,vx+cs*0.45,vy-cs*0.04,1,cs*0.26,['#d8f0ff','#5d8fc4']);g.fill();g.strokeStyle=OUT;g.lineWidth=1.6;g.stroke();
-  g.font=`bold ${Math.max(10,cs*0.24)}px sans-serif`;g.textAlign='center';g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.75)';g.fillStyle='#bfe3ff';
-  g.strokeText('VAULT',vx+cs/2,vy+cs*2.28);g.fillText('VAULT',vx+cs/2,vy+cs*2.28);
-  g.fillStyle='#ffb0a0';g.strokeText('CAVE',cx0+cs*0.62,ccy-cs*1.62);g.fillText('CAVE',cx0+cs*0.62,ccy-cs*1.62);
+  g.save();g.shadowColor='rgba(0,0,0,.5)';g.shadowBlur=8;g.shadowOffsetY=4;
+  g.fillStyle=lg(g,vx,vy,vx+cs,vy+cs,['#e6ecf5','#a8b3c5','#6d788c']);rrect(g,vx+cs*0.07,vy+cs*0.05,cs*0.86,cs*0.9,cs*0.14);g.fill();g.restore();
+  rrect(g,vx+cs*0.07,vy+cs*0.05,cs*0.86,cs*0.9,cs*0.14);g.strokeStyle=OUT;g.lineWidth=2;g.stroke();
+  g.fillStyle='#24324a';rrect(g,vx+cs*0.15,vy+cs*0.1,cs*0.7,cs*0.22,cs*0.06);g.fill();
+  g.font=`900 ${Math.max(8,cs*0.17)}px sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillStyle='#bfe3ff';g.fillText('VAULT',vx+cs/2,vy+cs*0.215,cs*0.66);
+  g.fillStyle='rgba(60,80,110,.35)';g.fillRect(vx+cs*0.12,vy+cs*0.86,cs*0.76,cs*0.04);
+  g.textBaseline='alphabetic';g.font=`bold ${Math.max(10,cs*0.24)}px sans-serif`;g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.75)';
+  {const ls=Math.max(9,cs*0.2);g.font=`bold ${ls}px sans-serif`;g.fillStyle='#ffb0a0';g.strokeText('TUNNEL',ox+cs*0.5,oy+3*cs-cs*0.2);g.fillText('TUNNEL',ox+cs*0.5,oy+3*cs-cs*0.2)}
 }
 // ================= state =================
 let G;
@@ -813,13 +821,13 @@ function nextStep(c,r,d=G.flowDist){
 function enemyCells(e){const s=[[e.c,e.r],[e.tc,e.tr]];if(e.c!==e.tc&&e.r!==e.tr){s.push([e.tc,e.r]);s.push([e.c,e.tr])}return s}
 function placementProblem(c,r){
   if(!inG(c,r))return 'out';
-  if(isCave(c,r))return "Can't build on the cave entrance.";
+  if(isCave(c,r))return "Can't build on the tunnel exit.";
   if(isVault(c,r))return "Can't build on the vault.";
   if(blocked[idx(c,r)]===1)return "That's the wave button's launch pad.";
   if(blocked[idx(c,r)]===2)return 'occupied';
   for(const e of G.enemies)if(enemyCells(e).some(p=>p[0]===c&&p[1]===r))return 'An intruder is standing there.';
   blocked[idx(c,r)]=2;const d=computeFlow();blocked[idx(c,r)]=0;
-  if(!CAVE.every(([a,b])=>isFinite(d[idx(a,b)])))return 'Blocked! The route from cave to vault must stay open.';
+  if(!CAVE.every(([a,b])=>isFinite(d[idx(a,b)])))return 'Blocked! The route from tunnel to vault must stay open.';
   for(const e of G.enemies)if(!isFinite(d[idx(e.tc,e.tr)]))return 'Blocked! That would trap an intruder.';
   return null;
 }
@@ -831,32 +839,44 @@ function waveList(s,w){
   else if(s===2){g=7+w;k=4+w;u=2+Math.ceil(w/2)}
   else {const x=s-3;g=9+w+2*x;k=5+w+x;u=3+w+x}
   if(s>=5)u=Math.ceil(u*1.5);// stages 6-8: 50% more Suitmen per wave
-  const list=[];
+  const sw=swarmOf(s,w),list=[];
+  if(sw){// v11 swarm waves: big crowds on a tight spawn interval, with their own per-intruder HP and reward factors
+    const add=(t,n,t0,gap)=>{for(let i=0;i<n;i++)list.push({t,at:t0+i*gap,hf:sw.hf,rf:sw.rf})};
+    add('goon',sw.g,0,SWARM_GAP.goon);add('crook',sw.k,0.6,SWARM_GAP.crook);add('suitman',sw.u,1.5,SWARM_GAP.suitman);
+    list.sort((a,b)=>a.at-b.at);return list}
   for(let i=0;i<g;i++)list.push({t:'goon',at:i*0.5});
   for(let i=0;i<k;i++)list.push({t:'crook',at:1.2+i*0.8});
   for(let i=0;i<u;i++)list.push({t:'suitman',at:2.5+i*1.7});
   list.sort((a,b)=>a.at-b.at);return list;
 }
-function hpMultAt(stage,wave){const gw=stage*WAVES+wave,s=stage;return (1+0.17*gw+0.004*gw*gw)*[1.05,0.95,3.5,4.4,5.0,3.5,3.8,3.3][s]*(s>=2?1+0.08*(gw%5):1)}
+// stage 6 wave 2: 200 Goons; stage 7 wave 2: 200 Crooks; stage 8, every wave: 100 Goons + 100 Crooks + 100 Suitmen
+const SWARM_F=[[1.8,0.35],[1.5,0.25],[0.9,0.12]]/* [hp factor, reward factor] for s6w2, s7w2, s8 */,SWARM_GAP={goon:0.15,crook:0.15,suitman:0.25};
+function swarmOf(s,w){
+  if(s===5&&w===1)return{g:200,k:0,u:0,hf:SWARM_F[0][0],rf:SWARM_F[0][1]};
+  if(s===6&&w===1)return{g:0,k:200,u:0,hf:SWARM_F[1][0],rf:SWARM_F[1][1]};
+  if(s===7)return{g:100,k:100,u:100,hf:SWARM_F[2][0],rf:SWARM_F[2][1]};
+  return null}
+function hpMultAt(stage,wave){const gw=stage*WAVES+wave,s=stage;return (1+0.17*gw+0.004*gw*gw)*[1.4,1.35,3.8,4.4,5.0,6.0,6.3,6.0][s]*(s>=2?1+0.08*(gw%5):1)}
 const hpMult=()=>hpMultAt(G.stage,G.wave);
 const waveBonus=(w,s)=>15+4*w+10*s,stageGrant=s=>40+30*s,EARLY_PER_SEC=1;
 function startWave(){
   if(G.waveActive||G.st!=='play')return;
   if(G.countdown>0){const bonus=Math.ceil(G.countdown)*EARLY_PER_SEC;if(bonus>0){addCredits(bonus);floatText(COLS/2,ROWS-1,`Early call +${bonus}`,'#9fffb0')}}
-  G.waveActive=true;G.countdown=-1;G.queue=waveList(G.stage,G.wave);G.spawnT=0;sfx('wave');
+  G.waveActive=true;G.countdown=-1;G.queue=waveList(G.stage,G.wave);G.qi=0;G.spawnT=0;sfx('wave');
 }
-function spawn(t){
-  const E=ENEMIES[t],[c,r]=CAVE[(Math.random()*CAVE.length)|0],m=hpMult();
+function spawn(t,hf=1,rf=1){
+  const E0=ENEMIES[t],E=rf===1?E0:(SWARM_E[t]||(SWARM_E[t]={}))[rf]||(SWARM_E[t][rf]=Object.assign({},E0,{reward:Math.max(1,Math.round(E0.reward*rf))})),[c,r]=CAVE[(Math.random()*CAVE.length)|0],m=hpMult()*hf;
   G.enemies.push({t,E,hp:E.hp*m,max:E.hp*m,speed:E.speed*(1+0.03*G.stage),x:-0.35,y:r+0.5,c,r,tc:c,tr:r,slowT:0,slowF:0,dead:false,
     face:1,walk:Math.random(),flash:0,jx:(Math.random()-.5)*0.22,jy:(Math.random()-.5)*0.16,id:Math.random()});
 }
+const SWARM_E={};// shared per-type entries with the swarm reward (no per-intruder allocation)
 function bossIndex(s=G.stage){return (s-1)>>1}
 function bossDef(s=G.stage){return BOSSES[Math.max(0,Math.min(BOSSES.length-1,bossIndex(s)))]}
 function bossStats(s=G.stage){const B=bossDef(s);return{name:B.name,t:B.t,hp:B.hp,speed:B.speed,reward:B.reward,lives:B.lives,bombs:B.bombs||0,size:B.size}}
 function spawnBoss(){
-  const B=bossDef(),r=CAVE[1][1],E=Object.assign({},B);
+  const B=bossDef(),r=CAVE[0][1],E=Object.assign({},B);
   const e={t:B.t,E,boss:true,hp:B.hp,max:B.hp,speed:B.speed,x:-0.35,y:r+0.5,c:CAVE[0][0],r,tc:CAVE[0][0],tr:r,slowT:0,slowF:0,dead:false,
-    face:1,walk:0,flash:0,jx:0,jy:-0.05,id:Math.random(),slowRes:B.slowRes,travel:0,bombsLeft:B.bombs||0,bombN:0,vuln:0};
+    face:1,walk:0,flash:0,jx:0,jy:-0.05,id:Math.random(),travel:0,bombsLeft:B.bombs||0,bombN:0,vuln:0};
   G.enemies.push(e);G.boss=e;G.bossSpawned=true;G.bossSpawnAt=G.time;G.bossT=0;G.shake=B.t==='kaiju'?0.6:0.35;sfx('wave');
   floatText(1.8,r-0.9,B.name+'!','#ffb35c',2.4);
 }
@@ -877,11 +897,11 @@ function bombImpact(b){
   for(let i=0;i<12;i++){const a=Math.random()*TAU,v=0.4+Math.random();G.fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-0.5,life:1.2,max:1.2,smoke:true,s:0.14})}
 }
 // ---- Command Centre dispatch: a response van drives left to right and a police car right to left along the targeted lanes ----
-const DISPATCH_SPD=3.6,VEH_HALF_L=1.2,VEH_HALF_H=0.4;/* 40% slower than v9's 6 cells/s */
+const DISPATCH_SPD=2.88,VEH_HALF_L=1.56,VEH_HALF_H=0.52;/* v12: 20% slower than v11's 3.6 cells/s; vehicles 30% larger (hit box scaled to match) */
 function dispatch(t,e1,e2){
   const S=tStats(t),dmg=S.dmg*(t.aiB||1),lane=e=>Math.max(0,Math.min(ROWS-1,Math.floor(e.y)))+0.5;
-  G.dispatch.push({kind:'van',x:-1,y:lane(e1),vx:DISPATCH_SPD,dmg,hit:new Set(),boosted:t.aiB>1});
-  G.dispatch.push({kind:'police',x:COLS+1,y:lane(e2),vx:-DISPATCH_SPD,dmg,hit:new Set(),boosted:t.aiB>1});
+  G.dispatch.push({kind:'van',x:-1.6,y:lane(e1),vx:DISPATCH_SPD,dmg,hit:new Set(),boosted:t.aiB>1});
+  G.dispatch.push({kind:'police',x:COLS+1.6,y:lane(e2),vx:-DISPATCH_SPD,dmg,hit:new Set(),boosted:t.aiB>1});
   t.flash=0.4;G.stats.dispatches++;floatText(t.c+.5,t.r-0.1,'Dispatch!','#ff9a9a',1.2);
 }
 function waveCleared(){
@@ -890,35 +910,16 @@ function waveCleared(){
   if(G.wave>=WAVES){G.st='stageEnding';G.endT=1.2}else G.countdown=12;
 }
 function addCredits(n){G.credits+=n;G.stats.earned+=n}
-// ---- security tips, delivered by Toby ----
-const TIPS=[
- 'Mount CCTV cameras high enough to be out of easy reach, and aim them at doors, gates and approach paths rather than just the street.',
- 'Test your intruder alarm and its monitoring link every month, and check that the backup battery still holds its charge.',
- 'Change the default password on every camera, recorder and alarm panel on day one, and use a long, unique passphrase.',
- 'Keep camera and recorder firmware up to date. Manufacturers patch security holes regularly, but only if you install the updates.',
- 'Put IP cameras on their own network or VLAN, away from guest Wi-Fi and office PCs.',
- 'Cancel lost access cards and those of staff who leave straight away, and review who can open which doors every quarter.',
- 'Never lend your access card. One tap should let one person through.',
- 'Watch out for tailgating: politely ask anyone following you through a secure door to tap their own card.',
- 'Keep a visitor log, hand out visible visitor passes and escort guests in restricted areas.',
- 'Light up entrances, car parks and blind corners. Motion-activated lighting deters intruders and helps cameras capture clear images.',
- 'Check that your CCTV records properly at night. Infrared needs a clean lens and nothing reflective right in front of it.',
- 'Keep recorded footage for at least 30 days, and make sure someone knows how to export a clip quickly if the police ask for it.',
- 'Fit door contacts and motion detectors on every ground-floor entry point, not just the front door.',
- 'Give every staff member their own alarm code so you know who set or unset the system, and delete codes when people leave.',
- 'Lock server rooms and comms cabinets. Anyone who can reach the recorder can delete the footage.',
- 'Wait until you are home before posting holiday photos. An empty house is an open invitation.',
- 'Use timer switches on lamps when you are away so your home looks occupied after dark.',
- 'Trim hedges and shrubs near windows and doors so intruders have nowhere to hide.',
- 'Keep your emergency contacts up to date with the monitoring centre, so an alarm reaches someone who can respond.',
- 'Turn on two-factor authentication for your security app and cloud video accounts.',
- 'Secure fire exits with alarmed hardware, never padlocks or chains. They must open instantly in an emergency.',
- 'Walk your premises after hours now and then: propped-open doors and unlatched windows are easy to spot.',
- 'Ask for ID before letting a contractor or technician in, and verify them by calling their company on a number you already know.',
- 'Put your alarm keypad out of sight of the front door and windows, so nobody can watch you type the code.'];
-const shuffled=a=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[b[i],b[j]]=[b[j],b[i]]}return b};
-let tipDeck=shuffled(TIPS.map((t,i)=>i));
-function nextTip(){if(!tipDeck.length)tipDeck=shuffled(TIPS.map((t,i)=>i));return TIPS[tipDeck.pop()]}
+// ---- Toby's end-of-stage message, fixed per stage (stage 8 goes to the victory screens) ----
+const TOBY_MSG=[
+ "Get your security system inspected regularly, and make sure sensors and backup batteries are working. Don't be penny-wise.",
+ 'Low-light cameras are great, but good lighting is an added deterrent.',
+ 'PIN access is outdated and unsafe. Mechanical locks have no audit logs.',
+ "Licensed 24/7 command centres are powerful remote monitoring and support services. Who doesn't love someone watching their back?",
+ 'AI-powered security will dramatically change how security works. Expecting humans to be always alert was never realistic.',
+ 'Managed security is already the norm. Unless you love more stress while spending more.',
+ 'Security is always multi-layered, never about just one factor.',
+ 'Security is always multi-layered, never about just one factor.'];
 const BEST_KEY='lunarVaultBestScore';
 function bestScore(update){let b=0;try{b=+localStorage.getItem(BEST_KEY)||0;if(update!==undefined&&update>b){localStorage.setItem(BEST_KEY,String(update));b=update}}catch(_){if(update!==undefined)b=Math.max(b,update)}return b}
 function confetti(id='confetti'){
@@ -927,24 +928,30 @@ function confetti(id='confetti'){
     h+=`<i style="left:${l.toFixed(1)}%;width:${w.toFixed(1)}px;height:${(r?w:w*0.45).toFixed(1)}px;background:${cols[i%cols.length]};border-radius:${r?'50%':'2px'};animation-delay:-${d}s;animation-duration:${t}s"></i>`}
   box.innerHTML=h;
 }
+// end-of-stage celebration: a cartoon Toby (about 3x3 cells, his photo as the head) runs in from the left to the
+// middle of the board and does a slow, silly 5 s dance; then the stage popup (or, after stage 8, the victory screens).
+// Tap/click or Enter/Space/Esc skips it.
+const DANCE_RUN=1.6,DANCE_T=5,DANCE_SKIP_AFTER=0.25;
+function startDance(){G.st='dance';G.dance={t:0};G.sel=null;G.build=null;sfx('clear')}
+function endDance(){if(G.st!=='dance')return;G.dance=null;stageComplete()}
 function stageComplete(){
   const lifeBonus=G.lives*25;G.score+=lifeBonus;const s=G.stats,stg=G.stage+1;G.st='stagePopup';
   const best=bestScore(G.score),isBest=G.score>=best&&G.score>0;
   document.getElementById('stTag').textContent=`Stage ${stg} of ${STAGES} complete`;
   document.getElementById('stTitle').textContent=stg>=STAGES?'Final stage secured!':['Vault secured!','Crew stopped!','Nice work!','Heist foiled!','Lights on, crooks out!','Inside job thwarted!','Syndicate stopped!'][stg-1]||`Stage ${stg} secured`;
   const Bd=bossDef(G.stage),bossLine=s.boss==='stopped'?`<div class="bossline ok">${Bd.icon} ${Bd.short} stopped · +¢${s.bossRw}</div>`:s.boss==='escaped'?`<div class="bossline bad">${Bd.icon} ${Bd.name} escaped · −${Bd.lives} lives</div>`:'';
-  document.getElementById('stBoss').innerHTML=bossLine+(G.stage===UNLOCK_STAGE-1?'<div class="bossline new">🔓 Next stage unlocks: AI Core and Command Centre</div>':'');
+  document.getElementById('stBoss').innerHTML=bossLine+(unlocksAt(G.stage+1).length?`<div class="bossline new">🔓 Next stage unlocks: ${unlocksAt(G.stage+1).join(' and ')}</div>`:'');
   document.getElementById('stTable').innerHTML=tile('Stage score',G.score-s.score0)+tile('Total score',G.score)+tile(isBest?'Best score ★ new':'Best score',best)+
     tile('Lives left',`${G.lives} / ${START_LIVES}`)+tile('Credits',`¢${G.credits}`)+tile('Intruders stopped',s.kills);
   document.getElementById('tipName').textContent='Toby, Ademco';document.getElementById('tipRole').textContent='';
-  document.getElementById('tipText').textContent=nextTip();
+  document.getElementById('tipText').textContent=TOBY_MSG[Math.min(G.stage,TOBY_MSG.length-1)];
   document.getElementById('bNextStage').textContent=stg>=STAGES?'See mission report':`Begin stage ${stg+1}`;
   confetti();show('ovStage');sfx('clear');
 }
 const tile=(a,b)=>`<div><span>${a}</span><b>${b}</b></div>`;
 function beginStage(){
   G.st='play';G.wave=0;G.waveActive=false;G.countdown=-1;G.stats=newStats();G.stats.score0=G.score;G.bossT=null;G.bossSpawned=false;G.boss=null;G.bossSpawnAt=null;G.bossWarnAt=null;G.dispatch=[];G.bombs=[];G.scorch=[];
-  G.towers.forEach(t=>{t.doomed=false;t.doomT=0});G.unlockMsg=G.stage===UNLOCK_STAGE?{t:6.5,delay:3.2}:null;
+  G.towers.forEach(t=>{t.doomed=false;t.doomT=0});G.unlockMsg=unlocksAt(G.stage).length?{t:6.5,delay:3.2,names:unlocksAt(G.stage)}:null;
   G.banner={title:STAGE_NAMES[G.stage],sub:STAGE_SUB[G.stage],t:3.2};
   if(G.stage>0){const grant=stageGrant(G.stage);addCredits(grant);floatText(COLS/2,ROWS-1.2,`Stage supply drop +${grant} credits`,'#9fffb0',3)}
 }
@@ -977,7 +984,7 @@ function tryPlace(c,r,type){
   if(G.credits<Lv.cost){toast('Not enough credits.');flashCell(c,r);return false}
   const p=placementProblem(c,r);if(p){if(p!=='occupied'&&p!=='out'){toast(p);flashCell(c,r)}return false}
   blocked[idx(c,r)]=2;G.flowDist=computeFlow();
-  G.towers.push({type,c,r,lvl:0,spent:Lv.cost,cd:type==='cc'?0:0.2,boost:1,aiB:1,ccB:1,ang:Math.PI/* cameras face the cave when idle */,spin:Math.random()*TAU,flash:0,target:null,pop:0.25});
+  G.towers.push({type,c,r,lvl:0,spent:Lv.cost,cd:type==='cc'?0:0.2,boost:1,aiB:1,ccB:1,ang:Math.PI/* cameras face the tunnel when idle */,spin:Math.random()*TAU,flash:0,target:null,pop:0.25});
   G.credits-=Lv.cost;G.stats.built++;G.totals.built++;sfx('build');if(atLimit(type)&&G.build===type)G.build=null;
   for(let i=0;i<8;i++)G.fx.push({x:c+.5,y:r+.5,vx:(Math.random()-.5)*2.5,vy:(Math.random()-.5)*2.5,life:.4,max:.4,dust:true,s:0.12});
   return true;
@@ -994,7 +1001,11 @@ function upgradeTower(t){
   for(let i=0;i<14;i++){const a=i/14*TAU;G.fx.push({x:t.c+.5,y:t.r+.5,vx:Math.cos(a)*2.2,vy:Math.sin(a)*2.2,life:.45,max:.45,spark:true,col:'#ffd76a'})}
 }
 function toast(m){G.msg={text:m,t:2.4}}
+const unlocksAt=st=>BUILD_KEYS.filter(k=>TOWERS[k].unlock===st).map(k=>TOWERS[k].name);// unit names that unlock on 0-based stage st
 function floatText(x,y,text,col,life=1.1){G.floats.push({x,y,text,col,life,max:life})}
+// leaks inside a short window merge into one counter ("−7 lives") instead of a stack of overlapping texts in a big crowd
+function leakText(n){const f=G.floats.find(f=>f.leak&&f.life>f.max-0.5);if(f){f.leak+=n;f.life=f.max;f.y=VAULT[0][1]}else{floatText(VAULT[0][0]+.5,VAULT[0][1],'',"#ff6b6b");G.floats[G.floats.length-1].leak=n;f0=G.floats[G.floats.length-1]}const g=f||f0;g.text=`-${g.leak} ${g.leak>1?'lives':'life'}`}
+let f0=null;
 function flashCell(c,r){if(inG(c,r))G.fx.push({cell:[c,r],life:.6,max:.6})}
 // ================= audio =================
 let AC=null,muted=false;
@@ -1028,7 +1039,7 @@ function toLogical(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.l
 function cellAt(x,y){const c=Math.floor((x-L.ox)/L.cs),r=Math.floor((y-L.oy)/L.cs);return inG(c,r)?[c,r]:null}
 let downInfo=null;
 cv.addEventListener('pointerdown',e=>{
-  e.preventDefault();initAudio();if(G.st!=='play'&&G.st!=='stageEnding')return;if(infoOpen)return;
+  e.preventDefault();initAudio();if(G.st==='dance'&&!infoOpen){if(G.dance.t>DANCE_SKIP_AFTER)endDance();return}if(G.st!=='play'&&G.st!=='stageEnding')return;if(infoOpen)return;
   const p=toLogical(e);downInfo={x:p.x,y:p.y,cell:cellAt(p.x,p.y),popup:!!G.sel};try{cv.setPointerCapture(e.pointerId)}catch(_){}
   if(hit(UI.wave,p.x,p.y)){if(!G.waveActive&&G.st==='play')startWave();downInfo=null;return}
   const sp=selPop();
@@ -1068,6 +1079,7 @@ function handleCellTap(c,r,popupOpen){
 }
 window.addEventListener('keydown',e=>{
   if(infoOpen){if(e.key==='Escape'||e.key==='i')closeInfo();return}
+  if(G.st==='dance'&&(e.key==='Enter'||e.key===' '||e.key==='Escape')){e.preventDefault();if(G.dance.t>DANCE_SKIP_AFTER)endDance();return}
   if(e.key==='i'||e.key==='I'){openInfo();return}
   if(e.key==='Escape'){G.build=null;closeSel()}{const n='12345'.indexOf(e.key);if(n>=0)pickBuild(BUILD_KEYS[n],false)}
   if(e.key===' '&&G.st==='play'&&!G.waveActive){e.preventDefault();startWave()}if(e.key==='p'||e.key==='P')G.paused=!G.paused;
@@ -1099,12 +1111,12 @@ function spriteURL(kind,type){
 }
 function buildInfo(){
   const T=TOWERS,EN=ENEMIES,f=n=>Number.isInteger(n)?n:n.toFixed(2).replace(/0$/,'');
-  const eacsCard=()=>{const t=T.eacs;let spent=0;const rows=t.levels.map((l,i)=>{spent+=l.cost;return `<tr><td>Lv ${i+1}</td><td><b>¢${l.cost}</b>${i?' upgrade':''}</td><td>${l.dmg}/s (all in range)</td><td>${l.range.toFixed(1)}</td><td>Always on</td><td>${Math.round(l.slow*100)}% on ${l.targets} intruders, +${l.linger.toFixed(1)} s</td></tr>`}).join('');
-    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','eacs')}"><div><div class="un">${t.name}</div><div class="ud">Electronic access control system. Its field is always on: it wears down every intruder within reach and locks the two closest to the vault, slowing them by half.</div></div></div>
-    <table><tr><th>Level</th><th>Cost</th><th>Damage</th><th>Range</th><th>Field</th><th>Lock</th></tr>${rows}</table>
+  const eacsCard=()=>{const t=T.eacs;let spent=0;const rows=t.levels.map((l,i)=>{spent+=l.cost;return `<tr><td>Lv ${i+1}</td><td><b>¢${l.cost}</b>${i?' upgrade':''}</td><td>${l.range.toFixed(1)}</td><td>Always on</td><td>${Math.round(l.slow*100)}% on ${l.targets} intruders, +${l.linger.toFixed(1)} s</td></tr>`}).join('');
+    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','eacs')}"><div><div class="un">${t.name}</div><div class="ud">Electronic access control system. A pure crowd-control unit: it does <b>no damage</b>. Its field is always on and locks the intruders within reach that are closest to the vault (2 at level 1, 3 at level 2, <b>5 at level 3</b>), slowing them by <b>65% / 75% / 85%</b> (bosses included). AI Core and Command Centre boosts don't apply to it.</div></div></div>
+    <table><tr><th>Level</th><th>Cost</th><th>Range</th><th>Field</th><th>Lock</th></tr>${rows}</table>
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Range is in grid cells and counts the intruder's body, like the Detector. The lock lasts while the intruder is in reach plus the short linger shown. Slows never stack: an intruder hit by a Detector and an EACS gets the stronger slow. Fully upgraded cost: ¢${spent}, refund ¢${Math.floor(spent*REFUND)}.</p></div>`};
   const towerCard=(k)=>{const t=T[k];let spent=0;const rows=t.levels.map((l,i)=>{spent+=l.cost;return `<tr><td>Lv ${i+1}</td><td><b>¢${l.cost}</b>${i?' upgrade':''}</td><td>${l.dmg}${k==='detector'?' (all in range)':''}</td><td>${l.range.toFixed(1)}</td><td>${k==='camera'?l.rate+' shots/s':l.rate+' pulses/s'}</td>${k==='detector'?`<td>${Math.round(l.slow*100)}% for ${l.slowT.toFixed(1)} s</td>`:''}</tr>`}).join('');
-    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower',k)}"><div><div class="un">${t.name}</div><div class="ud">${k==='camera'?'Fast single-target laser with a <b>90° view cone</b> (the translucent wedge). It turns to bring the intruder closest to the vault into view and only fires at intruders inside its cone; when idle it sweeps slowly.':'Cheap short-range motion detector. Its pulse damages and slows every intruder within reach.'}</div></div></div>
+    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower',k)}"><div><div class="un">${t.name}</div><div class="ud">${k==='camera'?'Watches a <b>90° view cone</b> (the translucent wedge) over its whole range. It does not shoot: <b>every intruder inside the cone</b> takes its damage at its rate, and glows a dull red while it is being hit. It turns to bring the intruder closest to the vault into view; when idle it sweeps slowly.':'Cheap short-range motion detector. Its pulse damages and slows every intruder within reach.'}</div></div></div>
     <table><tr><th>Level</th><th>Cost</th><th>Damage</th><th>Range</th><th>${k==='camera'?'Rate':'Pulses'}</th>${k==='detector'?'<th>Slow</th>':''}</tr>${rows}</table>
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Range is in grid cells${k==='detector'?'; the pulse catches any intruder whose body touches the ring, so a range of 1.0 covers the neighbouring cells':''}. Fully upgraded cost: ¢${spent}, refund ¢${Math.floor(spent*REFUND)}.</p></div>`};
   const enemyCard=(k,desc)=>{const e=EN[k];return `<div class="ucard"><div class="uh"><img alt="${e.name}" src="${spriteURL('enemy',k)}"><div><div class="un">${e.name}</div><div class="ud">${desc}</div></div></div>
@@ -1112,23 +1124,23 @@ function buildInfo(){
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">HP on stage 1 wave 1: ${Math.round(e.hp*hpMultAt(0,0))} · stage ${STAGES} wave ${WAVES}: ${Math.round(e.hp*hpMultAt(STAGES-1,WAVES-1))}</p></div>`};
   const wb=[...Array(STAGES).keys()].map(s=>`¢${waveBonus(0,s)}–${waveBonus(WAVES-1,s)}`);
   const bossRows=[1,3,5,7].map(s=>{const b=bossStats(s);return `<tr><td>Stage ${s+1}</td><td>${b.name}</td><td><b>${b.hp}</b></td><td>${b.speed} cells/s</td><td>¢${b.reward}</td><td>${b.lives}</td></tr>`}).join('');
-  const lockNote=`<span style="color:#ffd866">Unlocks on stage ${UNLOCK_STAGE+1}.</span>`;
+  const lockNote=k=>`<span style="color:#ffd866">Unlocks on stage ${TOWERS[k].unlock+1}.</span>`;
   const aiCard=()=>{const t=T.ai;let spent=0;const rows=t.levels.map((l,i)=>{spent+=l.cost;return `<tr><td>Lv ${i+1}</td><td><b>¢${l.cost}</b>${i?' upgrade':''}</td><td>${l.range.toFixed(1)}</td><td>×${l.boost} damage</td><td>${Math.round(l.slow*100)}%</td></tr>`}).join('');
-    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','ai')}"><div><div class="un">${t.name}</div><div class="ud">A glowing neural processor. Every defence within its range deals <b>double damage</b> (shown by cyan links), and intruders inside its range are slowed by 20%. <b>At most ${t.max} on the board at any time</b>; removing one frees a slot. ${lockNote}</div></div></div>
+    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','ai')}"><div><div class="un">${t.name}</div><div class="ud">A glowing neural processor. Every defence within its range deals <b>×1.5 damage at level 1, ×2 at level 2 and ×3 at level 3</b> (shown by cyan links), and intruders inside its range are slowed by 20%. <b>At most ${t.max} on the board at any time</b>; removing one frees a slot. ${lockNote('ai')}</div></div></div>
     <table><tr><th>Level</th><th>Cost</th><th>Range</th><th>Boost</th><th>Slow</th></tr>${rows}</table>
-    <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Several AI Cores never stack past ×2, and its slow never stacks with other slows (the strongest wins). It boosts the Command Centre's vehicles too, and stacks with the Command Centre's +10% (×2 × 1.1 = ×2.2). Fully upgraded cost: ¢${spent}, refund ¢${Math.floor(spent*REFUND)}.</p></div>`};
+    <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Several AI Cores never stack (the strongest boost wins), and its slow never stacks with other slows (the strongest wins). It boosts the Command Centre's vehicles too, and multiplies with the Command Centre's +10% (for example ×2 × 1.1 = ×2.2). Fully upgraded cost: ¢${spent}, refund ¢${Math.floor(spent*REFUND)}.</p></div>`};
   const ccCard=()=>{const t=T.cc,l=t.levels[0];
-    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','cc')}"><div><div class="un">${t.name}</div><div class="ud">An Ademco monitoring hub. <b>Only one on the board at a time</b> (removing it frees the slot). Every defence within its range deals <b>+${Math.round(l.aura*100)}% damage</b> (red links). When an intruder comes within range it dispatches a big <b>red response van</b> (left to right, with its siren) and a <b>police car</b> (right to left, two-tone siren) along the lanes of the two nearest intruders. Each vehicle hits every intruder it touches once. ${lockNote}</div></div></div>
+    return `<div class="ucard"><div class="uh"><img alt="${t.name}" src="${spriteURL('tower','cc')}"><div><div class="un">${t.name}</div><div class="ud">An Ademco monitoring hub. <b>Only one on the board at a time</b> (removing it frees the slot). Every defence within its range deals <b>+${Math.round(l.aura*100)}% damage</b> (red links). When an intruder comes within range it dispatches a big <b>red response van</b> (left to right, with its siren) and a <b>police car</b> (right to left, two-tone siren) along the lanes of the two nearest intruders. Each vehicle hits every intruder it touches once, for <b>${l.dmg} HP</b>. ${lockNote('cc')}</div></div></div>
     <table><tr><th>Cost</th><th>Range</th><th>Aura</th><th>Contact damage</th><th>Recovery</th></tr><tr><td><b>¢${l.cost}</b></td><td>${l.range.toFixed(1)}</td><td>+${Math.round(l.aura*100)}%</td><td>${l.dmg} HP per vehicle</td><td>${l.cd} s</td></tr></table>
-    <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Single level, no upgrades. The vehicles drive ${DISPATCH_SPD} cells/s over defences without blocking anything. The radial timer on the unit shows its recovery time. Inside an AI Core's range the contact damage is doubled (50 HP). Refund ¢${Math.floor(l.cost*REFUND)}.</p></div>`};
+    <p style="font-size:12px;margin-top:6px;color:#9fb0cc">Single level, no upgrades. The vehicles drive ${DISPATCH_SPD} cells/s over defences without blocking anything. The radial timer on the unit shows its recovery time. Inside an AI Core's range the contact damage is multiplied by the AI Core's boost (×1.5 / ×2 / ×3). Refund ¢${Math.floor(l.cost*REFUND)}.</p></div>`};
   const bossCard=(i,desc)=>{const B=BOSSES[i];return `<div class="ucard"><div class="uh"><img alt="${B.name}" src="${spriteURL('enemy',B.t)}"><div><div class="un">${B.icon} ${B.name} · stage ${i*2+2}</div><div class="ud">${desc}</div></div></div>
     <p style="font-size:12px;margin-top:6px;color:#9fb0cc">HP <b>${B.hp}</b> · speed ${B.speed} cells/s · reward ¢${B.reward} · escape costs ${B.lives} lives</p></div>`};
   document.getElementById('infoBody').innerHTML=`
-  <h3>The goal</h3><p>Intruders come out of the <b>cave</b> on the left edge of the lunar grid and walk to the <b>vault</b> on the right. Stop them with security defences before they get there. You start with <b>${START_LIVES} lives</b>; each Goon or Crook that reaches the vault costs 1 life and each Suitman costs 2. Lose them all and the vault is breached.</p>
+  <h3>The goal</h3><p>Intruders come out of a one-cell <b>tunnel</b> on the left edge of the lunar grid and walk to the <b>vault</b> on the right. Stop them with security defences before they get there. You start with <b>${START_LIVES} lives</b>; each Goon or Crook that reaches the vault costs 1 life and each Suitman costs 2. Lose them all and the vault is breached.</p>
   <h3>Open grid and mazing</h3><p>There is no fixed path. Every defence fills one grid cell and blocks it, and intruders always take the shortest open route, re-routing instantly (even mid-walk) when you build or remove something. The dotted line shows their current route. Build a long winding maze so they stay in range for longer.</p>
-  <p>You can <b>never seal the route completely</b>: a placement that would cut the cave off from the vault, or trap an intruder, is refused with a red message. The whole grid is open to you: you just can't build on the cave, the vault, the wave button's launch pad in the bottom-right corner or a cell an intruder is standing in.</p>
+  <p>You can <b>never seal the route completely</b>: a placement that would cut the tunnel off from the vault, or trap an intruder, is refused with a red message. The whole grid is open to you: you just can't build on the tunnel exit, the vault or a cell an intruder is standing in.</p>
   <h3>Building, upgrading and removing</h3><ul>
-  <li><b>Build:</b> tap the Camera, Detector, EACS, AI Core or Command Centre icon in the strip on the right, then tap grid cells. The AI Core and Command Centre are locked (padlock) until stage ${UNLOCK_STAGE+1}. The green <b>▶ wave button</b> sits in the bottom-right corner of the board, on its own launch pad, so it is always in reach of your right thumb. The highlighted icon stays selected so you can keep building; tap it again (or press Esc) to stop. On desktop a preview with the range follows the mouse.</li>
+  <li><b>Build:</b> tap the Camera, Detector, EACS, AI Core or Command Centre icon in the strip on the right, then tap grid cells. The AI Core is locked (padlock) until stage ${AI_UNLOCK+1} and the Command Centre until stage ${CC_UNLOCK+1}. The green <b>▶ wave button</b> sits in the strip on the right, just above the small buttons, so it never covers the board and is always in reach of your right thumb. Lives, credits, stage and wave, and score are shown in the bar above the board. The highlighted icon stays selected so you can keep building; tap it again (or press Esc) to stop. On desktop a preview with the range follows the mouse.</li>
   <li><b>Select and upgrade:</b> tap a built defence to show its range and a small popup with <b>Upgrade</b> (3 levels; the Command Centre has one) and <b>Remove</b>.</li><li><b>Limits:</b> at most 2 AI Cores and 1 Command Centre on the board at any time; their icons show how many are built.</li>
   <li><b>Remove:</b> double-tap (or double-click) a defence, or use Remove in the popup. You get back <b>${Math.round(REFUND*100)}%</b> of everything spent on it, upgrades included.</li></ul>
   <h3>Credits, lives and score</h3><ul>
@@ -1140,16 +1152,16 @@ function buildInfo(){
   <li>The overlay in the top-left corner of the board shows ♥ lives, ¢ credits, stage and wave (S1 W2/5) and ★ score.</li></ul>
   <h3>Waves and stages</h3><p>There are <b>${STAGES} stages</b> of <b>${WAVES} waves</b>. The first wave of each stage waits for you to press the green wave button; after that the next wave starts automatically after 12 seconds. Intruders get tougher every wave (HP ×${hpMultAt(0,0).toFixed(2)} on stage 1 wave 1, up to ×${hpMultAt(STAGES-1,WAVES-1).toFixed(2)} on the final wave). Defences carry over between stages.</p>
   <ul>${STAGE_NAMES.map((n,i)=>`<li><b>${n}</b>${isBossStage(i)?' '+bossDef(i).icon:''}: ${STAGE_SUB[i]}</li>`).join('')}</ul>
-  <h3>Bosses</h3><p>A boss ends stages 2, 4, 6 and 8. It comes out of the cave <b>${BOSS_DELAY} seconds</b> after the last intruder of wave ${WAVES}, with a <b>BOSS INCOMING</b> countdown first and a big HP bar at the top of the board. Bosses follow the same route as everyone else, slows only have <b>half</b> their effect on them, the stage only ends once the boss has been stopped or has escaped, and an escape costs 5 lives.</p>
+  <h3>Bosses</h3><p>A boss ends stages 2, 4, 6 and 8. It comes out of the tunnel <b>${BOSS_DELAY} seconds</b> after the last intruder of wave ${WAVES}, with a <b>BOSS INCOMING</b> countdown first and a big HP bar at the top of the board. Bosses follow the same route as everyone else, slows work on them in <b>full</b>, just like everyone else, the stage only ends once the boss has been stopped or has escaped, and an escape costs 5 lives.</p>
   <table><tr><th>Appears</th><th>Boss</th><th>HP</th><th>Speed</th><th>Reward</th><th>Lives cost</th></tr>${bossRows}</table>
-  <div class="ucards" style="margin-top:10px">${bossCard(0,'A retro flower-power camper full of loot-hungry crooks. Big and slow.')}${bossCard(1,'A dark, rusty armoured war truck with spikes, welded plates and smoking exhaust stacks. Slow, and very hard to stop.')}${bossCard(2,'A flaming-skull biker on a long chopper. Much faster than the other bosses, with less armour. At 20%, 40%, 60% and 80% of its route it hurls a <b>firebomb</b> at a random defence: the target flashes red, then it is destroyed with <b>no refund</b>. Rebuild quickly!')}${bossCard(3,'A giant reptilian moon monster with glowing dorsal plates and a ground-shaking stomp, and the most HP of all. Its weak spot: every time a <b>Command Centre vehicle</b> hits it, it becomes <b>VULNERABLE ×3</b> for 5 seconds. While vulnerable, damage from AI-boosted defences and from dispatch vehicles is tripled.')}</div>
+  <div class="ucards" style="margin-top:10px">${bossCard(0,'A retro flower-power camper full of loot-hungry crooks. Big and slow.')}${bossCard(1,'A dark, rusty armoured war truck with spikes, welded plates and smoking exhaust stacks. Slow, and very hard to stop.')}${bossCard(2,'A flaming-skull biker on a long chopper. Much faster than the other bosses, with less armour. At 20%, 40%, 60% and 80% of its route it <b>stops</b>, hurls a <b>firebomb</b> at a random defence and then <b>celebrates for 2 seconds</b> before riding on: the target flashes red, then it is destroyed with <b>no refund</b>. Hit it hard while it gloats, then rebuild quickly!')}${bossCard(3,'A giant reptilian moon monster with glowing dorsal plates and a ground-shaking stomp, and the most HP of all. Its weak spot: every time a <b>Command Centre vehicle</b> hits it, it becomes <b>VULNERABLE ×3</b> for ${VULN_T} seconds. While vulnerable, damage from AI-boosted defences and from dispatch vehicles is tripled.')}</div>
   <h3>Controls</h3><div class="legend">
   <div><span>▶</span>Start / send the next wave</div><div><span>❚❚</span>Pause / resume</div><div><span>1×</span>Toggle 2× speed</div>
   <div><span>🔊</span>Sound on / off</div><div><span>i</span>Open this page (pauses the game)</div><div><span>1–5</span>Keyboard: pick Camera / Detector / EACS / AI Core / Command Centre</div>
   <div><span>Space</span>Keyboard: start wave</div><div><span>P</span>Keyboard: pause</div><div><span>Esc</span>Cancel building / close</div></div>
   <h3>Defences</h3><div class="ucards">${towerCard('camera')}${towerCard('detector')}${eacsCard()}${aiCard()}${ccCard()}</div>
   <h3>Intruders</h3><div class="ucards">${enemyCard('goon','Hooded thug in a balaclava. Weak but quick, and arrives in big groups.')}${enemyCard('crook','Burglar in a striped top with a mask and a loot bag. Middle of the road.')}${enemyCard('suitman','The big boss in a dark suit and sunglasses. Slow and very tough, and costs 2 lives if he reaches the vault.')}</div>
-  <p style="margin-top:14px;color:#8e9ab3">Tip: Detectors are cheap and slow everything right next to them, so line the tight corners of your maze with them and cover those corners with Cameras. An EACS on a corner grips the two front-runners at half speed, buying your Cameras extra shots. From stage ${UNLOCK_STAGE+1}, put an AI Core in the middle of your densest cluster of Cameras.</p>`;
+  <p style="margin-top:14px;color:#8e9ab3">Tip: Detectors are cheap and slow everything right next to them, so line the tight corners of your maze with them and cover those corners with Cameras. An EACS on a corner grips the front-runners at a crawl (65–85% slower), holding them inside your Cameras' view cones for longer. From stage ${AI_UNLOCK+1}, put an AI Core in the middle of your densest cluster of Cameras. Stages 6 to 8 send huge crowds (up to 300 intruders in a wave), so area damage is king.</p>`;
 }
 function openInfo(){if(infoOpen)return;infoOpen=true;infoWasPaused=G.paused;G.paused=true;buildInfo();show('ovInfo');document.getElementById('infoBody').scrollTop=0}
 function closeInfo(){if(!infoOpen)return;infoOpen=false;hide('ovInfo');G.paused=infoWasPaused}
@@ -1161,11 +1173,12 @@ function update(dt){
   for(const f of G.fx){f.life-=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vx*=0.9;f.vy*=0.9}if(f.ring)f.r+=f.vr*dt}G.fx=G.fx.filter(f=>f.life>0);
   for(const b of G.beams)b.life-=dt;G.beams=G.beams.filter(b=>b.life>0);
   for(const t of G.towers){t.flash=Math.max(0,t.flash-dt);t.pop=Math.max(0,t.pop-dt)}
-  if(G.st==='stageEnding'){G.endT-=dt;if(G.endT<=0){stageComplete();return}}
+  if(G.st==='stageEnding'){G.endT-=dt;if(G.endT<=0){startDance();return}}
+  if(G.st==='dance'){G.dance.t+=dt;if(G.dance.t>=DANCE_RUN+DANCE_T)endDance();return}
   if(G.st!=='play'&&G.st!=='stageEnding')return;
   if(!G.waveActive&&G.countdown>0&&G.st==='play'){G.countdown-=dt;if(G.countdown<=0){G.countdown=0;startWave()}}
-  if(G.waveActive){G.spawnT+=dt;while(G.queue.length&&G.queue[0].at<=G.spawnT){spawn(G.queue.shift().t);G.lastCaveExit=G.time}
-    // boss: 8 s of game time after the last intruder of the stage's final wave leaves the cave
+  if(G.waveActive){G.spawnT+=dt;while(G.queue.length&&G.queue[0].at<=G.spawnT){const q=G.queue.shift();spawn(q.t,q.hf,q.rf);G.lastTunnelExit=G.time}
+    // boss: 8 s of game time after the last intruder of the stage's final wave leaves the tunnel
     if(isBossStage(G.stage)&&G.wave===WAVES-1&&!G.queue.length&&!G.bossSpawned){
       if(G.bossT===null){G.bossT=BOSS_DELAY;G.bossWarnAt=G.time}
       else{G.bossT-=dt;if(G.bossT<=1e-6)spawnBoss()}}}
@@ -1174,10 +1187,10 @@ function update(dt){
   for(const t of G.towers)if(t.doomT>0)t.doomT=Math.max(0,t.doomT-dt);
   const AIs=G.towers.filter(t=>t.type==='ai');
   for(const e of G.enemies){
-    if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slowF=0}if(e.lockT>0){e.lockT-=dt;if(e.lockT<=0){e.lockT=0;e.lockF=0}}e.flash=Math.max(0,e.flash-dt);if(e.vuln>0)e.vuln=Math.max(0,e.vuln-dt);
+    if(e.camT>0)e.camT-=dt;if(e.slowT>0){e.slowT-=dt;if(e.slowT<=0)e.slowF=0}if(e.lockT>0){e.lockT-=dt;if(e.lockT<=0){e.lockT=0;e.lockF=0}}e.flash=Math.max(0,e.flash-dt);if(e.vuln>0)e.vuln=Math.max(0,e.vuln-dt);
     let aiF=0;for(const a of AIs){const A=tStats(a);if(Math.hypot(e.x-a.c-.5,e.y-a.r-.5)<=A.range+BODY_R)aiF=Math.max(aiF,A.slow)}e.aiF=aiF;
     e.curSlow=Math.max(e.slowF||0,e.lockF||0,aiF);// strongest slow wins, never stacked
-    let move=e.speed*(1-e.curSlow*(1-(e.slowRes||0)))*dt;const mv0=move;e.walk+=move*1.9;let guard=0;
+    let move=e.stopT>0?0:e.speed*(1-e.curSlow)*dt;const mv0=move;e.walk+=move*1.9;let guard=0;
     while(move>0&&guard++<4){
       const tx=e.tc+.5,ty=e.tr+.5,dx=tx-e.x,dy=ty-e.y,dd=Math.hypot(dx,dy);
       if(Math.abs(dx)>0.02)e.face=dx>0?1:-1;
@@ -1189,36 +1202,36 @@ function update(dt){
     if(e.boss&&!e.dead)bossTick(e,mv0-Math.max(0,move),dt);
   }
   for(const e of G.enemies)if(e.leaked&&!e.counted){e.counted=true;G.lives=Math.max(0,G.lives-e.E.lives);G.stats.leaks++;G.totals.leaks++;if(e.boss){G.stats.boss='escaped';G.boss=null;G.shake=0.6}
-    floatText(VAULT[0][0]+.5,VAULT[0][1],`-${e.E.lives} ${e.E.lives>1?'lives':'life'}`,'#ff6b6b');sfx('leak');G.shake=0.3}
-  // AI Core boost: any defence within an AI Core's range deals 2x (never more, however many AIs)
+    leakText(e.E.lives);sfx('leak');G.shake=0.3}
+  // AI Core boost (not the EACS, which does no damage): any defence within an AI Core's range deals x1.5 / x2 / x3 by the AI's level (several AIs never stack: the strongest wins)
   // Command Centre aura: +10% to every defence within its 4-cell range; multiplies with the AI Core's x2
   const CCs=G.towers.filter(t=>t.type==='cc');
-  for(const t of G.towers){let b=1,c=1;if(t.type!=='ai'){for(const a of AIs)if(Math.hypot(a.c-t.c,a.r-t.r)<=tStats(a).range+1e-6){b=tStats(a).boost;break}
+  for(const t of G.towers){let b=1,c=1;if(t.type!=='ai'&&t.type!=='eacs'){for(const a of AIs)if(Math.hypot(a.c-t.c,a.r-t.r)<=tStats(a).range+1e-6)b=Math.max(b,tStats(a).boost)
       if(t.type!=='cc')for(const q of CCs)if(Math.hypot(q.c-t.c,q.r-t.r)<=tStats(q).range+1e-6){c=1+tStats(q).aura;break}}
     t.aiB=b;t.ccB=c;t.boost=b*c}
-  // dispatch vehicles (2x size): 25 HP (x AI boost) once to every intruder they touch on this pass
+  // dispatch vehicles (2x size): 450 HP (x AI boost) once to every intruder they touch on this pass, with a small spark burst (no comic pop)
   for(const v of G.dispatch){v.x+=v.vx*dt;for(const e of G.enemies){if(e.dead||v.hit.has(e))continue;const bx=e.boss?0.35*e.E.size:0.3,by=e.boss?0.25*e.E.size:0.25;
-    if(Math.abs(e.x-v.x)<=VEH_HALF_L+bx&&Math.abs(e.y-v.y)<=VEH_HALF_H+by){v.hit.add(e);damage(e,v.dmg,false,'cc');for(let i=0;i<5;i++)G.fx.push({x:e.x,y:e.y-0.2,vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3,life:.3,max:.3,spark:true,col:v.kind==='van'?'#ff7070':'#7fb4ff'})}}}
-  G.dispatch=G.dispatch.filter(v=>{const keep=v.x>-2.2&&v.x<COLS+2.2;if(!keep)sirenStop(v);return keep});
+    if(Math.abs(e.x-v.x)<=VEH_HALF_L+bx&&Math.abs(e.y-v.y)<=VEH_HALF_H+by){v.hit.add(e);damage(e,v.dmg,false,'cc');G.stats.vhits=(G.stats.vhits||0)+1;if(G.fx.length<FX_CAP)for(let i=0;i<5;i++)G.fx.push({x:e.x,y:e.y-0.2,vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3,life:.3,max:.3,spark:true,col:v.kind==='van'?'#ff7070':'#7fb4ff'})}}}
+  G.dispatch=G.dispatch.filter(v=>{const keep=v.x>-2.8&&v.x<COLS+2.8;if(!keep)sirenStop(v);return keep});
   for(const t of G.towers){
     const S=tStats(t),tx=t.c+.5,ty=t.r+.5,R=S.range,src=t.aiB>1?'ai':null;t.cd-=dt;
     if(t.type==='camera'){
-      // 90 degree view cone: it only fires at intruders inside the cone, and turns (at CAM_TURN rad/s) to bring the front-runner into view
-      const angTo=e=>Math.atan2(e.y-ty,e.x-tx),diff=a=>{let d=a-t.ang;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;return d};
-      let inCone=null,any=null;for(const e of G.enemies){if(e.dead||Math.hypot(e.x-tx,e.y-ty)>R)continue;if(!any||e.prog<any.prog)any=e;if(Math.abs(diff(angTo(e)))<=CAM_FOV/2&&(!inCone||e.prog<inCone.prog))inCone=e}
-      const aim=inCone||any,best=inCone;t.target=inCone;
-      if(aim){const d=diff(angTo(aim));t.ang+=Math.sign(d)*Math.min(Math.abs(d),CAM_TURN*dt);t.ang=((t.ang+Math.PI)%TAU+TAU)%TAU-Math.PI}
-      if(best){
-        if(t.cd<=0){t.cd=1/S.rate;damage(best,S.dmg*t.boost,false,src);t.flash=0.07;
-          const lens=t.lvl===2?[[0.37,-0.115],[0.37,0.115]][(t.shot=(t.shot|0)^1)]:[0.38,0];const ca=Math.cos(t.ang),sa=Math.sin(t.ang);
-          G.beams.push({x1:tx+ca*lens[0]-sa*lens[1],y1:ty+sa*lens[0]+ca*lens[1],x2:best.x,y2:best.y-0.15,life:.09,lvl:t.lvl});sfx('shot')}}
+      // v11: no laser. Every intruder inside the 90 degree view cone (and range) takes the camera's damage at its rate (area damage);
+      // the camera turns (at CAM_TURN rad/s) to bring the front-runner into view. Intruders it is damaging glow a dull red.
+      const diff=a=>{let d=a-t.ang;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;return d},R2=R*R,h=CAM_FOV/2;
+      let inCone=null,any=null,nIn=0;for(const e of G.enemies){if(e.dead)continue;const ex=e.x-tx,ey=e.y-ty;if(ex*ex+ey*ey>R2)continue;if(!any||e.prog<any.prog)any=e;
+        if(Math.abs(diff(Math.atan2(ey,ex)))<=h){nIn++;if(!inCone||e.prog<inCone.prog)inCone=e}}
+      const aim=inCone||any;t.target=inCone;t.nIn=nIn;
+      if(aim){const d=diff(Math.atan2(aim.y-ty,aim.x-tx));t.ang+=Math.sign(d)*Math.min(Math.abs(d),CAM_TURN*dt);t.ang=((t.ang+Math.PI)%TAU+TAU)%TAU-Math.PI}
+      if(nIn&&t.cd<=0){t.cd=1/S.rate;t.flash=0.07;t.pulse=0.18;const dmg=S.dmg*t.boost;let n=0;
+        for(const e of G.enemies){if(e.dead)continue;const ex=e.x-tx,ey=e.y-ty;if(ex*ex+ey*ey>R2||Math.abs(diff(Math.atan2(ey,ex)))>h)continue;damage(e,dmg,true,src);e.camT=0.35;n++}
+        t.hits=(t.hits||0)+n;if(G.time-(G.camSfx||-9)>0.12){G.camSfx=G.time;sfx('shot')}}
       else if(!aim)t.ang+=Math.sin(G.time*0.5+t.c)*dt*0.35;// slow idle sweep
+      if(t.pulse>0)t.pulse-=dt;
     }else if(t.type==='eacs'){
       t.spin+=dt*(1.6+t.lvl*0.4);
       const inR=G.enemies.filter(e=>!e.dead&&Math.hypot(e.x-tx,e.y-ty)<=R+BODY_R);
-      // always-on field: continuous damage per simulation step (scales with game speed)
-      for(const e of inR)damage(e,S.dmg*t.boost*dt,true,src);
-      // lock the 2 in reach that are closest to the vault
+      // v12.1: no damage at all; lock the 2 / 3 / 5 in reach that are closest to the vault at 65% / 75% / 85% slow
       const live=inR.filter(e=>!e.dead).sort((a,b)=>a.prog-b.prog).slice(0,S.targets);
       for(const e of live){e.lockF=Math.max(e.lockF||0,S.slow);e.lockT=Math.max(e.lockT||0,S.linger)}
       t.locks=live;t.hum=(t.hum||0)+(inR.length?dt:0);if(inR.length&&t.hum>0.6){t.hum=0;sfx('pulse')}
@@ -1239,36 +1252,43 @@ function update(dt){
   if(G.waveActive&&!G.queue.length&&!G.enemies.length&&!(isBossStage(G.stage)&&G.wave===WAVES-1&&!G.bossSpawned))waveCleared();
 }
 // boss specials: Rider firebombs at 20/40/60/80% of its route, Rig exhaust smoke, Rider fire trail, Lunakaiju stomps
+const RIDER_WIND=0.6,RIDER_PARTY=2;
 function bossTick(e,moved,dt){
   e.travel+=moved;
   if(e.t==='rider'){
-    if(e.bombsLeft>0){const f=e.travel/Math.max(0.01,e.travel+e.prog);if(f>=(e.bombN+1)*0.2){e.bombN++;e.bombsLeft--;throwBomb(e)}}
+    // v11: at 20/40/60/80% of its route it stops, winds up and throws (RIDER_WIND s), then celebrates for RIDER_PARTY s before riding on
+    if(e.stopT>0){e.stopT-=dt;
+      if(e.windT>0){e.windT-=dt;if(e.windT<=0){e.windT=0;e.bombN++;e.bombsLeft--;throwBomb(e);e.partyT=RIDER_PARTY;e.stopT=RIDER_PARTY;e.partyN=(e.partyN||0)+1;floatText(e.x,e.y-2.1,['HA-HA!','YEE-HAW!','BOOM, BABY!','WOO-HOO!'][(e.partyN-1)%4],'#ffb35c',1.6)}}
+      else if(e.partyT>0){e.partyT-=dt;e.partyTot=(e.partyTot||0)+dt;if(Math.random()<dt*30&&G.fx.length<FX_CAP)G.fx.push({fire:true,x:e.x+(Math.random()-.5)*1.2,y:e.y-0.2-Math.random()*0.8,vx:(Math.random()-.5)*1.2,vy:-1.4,life:.5,max:.5,s:0.13})}
+      if(e.stopT<=0){e.stopT=0;e.partyT=0}}
+    else if(e.bombsLeft>0){const f=e.travel/Math.max(0.01,e.travel+e.prog);if(f>=(e.bombN+1)*0.2){if(G.towers.some(t=>!t.doomed)){e.stopT=RIDER_WIND+0.01;e.windT=RIDER_WIND;e.stops=(e.stops||0)+1}else{e.bombN++;e.bombsLeft--}}}
     e.fireT=(e.fireT||0)-dt;if(e.fireT<=0){e.fireT=0.035;G.fx.push({fire:true,x:e.x-e.face*0.72+(Math.random()-.5)*0.1,y:e.y-0.3+(Math.random()-.5)*0.12,vx:-e.face*(0.6+Math.random()*0.5),vy:-0.35,life:.45,max:.45,s:0.12})}}
   else if(e.t==='rig'){e.smokeT=(e.smokeT||0)-dt;if(e.smokeT<=0){e.smokeT=0.08;G.fx.push({smoke:true,x:e.x+e.face*(0.15+Math.random()*0.12),y:e.y-1.62,vx:-e.face*0.25+(Math.random()-.5)*0.3,vy:-0.8,life:1.1,max:1.1,s:0.11})}}
   else if(e.t==='kaiju'){const ph=Math.floor(e.walk*2);if(e.stompPh===undefined)e.stompPh=ph;if(ph!==e.stompPh){e.stompPh=ph;G.shake=Math.max(G.shake,0.16);G.fx.push({ring:true,dustRing:true,x:e.x,y:e.y+0.05,r:0.3,vr:3.4,maxR:1.3,life:.45,max:.45})}}
 }
+const FX_CAP=700;
 function damage(e,d,quiet,src){
   if(e.dead)return;
-  // Lunakaiju: each Command Centre hit opens a 5 s window in which damage from AI-boosted defences and dispatch vehicles is x3
+  // Lunakaiju: each Command Centre hit opens a 6 s window in which damage from AI-boosted defences and dispatch vehicles is x3
   if(e.t==='kaiju'&&src){if(src==='cc'){if(!(e.vuln>0))floatText(e.x,e.y-2.4,`VULNERABLE ×${VULN_X}`,'#ff6ef2',1.6);e.vuln=VULN_T;G.stats.vulnOpen++}
     if(e.vuln>0){d*=VULN_X;G.stats.vulnDmg+=d}}
   e.hp-=d;if(!quiet)e.flash=0.05;
   if(e.hp<=0){e.dead=true;const rw=e.E.reward;addCredits(rw);G.score+=rw*10;if(e.boss){G.stats.boss='stopped';G.stats.bossRw=rw;G.boss=null;G.shake=0.6;floatText(e.x,e.y-1,`${e.E.short} stopped!`,'#ffd866',2.4);for(let i=0;i<26;i++)G.fx.push({x:e.x,y:e.y-0.3,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,life:.7,max:.7,dust:true,s:0.16})}G.stats.kills++;G.totals.kills++;floatText(e.x,e.y-0.4,`+${rw}`,'#ffd866');sfx('die');
-    const big=e.boss?2.2:e.t==='suitman'?1.4:1;
+    const big=e.boss?2.2:e.t==='suitman'?1.4:1;if(G.fx.length>FX_CAP&&!e.boss)return;
     for(let i=0;i<9;i++){const a=Math.random()*TAU,v=0.6+Math.random()*1.2;G.fx.push({x:e.x+e.jx,y:e.y+e.jy-0.1,vx:Math.cos(a)*v,vy:Math.sin(a)*v*0.6-0.3,life:.6,max:.6,dust:true,s:(0.1+Math.random()*0.12)*big})}
     for(let i=0;i<6;i++){const a=Math.random()*TAU;G.fx.push({x:e.x,y:e.y-0.2,vx:Math.cos(a)*3,vy:Math.sin(a)*3,life:.3,max:.3,spark:true,col:'#ffd76a'})}}
 }
 // ================= drawing =================
 function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
-function drawVaultDoor(){
-  const cs=L.cs,x=X(14.5),y=Y(4);
-  ctx.beginPath();ctx.arc(x,y,cs*0.34,0,TAU);ctx.fillStyle='#55627a';ctx.fill();ctx.lineWidth=Math.max(2,cs*0.06);ctx.strokeStyle='#d5deec';ctx.stroke();
-  ctx.save();ctx.translate(x,y);ctx.rotate(G.time*0.6);ctx.strokeStyle='#eef3fb';ctx.lineWidth=Math.max(2,cs*0.05);
-  for(let i=0;i<3;i++){ctx.rotate(Math.PI/3);ctx.beginPath();ctx.moveTo(-cs*0.22,0);ctx.lineTo(cs*0.22,0);ctx.stroke()}ctx.restore();
-  ctx.beginPath();ctx.arc(x,y,cs*0.08,0,TAU);ctx.fillStyle='#2b3446';ctx.fill();
-  ctx.beginPath();ctx.arc(x,Y(3)+cs*0.3,cs*0.06,0,TAU);ctx.fillStyle=Math.sin(G.time*4)>0?'#59ff9a':'#1f7a45';ctx.fill();
-  // cave warning light
-  ctx.beginPath();ctx.arc(X(0.62),Y(4)-cs*0.98,cs*0.05,0,TAU);ctx.fillStyle=Math.sin(G.time*5)>0?'#ff4b4b':'#6a1a1a';ctx.fill();
+function drawVaultDoor(){// one-cell vault: round door with a turning handle, green status light top right
+  const cs=L.cs,x=X(14.5),y=Y(3)+cs*0.6;
+  ctx.beginPath();ctx.arc(x,y,cs*0.24,0,TAU);ctx.fillStyle='#55627a';ctx.fill();ctx.lineWidth=Math.max(2,cs*0.05);ctx.strokeStyle='#d5deec';ctx.stroke();
+  ctx.save();ctx.translate(x,y);ctx.rotate(G.time*0.6);ctx.strokeStyle='#eef3fb';ctx.lineWidth=Math.max(1.5,cs*0.04);
+  for(let i=0;i<3;i++){ctx.rotate(Math.PI/3);ctx.beginPath();ctx.moveTo(-cs*0.16,0);ctx.lineTo(cs*0.16,0);ctx.stroke()}ctx.restore();
+  ctx.beginPath();ctx.arc(x,y,cs*0.06,0,TAU);ctx.fillStyle='#2b3446';ctx.fill();
+  ctx.beginPath();ctx.arc(X(14)+cs*0.82,Y(3)+cs*0.6,cs*0.045,0,TAU);ctx.fillStyle=Math.sin(G.time*4)>0?'#59ff9a':'#1f7a45';ctx.fill();
+  // tunnel warning light
+  ctx.beginPath();ctx.arc(X(0.78),Y(3)+cs*0.12,cs*0.05,0,TAU);ctx.fillStyle=Math.sin(G.time*5)>0?'#ff4b4b':'#6a1a1a';ctx.fill();
 }
 function drawPath(){
   let [c,r]=CAVE[0],pts=[[X(c+.5),Y(r+.5)]],guard=0;
@@ -1329,24 +1349,38 @@ function drawEacsLocks(t){
   ctx.restore();
 }
 function rgCtx(x,y,r,stops){const g=ctx.createRadialGradient(x,y,0,x,y,r);stops.forEach((s,i)=>g.addColorStop(i/(stops.length-1),s));return g}
-function drawEnemy(e){
-  const S=e.boss?SPR.bossS[e.t]:SPR.eS,fr=SPR.enemy[e.t][(((e.walk%1)+1)%1*8)|0],img=e.flash>0?fr.h:((e.curSlow||e.slowF)>0?fr.f:fr.n);
-  const px=X(e.x+e.jx),py=Y(e.y+e.jy),sc=SCALE[e.t];
-  ctx.fillStyle='rgba(0,0,0,.32)';ctx.beginPath();ctx.ellipse(px,py+S*0.14,S*0.2*sc,S*0.065*sc,0,0,TAU);ctx.fill();
+const DRAWQ=[],byDepth=(a,b)=>a.y+a.jy-b.y-b.jy;
+let BT_A=1,BT_E=0,BT_F=0;
+// enemies are drawn in three batched passes (ground layer, sprites in depth order, HP bars) so a 300-strong crowd
+// does not interleave image draws with path fills, which breaks canvas batching
+function enemyGeom(e){const S=e.boss?SPR.bossS[e.t]:SPR.eS;let py=Y(e.y+e.jy),rot=0;
+  if(e.partyT>0){const ph=(RIDER_PARTY-e.partyT)*7;py-=Math.abs(Math.sin(ph))*S*0.16;rot=-0.32-0.1*Math.sin(ph*0.5)}// celebration: wheelies and hops
+  else if(e.windT>0)rot=0.12*Math.sin(G.time*30);// wind-up wobble before the throw
+  EG.S=S;EG.px=X(e.x+e.jx);EG.py=py;EG.rot=rot;EG.sc=SCALE[e.t];return EG}
+const EG={S:0,px:0,py:0,rot:0,sc:1};
+function drawEnemyGround(e){const {S,px,py,sc}=enemyGeom(e);
+  if(e.camT>0){ctx.globalAlpha=Math.min(1,e.camT/0.2)*0.55;ctx.drawImage(SPR.redGlow,px-S*0.42,py-S*0.72,S*0.84,S*0.84);ctx.globalAlpha=1}
+  if(e.boss||DRAWQ.length<=CROWD_LOD)ctx.drawImage(SPR.shadow,px-S*0.2*sc,py+S*0.14-S*0.065*sc,S*0.4*sc,S*0.13*sc)}
+const CROWD_LOD=150;// above this many intruders on screen the small ground shadows are skipped (bosses keep theirs)
+function drawEnemyRing(e){if(!(e.lockF>0)&&!(e.slowF>0))return;const {S,px,py,sc}=enemyGeom(e);
   if(e.lockF>0){ctx.strokeStyle='rgba(200,150,255,.85)';ctx.lineWidth=2.4;ctx.beginPath();ctx.ellipse(px,py+S*0.14,S*0.29*sc,S*0.1*sc,0,0,TAU);ctx.stroke()}
-  else if(e.slowF>0){ctx.strokeStyle='rgba(140,220,255,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(px,py+S*0.14,S*0.26*sc,S*0.09*sc,0,0,TAU);ctx.stroke()}
+  else{ctx.strokeStyle='rgba(140,220,255,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(px,py+S*0.14,S*0.26*sc,S*0.09*sc,0,0,TAU);ctx.stroke()}}
+function drawEnemy(e){
+  const {S,px,py,rot}=enemyGeom(e),fr=SPR.enemy[e.t][(((e.walk%1)+1)%1*8)|0],img=e.flash>0?fr.h:e.camT>0?fr.r:((e.curSlow||e.slowF)>0?fr.f:fr.n);
   if(e.t==='kaiju'&&e.vuln>0){const p=0.5+0.5*Math.sin(G.time*14);ctx.fillStyle=rgCtx(px,py-S*0.35,S*0.55,['rgba(255,110,242,'+(0.35+0.25*p)+')','rgba(255,110,242,0)']);ctx.beginPath();ctx.arc(px,py-S*0.35,S*0.55,0,TAU);ctx.fill()}
   if(e.t==='rider'){ctx.fillStyle=rgCtx(px-e.face*S*0.05,py-S*0.62,S*0.3,['rgba(255,150,40,.35)','rgba(255,90,20,0)']);ctx.beginPath();ctx.arc(px-e.face*S*0.05,py-S*0.62,S*0.3,0,TAU);ctx.fill()}
-  ctx.save();ctx.translate(px,py);if(e.face<0)ctx.scale(-1,1);ctx.drawImage(img,-S/2,-S*0.78,S,S);
+  if(!rot&&e.t!=='kaiju'){// fast path: one setTransform instead of save/translate/scale/restore
+    const a=BT_A;ctx.setTransform(e.face<0?-a:a,0,0,a,BT_E+a*px,BT_F+a*py);ctx.drawImage(img,-S/2,-S*0.78,S,S);ctx.setTransform(a,0,0,a,BT_E,BT_F);return}
+  ctx.save();ctx.translate(px,py);if(e.face<0)ctx.scale(-1,1);if(rot){ctx.translate(-S*0.25,0);ctx.rotate(rot);ctx.translate(S*0.25,0)}ctx.drawImage(img,-S/2,-S*0.78,S,S);
   if(e.t==='kaiju'){ctx.globalCompositeOperation='lighter';const gl=0.35+0.3*Math.sin(G.time*3)+(e.vuln>0?0.3:0);
-    for(const [x,y] of [[22,54],[28,44],[34,34],[42,26],[51,20],[58,16]]){const qx=(x/100-0.5)*S,qy=(y/100-0.78)*S;ctx.fillStyle=rgCtx(qx,qy,S*0.07,['rgba(140,245,255,'+gl+')','rgba(79,240,255,0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.07,0,TAU);ctx.fill()}
+    for(const [x,y] of KAIJU_DOTS){const qx=(x/100-0.5)*S,qy=(y/100-0.78)*S;ctx.fillStyle=rgCtx(qx,qy,S*0.07,['rgba(140,245,255,'+gl+')','rgba(79,240,255,0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.07,0,TAU);ctx.fill()}
     ctx.globalCompositeOperation='source-over'}
-  ctx.restore();
-  if(e.boss)return;// the boss has its own big HP bar at the top of the board
-  const bw=S*0.46,f=Math.max(0,e.hp/e.max),by=py-S*0.78+S*e.E.top-7;
-  ctx.fillStyle='rgba(0,0,0,.65)';ctx.fillRect(px-bw/2-1,by-1,bw+2,6);
-  ctx.fillStyle=f>0.55?'#4cd964':f>0.25?'#ffcc00':'#ff3b30';ctx.fillRect(px-bw/2,by,bw*f,4);
-}
+  ctx.restore()}
+const KAIJU_DOTS=[[22,54],[28,44],[34,34],[42,26],[51,20],[58,16]];
+function drawEnemyBars(){// HP bars in two batched fills: all dark backs, then each colour band (the boss has its own big bar in the top bar)
+  ctx.fillStyle='rgba(0,0,0,.65)';for(const e of DRAWQ){if(e.boss||e.dead)continue;const {S,px,py}=enemyGeom(e),bw=S*0.46;ctx.fillRect(px-bw/2-1,py-S*0.78+S*e.E.top-8,bw+2,6)}
+  for(const [lo,hi,col] of HPBANDS){ctx.fillStyle=col;for(const e of DRAWQ){if(e.boss||e.dead)continue;const f=Math.max(0,e.hp/e.max);if(f<=lo||f>hi)continue;const {S,px,py}=enemyGeom(e),bw=S*0.46;ctx.fillRect(px-bw/2,py-S*0.78+S*e.E.top-7,bw*f,4)}}}
+const HPBANDS=[[0.55,9,'#4cd964'],[0.25,0.55,'#ffcc00'],[-1,0.25,'#ff3b30']];
 function btn(b,label,sub,{on=false,dis=false,col='#3e5a86',fs=20}={}){
   if(!b)return;ctx.save();ctx.globalAlpha=dis?0.45:1;
   const g=ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);g.addColorStop(0,on?'#2f4a72':'#1b2234');g.addColorStop(1,on?'#1d3150':'#111724');
@@ -1408,6 +1442,7 @@ function drawBuildBtn(b,type){
 function draw(){
   const cs=L.cs;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.save();
   if(G.shake)ctx.translate((Math.random()-.5)*G.shake*16,(Math.random()-.5)*G.shake*16);
+  {const m=ctx.getTransform();BT_A=m.a;BT_E=m.e;BT_F=m.f}// base transform (dpr + shake) for the fast enemy path
   ctx.drawImage(bg,0,0,L.vw,L.vh);
   drawVaultDoor();
   if(G.st!=='title')drawScorch();
@@ -1430,13 +1465,9 @@ function draw(){
     drawRange(c,r,TOWERS[G.build].levels[0].range,TOWERS[G.build].col,ok);
     ctx.fillStyle=ok?'rgba(80,255,140,.18)':'rgba(255,60,60,.25)';ctx.fillRect(X(c),Y(r),cs,cs);
     drawTowerAt(G.build,0,X(c+.5),Y(r+.5),cs,-Math.PI/2,0.6)}}
-  [...G.enemies].sort((a,b)=>a.y+a.jy-b.y-b.jy).forEach(drawEnemy);
+  DRAWQ.length=0;for(const e of G.enemies)DRAWQ.push(e);DRAWQ.sort(byDepth);for(const e of DRAWQ)drawEnemyGround(e);for(const e of DRAWQ)drawEnemyRing(e);for(const e of DRAWQ)drawEnemy(e);drawEnemyBars();// reused buffer: no per-frame array copies
   for(const t of G.towers)if(t.type==='eacs')drawEacsLocks(t);
   drawDispatch();drawBombs();
-  for(const b of G.beams){const a=b.life/0.09,col=['255,70,60','255,150,60','255,215,90'][b.lvl];
-    ctx.lineCap='round';ctx.strokeStyle=`rgba(${col},${a*0.35})`;ctx.lineWidth=cs*0.1;ctx.beginPath();ctx.moveTo(X(b.x1),Y(b.y1));ctx.lineTo(X(b.x2),Y(b.y2));ctx.stroke();
-    ctx.strokeStyle=`rgba(255,245,230,${a})`;ctx.lineWidth=Math.max(1.5,cs*0.03);ctx.stroke();
-    ctx.fillStyle=`rgba(255,230,180,${a})`;ctx.beginPath();ctx.arc(X(b.x2),Y(b.y2),cs*0.07,0,TAU);ctx.fill()}
   for(const f of G.fx){const a=f.life/f.max;
     if(f.boom){const k=1-a,r=cs*(0.35+k*1.25);ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=rgCtx(X(f.x),Y(f.y),r,['rgba(255,250,210,'+a+')','rgba(255,150,40,'+a*0.9+')','rgba(200,40,10,'+a*0.5+')','rgba(120,20,0,0)']);ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,0,TAU);ctx.fill();ctx.restore();
       ctx.strokeStyle=`rgba(255,200,120,${a*0.8})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(X(f.x),Y(f.y),cs*(0.3+k*1.8),0,TAU);ctx.stroke()}
@@ -1449,13 +1480,14 @@ function draw(){
     else if(f.spark){ctx.fillStyle=f.col;ctx.globalAlpha=a;ctx.fillRect(X(f.x)-1.5,Y(f.y)-1.5,3,3);ctx.globalAlpha=1}}
   ctx.textAlign='center';ctx.textBaseline='middle';const ffs=Math.max(13,Math.min(20,cs*0.34));
   for(const f of G.floats){ctx.globalAlpha=Math.min(1,f.life/f.max*2);ctx.font=`bold ${ffs}px sans-serif`;ctx.lineWidth=4;ctx.strokeStyle='rgba(0,0,0,.7)';ctx.strokeText(f.text,X(f.x),Y(f.y));ctx.fillStyle=f.col;ctx.fillText(f.text,X(f.x),Y(f.y));ctx.globalAlpha=1}
+  if(G.st==='dance'&&G.dance)drawDance();
   ctx.restore();
   drawHUD();
 }
 // camera: translucent 90 degree view cone over its full range
 function drawCamCone(t){
-  const S=tStats(t),R=S.range*L.cs,px=X(t.c+.5),py=Y(t.r+.5),a=t.ang,h=CAM_FOV/2,live=!!t.target,col=['255,179,92','255,140,70','255,215,90'][t.lvl];
-  ctx.save();const g=ctx.createRadialGradient(px,py,L.cs*0.3,px,py,R);g.addColorStop(0,`rgba(${col},${live?0.30:0.16})`);g.addColorStop(1,`rgba(${col},${live?0.10:0.04})`);
+  const S=tStats(t),R=S.range*L.cs,px=X(t.c+.5),py=Y(t.r+.5),a=t.ang,h=CAM_FOV/2,live=!!t.target,col=['255,179,92','255,140,70','255,215,90'][t.lvl],pl=t.pulse>0?t.pulse/0.18*0.14:0;
+  ctx.save();const g=ctx.createRadialGradient(px,py,L.cs*0.3,px,py,R);g.addColorStop(0,`rgba(${col},${(live?0.30:0.16)+pl})`);g.addColorStop(1,`rgba(${col},${(live?0.12:0.04)+pl})`);
   ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(px,py);ctx.arc(px,py,R,a-h,a+h);ctx.closePath();ctx.fill();
   ctx.strokeStyle=`rgba(${col},${live?0.55:0.3})`;ctx.lineWidth=1.2;ctx.stroke();ctx.restore();
 }
@@ -1483,7 +1515,7 @@ function drawBoostLinks(){
   for(const t of G.towers){if(!(t.boost>1))continue;
     if(t.ccB>1){const q=near(CCs,t);if(q)link(q,t,'rgba(255,90,90,.22)',L.cs*0.12)}
     if(t.aiB>1){const a=near(AIs,t);if(a)link(a,t,'rgba(79,240,255,.42)',0)}
-    const txt=t.aiB>1&&t.ccB>1?'×2.2':t.aiB>1?'×2':'+10%',cyan=t.aiB>1;
+    const txt=t.aiB>1?'×'+(+t.boost.toFixed(2)):'+10%',cyan=t.aiB>1;
     const r=Math.max(6,L.cs*0.17),fs=Math.round(r*(txt.length>2?0.82:1.05));ctx.font=`900 ${fs}px sans-serif`;const w=Math.max(2*r,ctx.measureText(txt).width+6),bx=X(t.c)+L.cs-w/2-1,by=Y(t.r)+L.cs*0.2;
     ctx.fillStyle=cyan?'rgba(6,30,40,.9)':'rgba(40,8,10,.9)';rr(bx-w/2,by-r,w,2*r,r);ctx.fill();ctx.strokeStyle=cyan?'#4ff0ff':'#ff6b6b';ctx.lineWidth=1.5;ctx.stroke();
     ctx.fillStyle=cyan?'#bff9ff':'#ffd0d0';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,bx,by+0.5)}
@@ -1510,12 +1542,78 @@ function drawBombs(){
     ctx.fillStyle='#2f7a3a';rr(-cs*0.07,-cs*0.12,cs*0.14,cs*0.22,cs*0.04);ctx.fill();ctx.strokeStyle='#0d1a10';ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='#d9c9a3';ctx.fillRect(-cs*0.035,-cs*0.2,cs*0.07,cs*0.09);
     ctx.globalCompositeOperation='lighter';ctx.fillStyle=rgCtx(0,-cs*0.24,cs*0.14,['rgba(255,240,170,.95)','rgba(255,120,30,.7)','rgba(255,60,10,0)']);ctx.beginPath();ctx.arc(0,-cs*0.24,cs*0.14,0,TAU);ctx.fill();ctx.restore()}
 }
+// ---- end-of-stage dance: vector body (cheap: ~25 path ops a frame) with Toby's photo as a round head ----
+let TOBY_HEAD=null;
+function tobyHead(px){const n=Math.max(8,Math.round(px*dpr));if(TOBY_HEAD&&TOBY_HEAD.n===n)return TOBY_HEAD.c;
+  const img=document.getElementById('stAvatar');if(!img||!img.complete||!img.naturalWidth)return null;
+  const c=mk(n,n),g=c.getContext('2d');g.save();g.beginPath();g.arc(n/2,n/2,n/2-1,0,TAU);g.clip();g.drawImage(img,0,0,n,n);g.restore();
+  g.lineWidth=Math.max(2,n*0.045);g.strokeStyle='#fff';g.beginPath();g.arc(n/2,n/2,n/2-g.lineWidth/2,0,TAU);g.stroke();TOBY_HEAD={n,c};return c}
+function limb(x,y,a1,a2,l1,l2){const ex=x+Math.sin(a1)*l1,ey=y+Math.cos(a1)*l1,b=a1+a2;return[ex,ey,ex+Math.sin(b)*l2,ey+Math.cos(b)*l2]}
+function drawDance(){
+  const cs=L.cs,u=cs,t=G.dance.t,cx=X(COLS/2),fy=Y(ROWS/2)+1.5*u;
+  // soft dim of the board for focus
+  ctx.fillStyle=`rgba(5,8,16,${Math.min(0.28,t*0.4)})`;ctx.fillRect(L.ox,L.oy,L.fw,L.fh);
+  let fx,bob=0,sway=0,tilt=0,spin=1,lA,rA,lL,rL,lean=0;
+  if(t<DANCE_RUN){// run in from the left edge, easing to a stop in the middle
+    const k=t/DANCE_RUN,e=1-Math.pow(1-k,2.2),ph=t*13;fx=L.ox-1.5*u+(cx-(L.ox-1.5*u))*e;
+    const sw=Math.sin(ph)*(0.25+0.6*(1-k));bob=-Math.abs(Math.sin(ph))*0.12*u*(1-k*0.7);lean=0.12*(1-k);
+    lL=[sw,-Math.max(0,sw)*0.9];rL=[-sw,-Math.max(0,-sw)*0.9];lA=[-sw*1.1-0.15,-0.9];rA=[sw*1.1+0.15,0.9];
+  }else{// slow, silly dance: hip sway + bob throughout; arm moves change every couple of beats; a little spin in the middle
+    const d=t-DANCE_RUN,b=d*TAU/1.25,sb=Math.sin(b);fx=cx;sway=sb*0.2*u;tilt=-sb*0.12;bob=-Math.abs(Math.sin(b))*0.14*u;
+    const knee=Math.abs(Math.sin(b))*0.35;lL=[0.12+sb*0.08,-knee];rL=[-0.12+sb*0.08,-knee];
+    if(d<1.25){lA=[-2.6+0.35*Math.sin(b*2),-0.4+0.5*Math.sin(b*2)];rA=[2.6+0.35*Math.sin(b*2+Math.PI),0.4+0.5*Math.sin(b*2+Math.PI)]}// waving both arms overhead
+    else if(d<2.5){lA=[-1.55,0.15*Math.sin(b*2)];rA=[0.6+0.3*sb,2.2]}// the sprinkler
+    else if(d<3.3){const k=(d-2.5)/0.8;spin=Math.cos(k*TAU);lA=[-1.2,-0.6];rA=[1.2,0.6]}// a little spin
+    else{const up=Math.sin(b*1.5)>0;lA=up?[-2.9,0]:[-0.5,-1.4];rA=up?[0.5,1.4]:[2.9,0]}// disco point, up and down
+  }
+  const back=spin<0;ctx.save();ctx.translate(fx,fy+bob);ctx.scale(Math.max(0.06,Math.abs(spin))*(back?-1:1),1);ctx.rotate(lean);
+  ctx.fillStyle='rgba(0,0,0,.28)';ctx.beginPath();ctx.ellipse(0,-bob,0.62*u,0.13*u,0,0,TAU);ctx.fill();
+  const hipY=-0.95*u,shY=-1.82*u,ol='#141823';ctx.lineCap='round';ctx.lineJoin='round';
+  // legs (navy trousers, black shoes)
+  for(const [sx,[a1,a2],sg] of [[-0.17,lL,-1],[0.17,rL,1]]){const [kx,ky,ax,ay]=limb(sx*u+sway,hipY,a1,a2,0.5*u,0.48*u);
+    ctx.strokeStyle=ol;ctx.lineWidth=0.27*u;ctx.beginPath();ctx.moveTo(sx*u+sway,hipY);ctx.lineTo(kx,ky);ctx.lineTo(ax,ay);ctx.stroke();
+    ctx.strokeStyle='#2b3d66';ctx.lineWidth=0.2*u;ctx.stroke();ctx.fillStyle='#111';ctx.beginPath();ctx.ellipse(ax+0.08*u,ay+0.02*u,0.17*u,0.08*u,0,0,TAU);ctx.fill()}
+  // torso (Ademco red polo) with tilt from the hip sway
+  ctx.save();ctx.translate(sway,hipY);ctx.rotate(tilt);
+  ctx.fillStyle='#d8232a';ctx.strokeStyle=ol;ctx.lineWidth=Math.max(2,0.05*u);ctx.beginPath();ctx.roundRect(-0.36*u,shY-hipY-0.04*u,0.72*u,(hipY-shY)+0.12*u,0.16*u);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(-0.14*u,shY-hipY-0.03*u);ctx.lineTo(0,shY-hipY+0.14*u);ctx.lineTo(0.14*u,shY-hipY-0.03*u);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#2b3d66';ctx.fillRect(-0.36*u,-0.05*u,0.72*u,0.12*u);
+  // arms (red sleeves, skin hands)
+  for(const [sx,[a1,a2]] of [[-0.36,lA],[0.36,rA]]){const sy=shY-hipY+0.1*u,[ex,ey,hx,hy]=limb(sx*u,sy,a1,a2,0.46*u,0.42*u);
+    ctx.strokeStyle=ol;ctx.lineWidth=0.21*u;ctx.beginPath();ctx.moveTo(sx*u,sy);ctx.lineTo(ex,ey);ctx.lineTo(hx,hy);ctx.stroke();
+    ctx.strokeStyle='#d8232a';ctx.lineWidth=0.15*u;ctx.beginPath();ctx.moveTo(sx*u,sy);ctx.lineTo(ex,ey);ctx.stroke();ctx.strokeStyle='#e9b48f';ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(hx,hy);ctx.stroke();
+    ctx.fillStyle='#e9b48f';ctx.beginPath();ctx.arc(hx,hy,0.1*u,0,TAU);ctx.fill()}
+  // head: Toby's photo in a circle (back of the head while turned away in the spin)
+  const hr=0.56*u,hy=shY-hipY-hr*0.92,head=tobyHead(hr*2);ctx.rotate(-tilt*0.6+(t>=DANCE_RUN?Math.sin((t-DANCE_RUN)*TAU/0.625)*0.08:0));
+  if(back||!head){ctx.fillStyle=back?'#2a2420':'#e9b48f';ctx.beginPath();ctx.arc(0,hy,hr,0,TAU);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(2,hr*0.09);ctx.stroke()}
+  else ctx.drawImage(head,-hr,hy-hr,hr*2,hr*2);
+  ctx.restore();ctx.restore();
+  // floating music notes
+  if(t>=DANCE_RUN){const d=t-DANCE_RUN;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold ${Math.round(u*0.5)}px sans-serif`;
+    for(let i=0;i<3;i++){const k=((d*0.55+i/3)%1),x=cx+(i-1)*1.3*u+Math.sin((d+i)*2.2)*0.2*u,y=fy-2.4*u-k*1.4*u;ctx.globalAlpha=Math.sin(k*Math.PI)*0.9;ctx.fillStyle=['#ffd866','#7fd8ff','#ff9ad5'][i];ctx.fillText(i%2?'♫':'♪',x,y)}ctx.globalAlpha=1}
+  // the last second of the dance: a big "Good job!" speech bubble pops up next to Toby's head
+  const gj=t-(DANCE_RUN+DANCE_T-GOOD_JOB_T);if(gj>=0){const k=Math.min(1,gj/0.18),sc=k<1?k*1.15:1+0.04*Math.sin(gj*9),fs=Math.round(u*0.5),hx=fx,hy=fy-2.5*u;
+    ctx.save();ctx.font=`900 ${fs}px sans-serif`;const tw=ctx.measureText('Good job!').width,bw=tw+u*0.6,bh=fs*1.7;
+    const bx=Math.min(L.ox+L.fw-bw/2-6,hx+u*0.75+bw/2),by=Math.max(L.oy+bh/2+6,hy-u*0.55);ctx.translate(bx,by);ctx.scale(sc,sc);ctx.rotate(-0.06);
+    ctx.fillStyle='#fff';ctx.strokeStyle='#141823';ctx.lineWidth=Math.max(2.5,u*0.06);ctx.beginPath();ctx.roundRect(-bw/2,-bh/2,bw,bh,bh*0.42);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(-bw/2+u*0.25,bh/2-u*0.05);ctx.lineTo(-bw/2-u*0.08,bh/2+u*0.32);ctx.lineTo(-bw/2+u*0.6,bh/2-u*0.05);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#fff';ctx.fillRect(-bw/2+u*0.27,bh/2-u*0.1,u*0.3,u*0.09);
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#d8232a';ctx.fillText('Good job!',0,fs*0.05);ctx.restore()}
+  // skip hint
+  ctx.textAlign='center';ctx.textBaseline='bottom';ctx.font=`${Math.max(11,Math.round(u*0.26))}px sans-serif`;ctx.fillStyle='rgba(230,236,248,.75)';ctx.fillText('Tap to skip',cx,L.oy+L.fh-6);
+}
+const POLICE_STROBE=1.6,GOOD_JOB_T=1;// "Good job!" shows for the last second of the dance
+// seconds per red/blue cycle
 function drawDispatch(){
   for(const v of G.dispatch){const S=SPR.vehS,px=X(v.x),py=Y(v.y+0.62)/* body centred on the lane */,img=v.kind==='van'?SPR.respVan:SPR.police,left=false/* the police sprite is already drawn facing left */;
     ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(px,py+S*0.02,S*0.44,S*0.07,0,0,TAU);ctx.fill();
     ctx.save();ctx.translate(px,py);if(left)ctx.scale(-1,1);ctx.drawImage(img,-S/2,-S*0.78,S,S);
     const on=Math.sin(G.time*22)>0;
-    if(v.kind==='police'){for(const [lx,col] of [[0.43,on?'255,40,40':'40,90,255'],[0.53,on?'40,90,255':'255,40,40']]){const qx=(lx-0.5)*S,qy=(0.355-0.78)*S;ctx.fillStyle=rgCtx(qx,qy,S*0.11,['rgba('+col+',1)','rgba('+col+',.5)','rgba('+col+',0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.11,0,TAU);ctx.fill()}}
+    if(v.kind==='police'){// v12: slow strobe: red and blue lamps cross-fade over a 1.6 s cycle, each with a soft glow
+      const k=0.5+0.5*Math.sin(G.time*TAU/POLICE_STROBE),qy=(0.355-0.78)*S;
+      for(const [lx,col,w] of [[0.43,'255,45,45',k],[0.53,'45,100,255',1-k]]){const qx=(lx-0.5)*S,ww=w*w;
+        ctx.fillStyle=rgCtx(qx,qy,S*0.26,['rgba('+col+','+(0.42*ww).toFixed(3)+')','rgba('+col+','+(0.16*ww).toFixed(3)+')','rgba('+col+',0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.26,0,TAU);ctx.fill();
+        ctx.fillStyle=rgCtx(qx,qy,S*0.07,['rgba(255,255,255,'+(0.25+0.75*w).toFixed(3)+')','rgba('+col+','+(0.35+0.65*w).toFixed(3)+')','rgba('+col+',0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.07,0,TAU);ctx.fill()}}
     else{const qx=(0.42-0.5)*S,qy=(0.315-0.78)*S;ctx.fillStyle=rgCtx(qx,qy,S*0.1,[on?'rgba(255,200,60,1)':'rgba(255,120,40,.8)','rgba(255,160,40,0)']);ctx.beginPath();ctx.arc(qx,qy,S*0.1,0,TAU);ctx.fill()}
     if(v.boosted){ctx.strokeStyle='rgba(79,240,255,.7)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(0,-S*0.05,S*0.5,S*0.12,0,0,TAU);ctx.stroke()}
     ctx.restore()}
@@ -1525,7 +1623,7 @@ function drawSelPop(){
   ctx.save();ctx.fillStyle='rgba(10,14,26,.94)';rr(sp.x,sp.y,sp.w,sp.h,12);ctx.fill();ctx.strokeStyle=T.col;ctx.lineWidth=2;ctx.stroke();
   ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle=T.col;ctx.font='bold 15px sans-serif';ctx.fillText(`${T.name} · Level ${t.lvl+1}${N?'':' (max)'}${t.boost>1?' · ×'+(+t.boost.toFixed(2)):''}`,sp.x+10,sp.y+14,sp.w-64);
   ctx.fillStyle='#c9d3e3';ctx.font='12px sans-serif';
-  const line=t.type==='ai'?`Boost ×2 in range · slow 20% · range ${S.range}${N?'→'+N.range:''}`:t.type==='cc'?`+${Math.round(S.aura*100)}% aura · vehicles ${S.dmg} HP · ${S.cd} s · range ${S.range}`:t.type==='eacs'?`Field ${S.dmg}${N?'→'+N.dmg:''}/s · 50% lock ×${S.targets} · range ${S.range}${N?'→'+N.range:''}`:t.type==='camera'?`Dmg ${S.dmg}${N?'→'+N.dmg:''} · ${S.rate}/s · range ${S.range}${N?'→'+N.range:''}`:`Pulse ${S.dmg}${N?'→'+N.dmg:''} · slow ${Math.round(S.slow*100)}% · range ${S.range}${N?'→'+N.range:''}`;
+  const line=t.type==='ai'?`Boost ×${S.boost}${N?'→×'+N.boost:''} · slow 20% · range ${S.range}${N?'→'+N.range:''}`:t.type==='cc'?`+${Math.round(S.aura*100)}% aura · vehicles ${S.dmg} HP · ${S.cd} s · range ${S.range}`:t.type==='eacs'?`No damage · ${Math.round(S.slow*100)}%${N?'→'+Math.round(N.slow*100)+'%':''} lock ×${S.targets}${N?'→'+N.targets:''} · range ${S.range}${N?'→'+N.range:''}`:t.type==='camera'?`Cone dmg ${S.dmg}${N?'→'+N.dmg:''} · ${S.rate}/s · range ${S.range}${N?'→'+N.range:''}`:`Pulse ${S.dmg}${N?'→'+N.dmg:''} · slow ${Math.round(S.slow*100)}% · range ${S.range}${N?'→'+N.range:''}`;
   ctx.fillText(line,sp.x+10,sp.y+33,sp.w-64);
   {const c=sp.close;ctx.fillStyle='rgba(255,255,255,.06)';rr(c.x+4,c.y+4,c.w-8,c.h-8,9);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;ctx.stroke();
    ctx.fillStyle='#fff';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.fillText('✕',c.x+c.w/2,c.y+c.h/2+1)}
@@ -1534,35 +1632,21 @@ function drawSelPop(){
   btn(sp.sell,`Remove +¢${Math.floor(t.spent*REFUND)}`,'',{col:'#ff8a6b',fs:15});
 }
 function drawWaveBtn(){
-  // floating, always-on-top wave button in the board's bottom-right corner
+  // v11: the wave button / wave panel in the side strip (off the board)
   const b=UI.wave,big=Math.round(Math.max(15,Math.min(24,b.h*0.36))),small=Math.round(Math.max(11,Math.min(16,b.h*0.24)));
   const fit=(t,fs,col,dy)=>{ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold ${fs}px sans-serif`;ctx.fillText(t,b.x+b.w/2,b.y+b.h/2+dy,b.w-10)};
   const lines=(t1,c1,t2,c2)=>{fit(t1,big,c1,t2?-b.h*0.16:0);if(t2)fit(t2,small,c2,b.h*0.25)};
   ctx.save();ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=10;ctx.shadowOffsetY=3;ctx.fillStyle='#0b101c';rr(b.x,b.y,b.w,b.h,Math.min(14,b.h*0.3));ctx.fill();ctx.restore();
-  if(G.st!=='play'&&G.st!=='stageEnding'){stripBtn(b,{dis:true});lines('▶ Wave','#c9d3e3','','#b9c4d8');return}
+  if(G.st!=='play'&&G.st!=='stageEnding'&&G.st!=='dance'){stripBtn(b,{dis:true});lines('▶ Wave','#c9d3e3','','#b9c4d8');return}
   const n=G.queue.length+G.enemies.length;
   if(G.waveActive){stripBtn(b,{col:'#6fb6ff'});lines(`${n} left`,'#fff',`Wave ${Math.min(G.wave+1,WAVES)}/${WAVES}`,'#b9c4d8')}
-  else if(G.st==='stageEnding'){stripBtn(b,{col:'#3fd38a'});lines('✓ Clear','#9fffb0','Stage done','#b9c4d8')}
+  else if(G.st==='stageEnding'||G.st==='dance'){stripBtn(b,{col:'#3fd38a'});lines('✓ Clear','#9fffb0','Stage done','#b9c4d8')}
   else{const pulse=0.5+0.5*Math.sin(G.time*5);stripBtn(b,{fill:['#3fd38a','#1f9a5c'],col:`rgba(255,255,255,${0.4+pulse*0.6})`});
     lines(`▶ Wave ${G.wave+1}`,'#04170c',G.countdown>0?`Auto in ${Math.ceil(G.countdown)}s`:'Tap to start','#04170c')}
 }
 function drawBossHUD(){
   if(G.st!=='play'&&G.st!=='stageEnding')return;
   const cs=L.cs,fs=L.compact?12:16;
-  if(G.boss&&!G.boss.dead){// HP bar, top-right of the board, clear of the stats pill
-    const e=G.boss,w=Math.round(Math.max(150,Math.min(340,L.fw*0.4))),h=L.compact?22:30,x=L.ox+L.fw-w-6,y=L.oy+6,f=Math.max(0,e.hp/e.max);
-    ctx.save();ctx.fillStyle='rgba(20,8,14,.82)';rr(x,y,w,h,h/2);ctx.fill();ctx.strokeStyle='#ffb35c';ctx.lineWidth=2;ctx.stroke();
-    const ix=x+4,iw=w-8,ih=h-8;ctx.save();rr(ix,y+4,iw,ih,ih/2);ctx.clip();ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(ix,y+4,iw,ih);
-    const gr=ctx.createLinearGradient(ix,0,ix+iw,0);gr.addColorStop(0,'#ff3b3b');gr.addColorStop(0.5,'#ff8a1f');gr.addColorStop(1,'#ffd23f');ctx.fillStyle=gr;ctx.fillRect(ix,y+4,iw*f,ih);
-    if(e.flash>0){ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(ix,y+4,iw*f,ih)}ctx.restore();
-    ctx.font=`bold ${fs}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.75)';
-    const label=`${e.E.icon} ${e.E.short}  ${Math.ceil(e.hp)}`;ctx.strokeText(label,x+w/2,y+h/2+1,w-16);ctx.fillStyle='#fff';ctx.fillText(label,x+w/2,y+h/2+1,w-16);
-    if(e.t==='kaiju'){const vy=y+h+4,vh=L.compact?20:26;
-      if(e.vuln>0){const p=0.5+0.5*Math.sin(G.time*12),f2=e.vuln/VULN_T;ctx.fillStyle=`rgba(${120+60*p|0},10,110,.92)`;rr(x,vy,w,vh,vh/2);ctx.fill();ctx.strokeStyle='#ff6ef2';ctx.lineWidth=2;ctx.stroke();
-        ctx.fillStyle='rgba(255,110,242,.45)';rr(x+3,vy+3,(w-6)*f2,vh-6,(vh-6)/2);ctx.fill();
-        const vl=`VULNERABLE ×${VULN_X} · ${e.vuln.toFixed(1)} s`;ctx.font=`900 ${fs}px sans-serif`;ctx.strokeText(vl,x+w/2,vy+vh/2+1,w-12);ctx.fillStyle='#fff';ctx.fillText(vl,x+w/2,vy+vh/2+1,w-12)}
-      else{ctx.fillStyle='rgba(20,8,24,.7)';rr(x,vy,w,vh,vh/2);ctx.fill();const vl='Weak spot: Command Centre vehicles';ctx.font=`bold ${Math.round(fs*0.85)}px sans-serif`;ctx.fillStyle='#e9b8ff';ctx.fillText(vl,x+w/2,vy+vh/2+1,w-12)}}
-    ctx.restore()}
   if(G.bossT>0&&!G.bossSpawned){// BOSS INCOMING warning + countdown
     const n=Math.ceil(G.bossT),p=0.5+0.5*Math.sin(G.time*8),cx=L.ox+L.fw/2,y=L.oy+Math.max(cs*1.15,40),ts=Math.round(Math.max(18,Math.min(38,L.fw/22))),w=Math.min(L.fw-24,ts*15),h=ts*2.3;
     ctx.save();ctx.globalAlpha=0.9;ctx.fillStyle='rgba(60,6,10,.82)';rr(cx-w/2,y-h/2,w,h,14);ctx.fill();
@@ -1573,18 +1657,27 @@ function drawBossHUD(){
     ctx.fillText(`⚠ BOSS INCOMING · ${n}`,cx,y-ts*0.3,w-ts*2.2);ctx.font=`bold ${Math.round(ts*0.5)}px sans-serif`;ctx.fillStyle='#ffd9c2';ctx.fillText(bossDef().warn,cx,y+ts*0.62,w-ts*2.2);ctx.restore()}
 }
 function drawStatsPill(){
-  const cs=L.cs,fs=L.compact?13:17,pad=L.compact?8:12,h=L.compact?24:32,x=L.ox+6,y=L.oy+6;
+  // v11: a slim bar above the board (never over the grid): lives, credits, stage/wave, score on the left; boss HP on the right
+  const B=L.bar,fs=L.compact?13:17,pad=L.compact?10:14,{x,y,w,h}=B;
+  ctx.save();ctx.fillStyle='rgba(12,16,28,.78)';rr(x,y,w,h,h/2);ctx.fill();ctx.strokeStyle='rgba(120,160,230,.28)';ctx.lineWidth=1;ctx.stroke();
   const wv=`${Math.min(G.wave+(G.waveActive?1:0),WAVES)||1}/${WAVES}`;
-  const items=[[`♥ ${G.lives}`,G.lives<=5?'#ff6b6b':'#ff9db0'],[`¢ ${G.credits}`,'#ffd866'],[`S${Math.min(G.stage+1,STAGES)} W${wv}`,'#e8ecf4'],[`★ ${G.score}`,'#9fffb0']];
-  ctx.font=`bold ${fs}px sans-serif`;const ws=items.map(i=>ctx.measureText(i[0]).width),gap=L.compact?10:16,w=ws.reduce((a,b)=>a+b,0)+gap*(items.length-1)+pad*2;
-  // fade when an intruder or the build preview is underneath so it never hides the action
-  let under=G.enemies.some(e=>{const px=X(e.x),py=Y(e.y);return px>x-10&&px<x+w+10&&py>y-10&&py<y+h+cs*0.6});
-  {const sp=selPop();if(sp&&sp.x<x+w&&sp.x+sp.w>x&&sp.y<y+h&&sp.y+sp.h>y)under=true}
-  if(G.hover){const hx=X(G.hover[0]),hy=Y(G.hover[1]);if(hx<x+w&&hx+cs>x&&hy<y+h&&hy+cs>y)under=true}
-  G.pillA=(G.pillA??1)+((under?0.3:1)-(G.pillA??1))*0.2;
-  ctx.save();ctx.globalAlpha=G.pillA;ctx.fillStyle='rgba(8,12,24,.62)';rr(x,y,w,h,h/2);ctx.fill();ctx.strokeStyle='rgba(160,190,240,.35)';ctx.lineWidth=1;ctx.stroke();
+  const items=[[`♥ ${G.lives}`,G.lives<=5?'#ff6b6b':'#ff9db0'],[`¢ ${G.credits}`,'#ffd866'],[`Stage ${Math.min(G.stage+1,STAGES)} · Wave ${wv}`,'#e8ecf4'],[`★ ${G.score}`,'#9fffb0']];
+  ctx.font=`bold ${fs}px sans-serif`;const ws=items.map(i=>ctx.measureText(i[0]).width),gap=L.compact?14:22;
   let cx=x+pad;ctx.textAlign='left';ctx.textBaseline='middle';items.forEach(([t,c],i)=>{ctx.fillStyle=c;ctx.fillText(t,cx,y+h/2+1);cx+=ws[i]+gap});
-  ctx.restore();UI.pill={x,y,w,h};
+  ctx.restore();UI.pill={x,y,w:cx-gap+pad-x,h};
+  drawBossBar(cx-gap+pad+6);
+}
+function drawBossBar(minX){
+  const e=G.boss;if(!e||e.dead||(G.st!=='play'&&G.st!=='stageEnding'))return;
+  const B=L.bar,fs=L.compact?11:15,h=B.h-6,x=Math.max(minX,B.x+B.w-Math.max(170,Math.min(380,B.w*0.45))-3),w=B.x+B.w-3-x,y=B.y+3,f=Math.max(0,e.hp/e.max),vul=e.t==='kaiju'&&e.vuln>0,p=0.5+0.5*Math.sin(G.time*12);
+  if(w<90)return;
+  ctx.save();ctx.fillStyle=vul?`rgba(${120+60*p|0},10,110,.95)`:'rgba(20,8,14,.9)';rr(x,y,w,h,h/2);ctx.fill();ctx.strokeStyle=vul?'#ff6ef2':'#ffb35c';ctx.lineWidth=2;ctx.stroke();
+  const ix=x+3,iw=w-6,ih=h-6;ctx.save();rr(ix,y+3,iw,ih,ih/2);ctx.clip();ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(ix,y+3,iw,ih);
+  const gr=ctx.createLinearGradient(ix,0,ix+iw,0);if(vul){gr.addColorStop(0,'#b0168f');gr.addColorStop(1,'#ff6ef2')}else{gr.addColorStop(0,'#ff3b3b');gr.addColorStop(0.5,'#ff8a1f');gr.addColorStop(1,'#ffd23f')}ctx.fillStyle=gr;ctx.fillRect(ix,y+3,iw*f,ih);
+  if(e.flash>0){ctx.fillStyle='rgba(255,255,255,.35)';ctx.fillRect(ix,y+3,iw*f,ih)}ctx.restore();
+  ctx.font=`bold ${fs}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.8)';
+  const label=vul?`⚡ VULNERABLE ×${VULN_X} · ${e.vuln.toFixed(1)} s · ${Math.ceil(e.hp)}`:`${e.E.icon} ${e.E.short}  ${Math.ceil(e.hp)}`;
+  ctx.strokeText(label,x+w/2,y+h/2+1,w-14);ctx.fillStyle='#fff';ctx.fillText(label,x+w/2,y+h/2+1,w-14);ctx.restore();
 }
 function drawHUD(){
   ctx.save();const S=L.S;
@@ -1606,9 +1699,9 @@ function drawHUD(){
     ctx.fillStyle='#d6deec';ctx.font=`${ss}px sans-serif`;ctx.fillText(G.banner.sub,cx,cy+ts*0.75,bw-20);ctx.globalAlpha=1}
   if(G.unlockMsg&&G.unlockMsg.delay<=0&&G.st==='play'){const m=G.unlockMsg,a=Math.min(1,m.t*2,(6.5-m.t)*3),bw=Math.min(620,L.fw-24),ts=Math.max(15,Math.min(26,bw/24)),y=L.oy+Math.max(L.cs*1.2,44),h=ts*2.9,p=0.5+0.5*Math.sin(G.time*5);
     ctx.save();ctx.globalAlpha=a;ctx.fillStyle='rgba(4,26,36,.93)';rr(cx-bw/2,y,bw,h,14);ctx.fill();ctx.strokeStyle=`rgba(79,240,255,${0.6+0.4*p})`;ctx.lineWidth=3;ctx.stroke();
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#bff9ff';ctx.font=`900 ${ts}px sans-serif`;ctx.fillText('🔓 New units unlocked: AI Core and Command Centre',cx,y+h*0.36,bw-20);
-    ctx.fillStyle='#9fd8e6';ctx.font=`${Math.round(ts*0.66)}px sans-serif`;ctx.fillText('Find them at the bottom of your unit strip (hotkeys 4 and 5)',cx,y+h*0.72,bw-20);ctx.restore()}
-  if(G.msg){const a=Math.min(1,G.msg.t*2),fs=L.compact?15:21;ctx.globalAlpha=a;ctx.font=`bold ${fs}px sans-serif`;const tw=Math.min(L.fw-2*(UI.wave.w+14),ctx.measureText(G.msg.text).width+40),th=fs*2.1,ty=L.oy+L.fh-th-10;
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#bff9ff';ctx.font=`900 ${ts}px sans-serif`;ctx.fillText(m.names.length>1?`🔓 New units unlocked: ${m.names.join(' and ')}`:`🔓 New unit unlocked: ${m.names[0]}`,cx,y+h*0.36,bw-20);
+    ctx.fillStyle='#9fd8e6';ctx.font=`${Math.round(ts*0.66)}px sans-serif`;ctx.fillText(m.names.length>1?'Find them at the bottom of your unit strip (hotkeys 4 and 5)':`Find it at the bottom of your unit strip (hotkey ${BUILD_KEYS.findIndex(k=>TOWERS[k].name===m.names[0])+1})`,cx,y+h*0.72,bw-20);ctx.restore()}
+  if(G.msg){const a=Math.min(1,G.msg.t*2),fs=L.compact?15:21;ctx.globalAlpha=a;ctx.font=`bold ${fs}px sans-serif`;const tw=Math.min(L.fw-24,ctx.measureText(G.msg.text).width+40),th=fs*2.1,ty=L.oy+L.fh-th-10;
     ctx.fillStyle='rgba(120,16,24,.94)';rr(cx-tw/2,ty,tw,th,12);ctx.fill();ctx.strokeStyle='#ff8a8a';ctx.lineWidth=2;ctx.stroke();
     ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(G.msg.text,cx,ty+th/2,tw-16);ctx.globalAlpha=1}
   if(G.paused&&G.st==='play'&&!infoOpen){ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(L.ox,L.oy,L.fw,L.fh);ctx.fillStyle='#fff';ctx.font=`bold ${L.compact?32:46}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Paused',cx,cy)}
@@ -1626,7 +1719,7 @@ function frame(now){
 }
 newGame();layout();requestAnimationFrame(frame);
 window.__TD={get G(){return G},get L(){return L},blocked,computeFlow,placementProblem,tryPlace,sellTower,upgradeTower,startWave,handleCellTap,stageComplete,update,layout,
-  cellCenter:(c,r)=>({x:X(c+.5),y:Y(r+.5)}),selPop,UI,TOWERS,ENEMIES,COLS,ROWS,SPR,openInfo,closeInfo,bossStats,hpMultAt,BOSS,BOSSES,TIPS,pickBuild,SIREN,get sirensActive(){return SIRENS.size},setMuted:v=>{muted=!!v},get winScreen(){return winScreen},showWin,WIN_AUTO,WIN_TAP_DELAY,get muted(){return muted},waveList,atLimit,countOf,CAM_FOV,DISPATCH_SPD,DOCK,isLocked,damage,dispatch,throwBomb,spawnBoss,BUILD_KEYS,VULN_T,get infoOpen(){return infoOpen}};
+  cellCenter:(c,r)=>({x:X(c+.5),y:Y(r+.5)}),selPop,UI,TOWERS,ENEMIES,COLS,ROWS,SPR,openInfo,closeInfo,bossStats,hpMultAt,BOSS,BOSSES,TOBY_MSG,swarmOf,SWARM_F,RIDER_PARTY,RIDER_WIND,pickBuild,SIREN,get sirensActive(){return SIRENS.size},setMuted:v=>{muted=!!v},get winScreen(){return winScreen},showWin,WIN_AUTO,WIN_TAP_DELAY,get muted(){return muted},waveList,atLimit,countOf,CAM_FOV,DISPATCH_SPD,DOCK,isLocked,damage,dispatch,throwBomb,spawnBoss,BUILD_KEYS,VULN_T,draw,DANCE_RUN,DANCE_T,GOOD_JOB_T,endDance,CAVE,VAULT,AI_UNLOCK,CC_UNLOCK,POLICE_STROBE,tobyHead,get infoOpen(){return infoOpen}};
 })();
 </script>
 </body>
