@@ -131,6 +131,18 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
 @media (max-height:340px){.vstats span{font-size:9px}.vtag{letter-spacing:1.5px}}
 @media (max-width:600px){.vstats{grid-template-columns:repeat(2,auto)}}
 @media (prefers-reduced-motion:reduce){.stagecard,.punch,.sparkles,.confetti i,#ovWin *{animation:none!important;transition:none!important}}
+
+/* v15: Patrick's pre-stage game tip */
+#ovTip{z-index:60;background:rgba(4,10,24,.55)}
+.ptip{position:relative;display:flex;align-items:center;gap:clamp(10px,2.4vw,18px);width:min(560px,90vw);max-height:92vh;box-sizing:border-box;padding:clamp(10px,2.6vh,18px) clamp(12px,2.6vw,22px);border-radius:18px;background:linear-gradient(135deg,#123063,#1a4d7a);border:2px solid rgba(79,240,255,.55);box-shadow:0 14px 40px rgba(0,0,0,.5);color:#fff;animation:ptipIn .35s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes ptipIn{from{transform:translateY(14px) scale(.94);opacity:0}to{transform:none;opacity:1}}
+.ptip .pav{flex:none;width:clamp(56px,22vh,104px);height:clamp(56px,22vh,104px);border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #fff,0 0 18px rgba(79,240,255,.5)}
+.ptip .pbody{flex:1;min-width:0}
+.ptip .plabel{font-size:clamp(10px,2.6vh,13px);letter-spacing:.12em;text-transform:uppercase;color:#8fdcff;font-weight:700}
+.ptip .pname{font-size:clamp(13px,3.6vh,18px);font-weight:800;margin:1px 0 clamp(4px,1.2vh,8px)}
+.ptip .ptext{font-size:clamp(13px,4vh,19px);line-height:1.3;font-weight:600;background:#fff;color:#14223a;border-radius:12px;padding:clamp(6px,1.8vh,10px) clamp(8px,1.8vw,12px)}
+.ptip .pgot{margin-top:clamp(6px,1.8vh,12px);font-size:clamp(13px,3.8vh,18px);padding:clamp(5px,1.5vh,9px) clamp(16px,3vw,26px)}
+.bossline.bonus{background:rgba(255,206,84,.2);color:#ffe39a;border:1px solid rgba(255,206,84,.65)}
 </style>
 </head>
 <body>
@@ -198,6 +210,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
     </div>
   </section>
 </div></div>
+<div class="ov" id="ovTip"><div class="ptip" id="ptipCard" role="dialog" aria-label="Game tip from Patrick"><img class="pav" id="ptipAv" alt="Patrick"><div class="pbody"><div class="plabel" id="ptipLabel">Stage 1 · game tip from</div><div class="pname">Patrick, Ademco</div><div class="ptext" id="ptipText"></div><button class="btn pgot" id="bTipOk">Got it</button></div></div></div>
 <div class="ov" id="ovInfo"><div class="info">
   <div class="info-head"><h2>How to play · Lunar Vault Defence</h2><button class="xbtn" id="bInfoClose" aria-label="Close">✕</button></div>
   <div class="info-body" id="infoBody"></div>
@@ -267,7 +280,7 @@ const ENEMIES={
  crook:  {name:'Crook',  hp:55, speed:1.4,reward:9,lives:1,top:0.27},
  suitman:{name:'Suitman',hp:164,speed:0.85,reward:25,lives:2,top:0.12}
 };
-const START_CREDITS=500,START_LIVES=20;
+const START_CREDITS=800,START_LIVES=20;
 // ================= layout =================
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),safeEl=document.getElementById('safe');
 let L={cs:40,ox:0,oy:0,fw:0,fh:0,vw:0,vh:0,compact:false,P:{x:0,y:0,w:0,h:0},hud:null},dpr=1;const UI={};
@@ -1099,11 +1112,12 @@ function startDance(){G.st='dance';G.dance={t:0};G.sel=null;G.build=null;sfx('cl
 function endDance(){if(G.st!=='dance')return;G.dance=null;stageComplete()}
 function stageComplete(){
   const lifeBonus=G.lives*25;G.score+=lifeBonus;const s=G.stats,stg=G.stage+1;G.st='stagePopup';
+  s.bonus=stg<=BONUS_STAGES&&!s.bonusPaid?STAGE_BONUS:0;if(s.bonus){G.credits+=s.bonus;s.bonusPaid=true}
   const best=bestScore(G.score),isBest=G.score>=best&&G.score>0;
   document.getElementById('stTag').textContent=`Stage ${stg} of ${STAGES} complete`;
   document.getElementById('stTitle').textContent=stg>=STAGES?'Final stage secured!':['Vault secured!','Crew stopped!','Nice work!','Heist foiled!','Lights on, crooks out!','Inside job thwarted!','Syndicate stopped!'][stg-1]||`Stage ${stg} secured`;
   const Bd=bossDef(G.stage),bossLine=s.boss==='stopped'?`<div class="bossline ok">${Bd.icon} ${Bd.short} stopped · +¢${s.bossRw}</div>`:s.boss==='escaped'?`<div class="bossline bad">${Bd.icon} ${Bd.name} escaped · −${Bd.lives} lives</div>`:'';
-  document.getElementById('stBoss').innerHTML=bossLine+(unlocksAt(G.stage+1).length?`<div class="bossline new">🔓 Next stage unlocks: ${unlocksAt(G.stage+1).join(' and ')}</div>`:'');
+  document.getElementById('stBoss').innerHTML=bossLine+(s.bonus?`<div class="bossline bonus" id="stBonus">🎁 +¢${s.bonus} stage bonus</div>`:'')+(unlocksAt(G.stage+1).length?`<div class="bossline new">🔓 Next stage unlocks: ${unlocksAt(G.stage+1).join(' and ')}</div>`:'');
   document.getElementById('stTable').innerHTML=tile('Stage score',G.score-s.score0)+tile('Total score',G.score)+tile(isBest?'Best score ★ new':'Best score',best)+
     tile('Lives left',`${G.lives} / ${START_LIVES}`)+tile('Credits',`¢${G.credits}`)+tile('Intruders stopped',s.kills);
   document.getElementById('tipName').textContent='Toby, Ademco';document.getElementById('tipRole').textContent='';
@@ -1116,7 +1130,16 @@ function beginStage(){
   G.st='play';G.wave=0;G.waveActive=false;G.countdown=-1;G.stats=newStats();G.stats.score0=G.score;G.bossT=null;G.bossSpawned=false;G.boss=null;G.bossSpawnAt=null;G.bossWarnAt=null;G.dispatch=[];G.bombs=[];G.cones=[];G.defeat=null;G.scorch=[];
   G.towers.forEach(t=>{t.doomed=false;t.doomT=0});G.unlockMsg=unlocksAt(G.stage).length?{t:6.5,delay:3.2,names:unlocksAt(G.stage)}:null;
   G.banner={title:STAGE_NAMES[G.stage],sub:STAGE_SUB[G.stage],t:3.2};
+  openTip();
 }
+// v15: Patrick's pre-stage game tip; the game loop waits while it is open
+const PAT_TIPS=['A maze makes the intruders take a longer route, taking more damage.','Slowing intruders down with EACS is crucial. But upgrade wisely.','Remove defences and get a refund, rebuild as things evolve.','Use AI coverage carefully, it is a powerful multiplier.','Command Centres have special abilities you will need!','Your defences can suffer damage, replace them promptly.','Place your defences wisely to get powerful combos.','Done your homework? Sit back and enjoy.'];
+let tipOpen=false,tipAt=0;
+function openTip(){const av=document.getElementById('ptipAv');if(!av.src)av.src=document.querySelector('#vic2 .vavatar').src;
+  document.getElementById('ptipLabel').textContent=`Stage ${G.stage+1} · game tip from`;document.getElementById('ptipText').textContent=PAT_TIPS[Math.min(G.stage,PAT_TIPS.length-1)];
+  tipOpen=true;tipAt=performance.now();G.build=null;show('ovTip');syncSirens()}
+function closeTip(){if(!tipOpen)return;tipOpen=false;hide('ovTip');syncSirens()}
+const STAGE_BONUS=350,BONUS_STAGES=3;// v15: +¢350 after clearing stages 1-3
 const WIN_TAP_DELAY=1.2,WIN_AUTO=8;// tap-anywhere unlocks after 1.2 s; screen 1 auto-advances after 8 s
 let winScreen=0,winShownAt=0,winTimers=[];
 function endGame(win){
@@ -1183,7 +1206,7 @@ function sirenStart(v){if(muted||!AC||v.snd)return;try{const t=AC.currentTime,o=
     o.start(t);v.snd={o,g,l};SIRENS.add(v);SIREN.starts++}catch(e){SIREN.errors++}}
 function sirenStop(v){if(!v.snd)return;try{const t=AC.currentTime,g=v.snd.g.gain;g.cancelScheduledValues(t);g.setValueAtTime(Math.max(0.0001,g.value),t);g.exponentialRampToValueAtTime(0.0001,t+0.12);v.snd.o.stop(t+0.15);if(v.snd.l)v.snd.l.stop(t+0.15)}catch(e){SIREN.errors++}
   v.snd=null;SIRENS.delete(v);SIREN.stops++}
-function syncSirens(){const want=!muted&&!G.paused&&!infoOpen&&(G.st==='play'||G.st==='stageEnding');
+function syncSirens(){const want=!muted&&!G.paused&&!infoOpen&&!tipOpen&&(G.st==='play'||G.st==='stageEnding');
   for(const v of [...SIRENS])if(!G.dispatch.includes(v)||!want)sirenStop(v);
   if(want)for(const v of G.dispatch)if(!v.snd)sirenStart(v)}
 function initAudio(){if(AC)return;try{const A=window.AudioContext||window.webkitAudioContext;if(A){AC=new A();if(AC.state==='suspended')AC.resume()}}catch(e){AC=null}}
@@ -1240,6 +1263,7 @@ function handleCellTap(c,r,popupOpen){
   G.sel=null;
 }
 window.addEventListener('keydown',e=>{
+  if(tipOpen){if(e.key==='Enter'||e.key===' '||e.key==='Escape'){e.preventDefault();closeTip()}return}
   if(infoOpen){if(e.key==='Escape'||e.key==='i')closeInfo();return}
   if(G.st==='dance'&&(e.key==='Enter'||e.key===' '||e.key==='Escape')){e.preventDefault();if(G.dance.t>DANCE_SKIP_AFTER)endDance();return}
   if(e.key==='i'||e.key==='I'){openInfo();return}
@@ -1253,6 +1277,8 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&G&&G.st===
 document.getElementById('bHow').addEventListener('click',()=>{initAudio();openInfo()});
 document.getElementById('bInfoClose').addEventListener('click',()=>closeInfo());
 document.getElementById('ovInfo').addEventListener('click',e=>{if(e.target.id==='ovInfo')closeInfo()});
+document.getElementById('bTipOk').addEventListener('click',e=>{e.stopPropagation();closeTip()});
+document.getElementById('ovTip').addEventListener('click',()=>{if(performance.now()-tipAt>250)closeTip()});
 document.getElementById('bPlay').addEventListener('click',()=>{initAudio();hide('ovTitle');G.st='play';G.stage=0;beginStage()});
 document.getElementById('bNextStage').addEventListener('click',()=>{hide('ovStage');if(G.stage+1>=STAGES){endGame(true);return}G.stage++;beginStage()});
 document.getElementById('bRestart').addEventListener('click',()=>{hide('ovEnd');newGame();G.st='play';beginStage()});
@@ -1308,6 +1334,8 @@ function buildInfo(){
   <li><b>Remove:</b> double-tap (or double-click) a defence, or use Remove in the popup. You get back <b>${Math.round(REFUND*100)}%</b> of everything spent on it, upgrades included.</li></ul>
   <h3>Credits, lives and score</h3><ul>
   <li>You start with <b>¢${START_CREDITS}</b>. Each neutralised intruder pays its reward (see the cards below).</li>
+  <li>Clearing stages 1, 2 and 3 also pays a free <b>¢${STAGE_BONUS}</b> stage bonus.</li>
+  <li>Before each stage Patrick shares a quick game tip; tap <b>Got it</b> (or press Enter, Space or Esc) to begin.</li>
   <li>Clearing a wave pays a bonus that rises with each wave and stage: ${wb.map((x,i)=>`${x} on stage ${i+1}`).join(', ')}.</li>
   <li>Sending the next wave early pays ¢${EARLY_PER_SEC} for every second left on the countdown.</li>
   <li><b>Score:</b> 10 points per credit of kill reward, 5 points per credit of wave bonus, and 25 points per life left at the end of each stage.</li>
@@ -1937,11 +1965,11 @@ const portrait=()=>window.matchMedia('(orientation:portrait) and (max-width:1024
 function frame(now){
   const dt=Math.min(0.1,(now-last)/1000);last=now;
   if(G.selCloseT>0){G.selCloseT-=dt;if(G.selCloseT<=0){G.sel=null;G.selCloseT=0}}
-  if(!G.paused&&!portrait()){acc+=dt*G.speed;let n=0;while(acc>=STEP&&n++<12){update(STEP);acc-=STEP}if(n>=12)acc=0}else acc=0;
+  if(!G.paused&&!tipOpen&&!portrait()){acc+=dt*G.speed;let n=0;while(acc>=STEP&&n++<12){update(STEP);acc-=STEP}if(n>=12)acc=0}else acc=0;
   syncSirens();draw();requestAnimationFrame(frame);
 }
 newGame();layout();requestAnimationFrame(frame);
-window.__TD={get G(){return G},get L(){return L},blocked,computeFlow,placementProblem,tryPlace,sellTower,upgradeTower,startWave,handleCellTap,stageComplete,update,layout,
+window.__TD={get G(){return G},get tipOpen(){return tipOpen},openTip,closeTip,PAT_TIPS,STAGE_BONUS,get L(){return L},blocked,computeFlow,placementProblem,tryPlace,sellTower,upgradeTower,startWave,handleCellTap,stageComplete,update,layout,
   cellCenter:(c,r)=>({x:X(c+.5),y:Y(r+.5)}),selPop,UI,TOWERS,ENEMIES,COLS,ROWS,SPR,openInfo,closeInfo,bossStats,DEFEAT_KIND,DEFEAT_T,ICE_X,FREEZE_T,VEH_BOX,bodyBox,throwCone,STAGE_SUB,isBossStage,hpMultAt,BOSS,BOSSES,TOBY_MSG,swarmOf,SWARM_F,RIDER_PARTY,RIDER_WIND,pickBuild,SIREN,get sirensActive(){return SIRENS.size},setMuted:v=>{muted=!!v},get winScreen(){return winScreen},showWin,WIN_AUTO,WIN_TAP_DELAY,get muted(){return muted},waveList,atLimit,countOf,CAM_FOV,DISPATCH_SPD,DOCK,isLocked,damage,dispatch,throwBomb,spawnBoss,BUILD_KEYS,VULN_T,draw,DANCE_RUN,DANCE_T,GOOD_JOB_T,endDance,CAVE,VAULT,AI_UNLOCK,CC_UNLOCK,POLICE_STROBE,tobyHead,get infoOpen(){return infoOpen}};
 })();
 </script>
