@@ -88,7 +88,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
 .scores b{display:block;font-size:clamp(14px,4.4vh,24px);color:#ffe066;line-height:1.15}
 .tipcard{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:clamp(6px,1.6vh,12px)}
 .tiphead{display:flex;align-items:center;gap:10px;margin-bottom:clamp(4px,1vh,8px)}
-.tiphead .avatar{object-fit:cover;width:clamp(34px,11vh,60px);height:clamp(34px,11vh,60px);flex:none;border-radius:50%;box-shadow:0 0 0 2px #fff}
+.tiphead .avatar{object-fit:cover;width:clamp(51px,16.5vh,90px);height:clamp(51px,16.5vh,90px);/* v14: 50% larger */flex:none;border-radius:50%;box-shadow:0 0 0 2px #fff}
 .tiplabel{font-size:clamp(9px,2.2vh,11px);color:#9fe8ff;text-transform:uppercase;letter-spacing:1.5px}
 .tipname{font-size:clamp(13px,3.6vh,18px);font-weight:800;color:#fff;line-height:1.1}.tiprole{font-size:clamp(10px,2.6vh,13px);color:#ffd9a8}
 .bubble{position:relative;background:#fff;color:#1b2234;border-radius:12px;padding:clamp(5px,1.4vh,10px) clamp(8px,1.4vw,12px);font-size:clamp(11px,3vh,15px);line-height:1.35}
@@ -105,7 +105,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#05060
 .vscreen.off-r{transform:translateX(100%);opacity:0;pointer-events:none}.vscreen.off-l{transform:translateX(-35%);opacity:0;pointer-events:none}
 .vwho{flex:none;display:flex;flex-direction:column;align-items:center;gap:clamp(4px,1.4vh,12px)}
 .vavatar{width:min(56vh,34vw,300px);height:min(56vh,34vw,300px);border-radius:50%;object-fit:cover;display:block;box-shadow:0 0 0 clamp(3px,.9vh,6px) #fff,0 0 40px rgba(255,214,90,.55),0 10px 30px rgba(0,0,0,.4)}
-#vic2 .vavatar{box-shadow:0 0 0 clamp(3px,.9vh,6px) #fff,0 0 40px rgba(79,240,255,.55),0 10px 30px rgba(0,0,0,.4)}
+#vic2 .vavatar{width:min(39.2vh,23.8vw,210px);height:min(39.2vh,23.8vw,210px);/* v14: 30% smaller */box-shadow:0 0 0 clamp(3px,.9vh,6px) #fff,0 0 40px rgba(79,240,255,.55),0 10px 30px rgba(0,0,0,.4)}
 .vname{font-weight:900;color:#ffd9a8;font-size:clamp(13px,4.2vh,22px);letter-spacing:.4px;text-shadow:0 2px 0 rgba(0,0,0,.35)}
 .vmain{min-width:0;flex:0 1 auto;max-width:min(520px,52vw);display:flex;flex-direction:column;align-items:flex-start;gap:clamp(4px,1.6vh,14px)}
 .vbubble{position:relative;background:#fff;color:#1b2234;border-radius:18px;padding:clamp(6px,2vh,16px) clamp(12px,2.4vw,24px);box-shadow:0 8px 24px rgba(0,0,0,.3);line-height:1.3}
@@ -213,14 +213,14 @@ const DOCK=[];
 const SQ2=Math.SQRT2,STAGES=8,WAVES=5,REFUND=0.7,TAU=Math.PI*2;
 const STAGE_NAMES=['Stage 1: Goons at the gate','Stage 2: The crooks are getting organised','Stage 3: The suits have arrived','Stage 4: The great lunar heist',
   'Stage 5: The night shift','Stage 6: An inside job','Stage 7: The syndicate','Stage 8: The last heist'];
-const STAGE_SUB=['Small-time chancers testing our perimeter, and Mech-209 stomps in at the end. Build a maze!','Bigger crews, the first Suitmen, and a getaway van at the end.','Slow, armoured and well funded, with a Spider Clown skittering in behind. Upgrade your defences.','Everyone wants the vault, and the Wasteland Rig is coming. Hold the line!',
+const STAGE_SUB=['Small-time chancers testing our perimeter, and Mech stomps in at the end. Build a maze!','Bigger crews, the first Suitmen, and a getaway van at the end.','Slow, armoured and well funded, with a Spider Clown skittering in behind. Upgrade your defences.','Everyone wants the vault, and the Wasteland Rig is coming. Hold the line!',
   'Professional crews working in the dark, then the Keynote Boss takes the stage. Keep every corner covered.','Someone leaked the vault plans. Expect tougher crews and the Inferno Rider.','Organised, armoured and relentless, and the Ice Cream Truck freezes your defences. Every cell counts.','The biggest crew on the Moon, and Lunakaiju wakes up. Hold the vault!'];
 // v13: a boss at the end of EVERY stage, 8 s after the last intruder of wave 5 leaves the tunnel
 const isBossStage=s=>s>=0&&s<STAGES,BOSS_DELAY=8;
 // one boss per stage (index = stage). All original homages, procedurally drawn.
 // immune: {sensor} ignores Sensor slows, {ai} ignores AI Core slows. stops: route fractions where it halts.
 const BOSSES=[
- {t:'mech', name:'Mech-209',         short:'Mech-209',     icon:'🤖',speed:0.5, reward:100,size:2.2,top:0.12,warn:'Mech-209 is stomping in'},
+ {t:'mech', name:'Mech',         short:'Mech',     icon:'🤖',speed:0.5, reward:100,size:2.2,top:0.12,warn:'Mech is stomping in'},
  {t:'van',  name:'The Getaway Van',  short:'Getaway Van',  icon:'🚐',speed:0.55,reward:150,size:2.1,warn:'The Getaway Van is on its way'},
  {t:'clown',name:'The Spider Clown', short:'Spider Clown', icon:'🤡',speed:0.9, reward:200,size:2.2,top:0.05,immune:{sensor:true},warn:'The Spider Clown is skittering in'},
  {t:'rig',  name:'The Wasteland Rig',short:'Wasteland Rig',icon:'🛻',speed:0.6,reward:250,size:2.3,warn:'The Wasteland Rig is rumbling in'},
@@ -228,18 +228,18 @@ const BOSSES=[
  {t:'rider',name:'The Inferno Rider',short:'Inferno Rider',icon:'🔥',speed:1.9,reward:350,size:2.1,warn:'The Inferno Rider is roaring in',bombs:4},
  {t:'icecream',name:'The Ice Cream Truck',short:'Ice Cream Truck',icon:'🍦',speed:0.6,reward:450,size:2.4,top:0.04,stops:[0.15,0.30,0.45,0.60,0.75,0.90],ccX:3,warn:'The Ice Cream Truck is jingling in'},
  {t:'kaiju',name:'Lunakaiju',        short:'Lunakaiju',    icon:'🦖',speed:0.5,reward:600,size:2.9,warn:'Lunakaiju is waking up'}];
-const BOSS_HPF=[2500,2800,2800,13000,10000,8000,50000,140000]/* explicit HP per appearance */;
+const BOSS_HPF=[2500,2800,3500,13000,12000,8000,50000,140000]/* explicit HP per appearance */;
 BOSSES.forEach((b,i)=>Object.assign(b,{hp:BOSS_HPF[i],lives:5,top:b.top??0.30,boss:true/* v12.3: no slow resistance, bosses take every slow in full */}));
 const BOSS=BOSSES[1]/* the Getaway Van */,ICE_X=3/* Ice Cream Truck: x3 from Command Centre vehicles */,FREEZE_T=3/* s a defence stays frozen after a cone hit */,CONE_FLIGHT=0.9,VULN_T=6,VULN_X=3,BOMB_FLIGHT=1.0,UNLOCK_STAGE=4/* 0-based: stage 5 (Command Centre) */,AI_UNLOCK=2/* 0-based: AI Core unlocks on stage 3 */,CC_UNLOCK=UNLOCK_STAGE;
 const TOWERS={
  camera:{name:'Camera',col:'#ffb35c',desc:'90° cone: hurts all inside',levels:[
-  {cost:60, dmg:5,rate:3.0,range:2.6},
-  {cost:70, dmg:9,rate:3.5,range:2.9},
-  {cost:110,dmg:16,rate:4.0,range:3.2}]},
+  {cost:60, dmg:3,rate:3.0,range:1.3},
+  {cost:70, dmg:5,rate:3.5,range:1.8},
+  {cost:110,dmg:10,rate:4.0,range:2.0}]},
  detector:{name:'Sensor',col:'#6fd3ff',desc:'Short-range pulse + 5–12% slow',levels:[// v13: shown as "Sensor" (internal key stays 'detector')
-  {cost:40,dmg:4,rate:2.0,range:1.0,slow:0.05,slowT:1.0},
-  {cost:35,dmg:7,rate:2.5,range:1.3,slow:0.08,slowT:1.3},
-  {cost:55,dmg:11,rate:3.0,range:1.6,slow:0.12,slowT:1.6}]},
+  {cost:40,dmg:1,rate:2.0,range:1.0,slow:0.05,slowT:1.0},
+  {cost:35,dmg:3,rate:2.5,range:1.3,slow:0.08,slowT:1.3},
+  {cost:55,dmg:5,rate:3.0,range:1.6,slow:0.12,slowT:1.6}]},
  // EACS: electronic access control system. v12.1: no damage. Always-on field that
  // locks the 2 / 3 / 5 intruders closest to the vault (by level) and slows them 30% / 40% / 55% (v13) while in reach + a short linger
  // (bosses take the full effect too; speed never reaches zero)
@@ -267,7 +267,7 @@ const ENEMIES={
  crook:  {name:'Crook',  hp:55, speed:1.4,reward:9,lives:1,top:0.27},
  suitman:{name:'Suitman',hp:164,speed:0.85,reward:25,lives:2,top:0.12}
 };
-const START_CREDITS=350,START_LIVES=20;
+const START_CREDITS=250,START_LIVES=20;
 // ================= layout =================
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d'),safeEl=document.getElementById('safe');
 let L={cs:40,ox:0,oy:0,fw:0,fh:0,vw:0,vh:0,compact:false,P:{x:0,y:0,w:0,h:0},hud:null},dpr=1;const UI={};
@@ -752,7 +752,7 @@ const DRAWBOSS={van:drawVan,rig:drawRig,rider:drawRider,kaiju:drawKaiju,mech:(g,
 function thickLine(g,pts,w,col){g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)g.lineTo(pts[i][0],pts[i][1]);
   g.strokeStyle=OUT;g.lineWidth=w+2.4;g.stroke();g.strokeStyle=col;g.lineWidth=w;g.stroke()}
 function drawMech(g,s){
-  // "Mech-209": a chunky bipedal enforcement mech - reverse-jointed legs, twin arm gun pods, dome visor
+  // "Mech": a chunky bipedal enforcement mech - reverse-jointed legs, twin arm gun pods, dome visor
   const w=s*TAU,b=Math.abs(Math.sin(w))*1.6,M='#8e98a6',M2='#5b6370',D='#3a4049';
   for(const i of [0,1]){const p=w+i*Math.PI,hx=i?60:40,fx=(i?68:32)+Math.sin(p)*6,lift=Math.max(0,Math.cos(p))*4.5,ky=63-lift*0.5,kx=hx-9+Math.sin(p)*2;
     const col=i?M:M2;thickLine(g,[[hx,50-b],[kx,ky],[fx,77-lift]],5.4,col);
@@ -907,7 +907,7 @@ function newGame(){
   blocked.fill(0);DOCK.forEach(([c,r])=>blocked[idx(c,r)]=1);
   G={st:'title',stage:0,wave:0,waveActive:false,countdown:-1,credits:START_CREDITS,lives:START_LIVES,score:0,
     towers:[],enemies:[],queue:[],spawnT:0,fx:[],floats:[],beams:[],build:null,sel:null,hover:null,msg:null,banner:null,
-    speed:1,paused:false,time:0,stats:newStats(),dispatch:[],bombs:[],cones:[],scorch:[],unlockMsg:null,bossT:null,bossSpawned:false,boss:null,totals:{kills:0,leaks:0,built:0},flowDist:null,lastTap:{t:0,c:-1,r:-1},pressing:false,shake:0};
+    speed:1,paused:false,time:0,stats:newStats(),dispatch:[],bombs:[],cones:[],defeat:null,scorch:[],unlockMsg:null,bossT:null,bossSpawned:false,boss:null,totals:{kills:0,leaks:0,built:0},flowDist:null,lastTap:{t:0,c:-1,r:-1},pressing:false,shake:0};
   G.flowDist=computeFlow();
 }
 function newStats(){return{kills:0,leaks:0,earned:0,built:0,upgrades:0,score0:0,boss:null,bossRw:0,bombed:0,dispatches:0,vulnOpen:0,vulnDmg:0}}
@@ -969,7 +969,7 @@ function swarmOf(s,w){
   return null}
 function hpMultAt(stage,wave){const gw=stage*WAVES+wave,s=stage;return (1+0.17*gw+0.004*gw*gw)*[1.05,1.0,3.0,3.6,4.2,5.0,5.3,4.4][s]*(s>=2?1+0.08*(gw%5):1)}
 const hpMult=()=>hpMultAt(G.stage,G.wave);
-const waveBonus=(w,s)=>15+4*w+10*s,stageGrant=s=>40+30*s,EARLY_PER_SEC=1;
+const waveBonus=(w,s)=>15+4*w+10*s,EARLY_PER_SEC=1;// v14: no per-stage credit grant any more
 function startWave(){
   if(G.waveActive||G.st!=='play')return;
   if(G.countdown>0){const bonus=Math.ceil(G.countdown)*EARLY_PER_SEC;if(bonus>0){addCredits(bonus);floatText(COLS/2,ROWS-1,`Early call +${bonus}`,'#9fffb0')}}
@@ -1019,6 +1019,38 @@ function coneImpact(k){
   const t=k.tower;if(t&&G.towers.includes(t)){t.frozen=FREEZE_T;t.frozenMax=FREEZE_T;G.stats.frozen=(G.stats.frozen||0)+1;floatText(k.x1,k.y1-0.4,'Frozen!','#ffd1e1',1.2)}
   G.fx.push({splat:true,x:k.x1,y:k.y1,life:.5,max:.5});
   for(let i=0;i<12;i++){const a=Math.random()*TAU,v=0.6+Math.random()*1.6;G.fx.push({x:k.x1,y:k.y1,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.45,max:.45,spark:true,col:['#ffb3cf','#fff3d6','#a8f0d0'][i%3]})}
+}
+// ---- v14 boss defeat animations (game time; a fixed, capped particle set, so it stays cheap) ----
+// metal: Mech, Getaway Van, Wasteland Rig, Ice Cream Truck - plates, bolts, gears and sparks over a 4x4-cell area
+// cubes: Spider Clown, Keynote Boss, Inferno Rider - colourful 3D-ish cubes thrown across the whole board
+// kaiju: Lunakaiju roars at the sky for 2 s, collapses (1 s), then a 5 s volcanic eruption scatters molten rocks across the board
+const DEFEAT_KIND={mech:'metal',van:'metal',rig:'metal',icecream:'metal',clown:'cubes',keynote:'cubes',rider:'cubes',kaiju:'kaiju'};
+const DEFEAT_T={metal:2.2,cubes:2.6,kaiju:8.4},KAIJU_ROAR=2,KAIJU_FALL=1,KAIJU_ERUPT=5,ROCK_CAP=140;
+const CUBE_COLS=['#ff5a7a','#ffd84d','#59c9ff','#7ee08a','#c08cff','#ff9a3d','#4ff0ff','#ff6ef2'];
+function flyPart(x,y,tx,ty,T,h,extra){return Object.assign({x0:x,y0:y,x1:tx,y1:ty,t:0,T,h,rot:Math.random()*TAU,vr:(Math.random()-.5)*14},extra)}
+function startDefeat(e){const kind=DEFEAT_KIND[e.t]||'metal',D={kind,t:0,T:DEFEAT_T[kind],x:e.x,y:e.y,bt:e.t,face:e.face,parts:[],rocks:[],nextRoar:0,size:e.E.size};G.defeat=D;G.stats.defeat=kind;
+  if(kind==='metal'){sfx('boom');G.shake=Math.max(G.shake,0.7);G.fx.push({boom:true,x:e.x,y:e.y-0.4,life:.7,max:.7});
+    const shapes=['plate','plate','plate','bolt','bolt','gear','gear','spring'];
+    for(let i=0;i<34;i++){const a=Math.random()*TAU,r=Math.sqrt(Math.random())*2,tx=Math.max(0.2,Math.min(COLS-0.2,e.x+Math.cos(a)*r)),ty=Math.max(0.2,Math.min(ROWS-0.2,e.y+Math.sin(a)*r));// within +-2 cells = a 4x4 area
+      D.parts.push(flyPart(e.x,e.y-0.5,tx,ty,0.55+Math.random()*0.45,0.8+Math.random()*1.4,{shape:shapes[i%shapes.length],s:0.12+Math.random()*0.16,col:['#8e98a6','#5b6370','#b9c2cd','#9a4f22','#c9ced8'][i%5]}))}
+    for(let i=0;i<28;i++){const a=Math.random()*TAU,v=2+Math.random()*4;G.fx.push({x:e.x,y:e.y-0.4,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.5+Math.random()*.3,max:.8,spark:true,col:i%2?'#ffd76a':'#ffffff'})}}
+  else if(kind==='cubes'){sfx('clear');G.shake=Math.max(G.shake,0.4);
+    for(let i=0;i<44;i++){const tx=0.3+Math.random()*(COLS-0.6),ty=0.3+Math.random()*(ROWS-0.6),d=Math.hypot(tx-e.x,ty-e.y);
+      D.parts.push(flyPart(e.x,e.y-0.6,tx,ty,0.7+d*0.06+Math.random()*0.35,1.2+d*0.18,{s:0.16+Math.random()*0.14,col:CUBE_COLS[i%CUBE_COLS.length]}))}}
+  else{sfx('roar');G.shake=Math.max(G.shake,0.3);floatText(e.x,e.y-3.1,'ROAAARRR!','#ff8a3d',2)}
+}
+function updDefeat(dt){const D=G.defeat;D.t+=dt;
+  for(const p of D.parts){if(p.t<p.T)p.t=Math.min(p.T,p.t+dt)}
+  if(D.kind==='kaiju'){
+    if(D.t<KAIJU_ROAR){D.nextRoar-=dt;if(D.nextRoar<=0){D.nextRoar=0.38;G.fx.push({ring:true,roarRing:true,x:D.x+D.face*0.55,y:D.y-2.4,r:0.3,vr:3.2,maxR:2.6,life:.7,max:.7});G.shake=Math.max(G.shake,0.25)}}
+    else if(D.t<KAIJU_ROAR+KAIJU_FALL){if(!D.fell&&D.t>KAIJU_ROAR+KAIJU_FALL*0.8){D.fell=true;G.shake=0.8;sfx('rumble');G.fx.push({ring:true,dustRing:true,x:D.x,y:D.y,r:0.4,vr:4,maxR:2.4,life:.6,max:.6})}}
+    else{const k=D.t-KAIJU_ROAR-KAIJU_FALL;if(!D.erupted){D.erupted=true;sfx('boom');G.shake=1}
+      if(k<KAIJU_ERUPT){G.shake=Math.max(G.shake,0.18+0.2*(1-k/KAIJU_ERUPT));D.emit=(D.emit||0)+dt*(34*(1-k/KAIJU_ERUPT)+6);
+        while(D.emit>=1&&D.rocks.length<ROCK_CAP){D.emit--;const tx=0.2+Math.random()*(COLS-0.4),ty=0.2+Math.random()*(ROWS-0.4),d=Math.hypot(tx-D.x,ty-D.y);
+          D.rocks.push(flyPart(D.x,D.y-0.6,tx,ty,0.9+d*0.07+Math.random()*0.4,2.2+d*0.25+Math.random(),{s:0.12+Math.random()*0.16,born:k}))}
+        if(D.rocks.length>=ROCK_CAP)D.emit=0}
+      for(const p of D.rocks){if(p.t<p.T){p.t=Math.min(p.T,p.t+dt);if(p.t>=p.T&&Math.random()<0.25&&G.fx.length<FX_CAP)G.fx.push({x:p.x1,y:p.y1,vx:0,vy:-0.4,life:.6,max:.6,smoke:true,s:0.1})}}}}
+  if(D.t>=D.T)G.defeat=null;
 }
 // ---- Command Centre dispatch: a response van drives left to right and a police car right to left along the targeted lanes ----
 const DISPATCH_SPD=2.88;/* v12: 20% slower than v11's 3.6 cells/s */
@@ -1081,10 +1113,9 @@ function stageComplete(){
 }
 const tile=(a,b)=>`<div><span>${a}</span><b>${b}</b></div>`;
 function beginStage(){
-  G.st='play';G.wave=0;G.waveActive=false;G.countdown=-1;G.stats=newStats();G.stats.score0=G.score;G.bossT=null;G.bossSpawned=false;G.boss=null;G.bossSpawnAt=null;G.bossWarnAt=null;G.dispatch=[];G.bombs=[];G.cones=[];G.scorch=[];
+  G.st='play';G.wave=0;G.waveActive=false;G.countdown=-1;G.stats=newStats();G.stats.score0=G.score;G.bossT=null;G.bossSpawned=false;G.boss=null;G.bossSpawnAt=null;G.bossWarnAt=null;G.dispatch=[];G.bombs=[];G.cones=[];G.defeat=null;G.scorch=[];
   G.towers.forEach(t=>{t.doomed=false;t.doomT=0});G.unlockMsg=unlocksAt(G.stage).length?{t:6.5,delay:3.2,names:unlocksAt(G.stage)}:null;
   G.banner={title:STAGE_NAMES[G.stage],sub:STAGE_SUB[G.stage],t:3.2};
-  if(G.stage>0){const grant=stageGrant(G.stage);addCredits(grant);floatText(COLS/2,ROWS-1.2,`Stage supply drop +${grant} credits`,'#9fffb0',3)}
 }
 const WIN_TAP_DELAY=1.2,WIN_AUTO=8;// tap-anywhere unlocks after 1.2 s; screen 1 auto-advances after 8 s
 let winScreen=0,winShownAt=0,winTimers=[];
@@ -1142,7 +1173,7 @@ function flashCell(c,r){if(inG(c,r))G.fx.push({cell:[c,r],life:.6,max:.6})}
 let AC=null,muted=false;
 function sfx(k){if(muted||!AC)return;try{const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.connect(g);g.connect(AC.destination);
   const P={shot:[1400,900,.025,.04,'square'],pulse:[300,120,.06,.25,'sine'],die:[500,120,.07,.18,'triangle'],build:[500,900,.06,.12,'triangle'],sell:[700,300,.06,.12,'triangle'],
-    leak:[180,80,.12,.4,'sawtooth'],wave:[400,700,.08,.3,'square'],clear:[600,1200,.08,.4,'triangle'],boom:[140,35,.16,.55,'sawtooth'],siren:[950,620,.05,.4,'square']}[k];if(!P)return;
+    leak:[180,80,.12,.4,'sawtooth'],wave:[400,700,.08,.3,'square'],clear:[600,1200,.08,.4,'triangle'],boom:[140,35,.16,.55,'sawtooth'],roar:[190,48,.11,1.9,'sawtooth'],rumble:[70,28,.14,1.2,'sawtooth'],siren:[950,620,.05,.4,'square']}[k];if(!P)return;
   o.type=P[4];o.frequency.setValueAtTime(P[0],t);o.frequency.exponentialRampToValueAtTime(P[1],t+P[3]);g.gain.setValueAtTime(P[2],t);g.gain.exponentialRampToValueAtTime(0.0001,t+P[3]);o.start(t);o.stop(t+P[3]+0.02)}catch(e){}}
 const SIREN_VOL=0.028,SIRENS=new Set(),SIREN={starts:0,stops:0,errors:0};
 function sirenStart(v){if(muted||!AC||v.snd)return;try{const t=AC.currentTime,o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();f.type='lowpass';f.frequency.value=2000;
@@ -1278,7 +1309,6 @@ function buildInfo(){
   <h3>Credits, lives and score</h3><ul>
   <li>You start with <b>¢${START_CREDITS}</b>. Each neutralised intruder pays its reward (see the cards below).</li>
   <li>Clearing a wave pays a bonus that rises with each wave and stage: ${wb.map((x,i)=>`${x} on stage ${i+1}`).join(', ')}.</li>
-  <li>Every new stage brings a supply drop, from ¢${stageGrant(1)} at the start of stage 2 up to ¢${stageGrant(STAGES-1)} at the start of stage ${STAGES}.</li>
   <li>Sending the next wave early pays ¢${EARLY_PER_SEC} for every second left on the countdown.</li>
   <li><b>Score:</b> 10 points per credit of kill reward, 5 points per credit of wave bonus, and 25 points per life left at the end of each stage.</li>
   <li>The overlay in the top-left corner of the board shows ♥ lives, ¢ credits, stage and wave (S1 W2/5) and ★ score.</li></ul>
@@ -1305,7 +1335,8 @@ function update(dt){
   for(const f of G.fx){f.life-=dt;if(f.vx!==undefined){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vx*=0.9;f.vy*=0.9}if(f.ring)f.r+=f.vr*dt}G.fx=G.fx.filter(f=>f.life>0);
   for(const b of G.beams)b.life-=dt;G.beams=G.beams.filter(b=>b.life>0);
   for(const t of G.towers){t.flash=Math.max(0,t.flash-dt);t.pop=Math.max(0,t.pop-dt)}
-  if(G.st==='stageEnding'){G.endT-=dt;if(G.endT<=0){startDance();return}}
+  if(G.defeat)updDefeat(dt);
+  if(G.st==='stageEnding'){if(!G.defeat)G.endT-=dt;if(G.endT<=0){startDance();return}}// v14: the stage-clear waits for the boss defeat animation
   if(G.st==='dance'){G.dance.t+=dt;if(G.dance.t>=DANCE_RUN+DANCE_T)endDance();return}
   if(G.st!=='play'&&G.st!=='stageEnding')return;
   if(!G.waveActive&&G.countdown>0&&G.st==='play'){G.countdown-=dt;if(G.countdown<=0){G.countdown=0;startWave()}}
@@ -1419,7 +1450,7 @@ function damage(e,d,quiet,src){
     if(e.vuln>0){d*=VULN_X;G.stats.vulnDmg+=d}}
   if(e.t==='icecream'&&src==='cc'){d*=ICE_X;G.stats.iceCcDmg=(G.stats.iceCcDmg||0)+d;floatText(e.x,e.y-2.6,`×${ICE_X}!`,'#ff9a9a',0.9)}// v13: weak to Command Centre vehicles
   e.hp-=d;if(!quiet)e.flash=0.05;
-  if(e.hp<=0){e.dead=true;const rw=e.E.reward;addCredits(rw);G.score+=rw*10;if(e.boss){G.stats.boss='stopped';G.stats.bossRw=rw;G.boss=null;G.shake=0.6;floatText(e.x,e.y-1,`${e.E.short} stopped!`,'#ffd866',2.4);for(let i=0;i<26;i++)G.fx.push({x:e.x,y:e.y-0.3,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,life:.7,max:.7,dust:true,s:0.16})}G.stats.kills++;G.totals.kills++;floatText(e.x,e.y-0.4,`+${rw}`,'#ffd866');sfx('die');
+  if(e.hp<=0){e.dead=true;const rw=e.E.reward;addCredits(rw);G.score+=rw*10;if(e.boss){G.stats.boss='stopped';G.stats.bossRw=rw;G.boss=null;G.shake=0.6;startDefeat(e);floatText(e.x,e.y-1,`${e.E.short} stopped!`,'#ffd866',2.4);for(let i=0;i<26;i++)G.fx.push({x:e.x,y:e.y-0.3,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,life:.7,max:.7,dust:true,s:0.16})}G.stats.kills++;G.totals.kills++;floatText(e.x,e.y-0.4,`+${rw}`,'#ffd866');sfx('die');
     const big=e.boss?2.2:e.t==='suitman'?1.4:1;if(G.fx.length>FX_CAP&&!e.boss)return;
     for(let i=0;i<9;i++){const a=Math.random()*TAU,v=0.6+Math.random()*1.2;G.fx.push({x:e.x+e.jx,y:e.y+e.jy-0.1,vx:Math.cos(a)*v,vy:Math.sin(a)*v*0.6-0.3,life:.6,max:.6,dust:true,s:(0.1+Math.random()*0.12)*big})}
     for(let i=0;i<6;i++){const a=Math.random()*TAU;G.fx.push({x:e.x,y:e.y-0.2,vx:Math.cos(a)*3,vy:Math.sin(a)*3,life:.3,max:.3,spark:true,col:'#ffd76a'})}}
@@ -1616,15 +1647,16 @@ function draw(){
     drawRange(c,r,TOWERS[G.build].levels[0].range,TOWERS[G.build].col,ok);
     ctx.fillStyle=ok?'rgba(80,255,140,.18)':'rgba(255,60,60,.25)';ctx.fillRect(X(c),Y(r),cs,cs);
     drawTowerAt(G.build,0,X(c+.5),Y(r+.5),cs,-Math.PI/2,0.6)}}
-  DRAWQ.length=0;for(const e of G.enemies)DRAWQ.push(e);DRAWQ.sort(byDepth);for(const e of DRAWQ)drawEnemyGround(e);for(const e of DRAWQ)drawEnemyRing(e);for(const e of DRAWQ)drawEnemy(e);drawEnemyBars();// reused buffer: no per-frame array copies
+  DRAWQ.length=0;for(const e of G.enemies)DRAWQ.push(e);DRAWQ.sort(byDepth);for(const e of DRAWQ)drawEnemyGround(e);/* v14: no blue slow ring under enemies */for(const e of DRAWQ)drawEnemy(e);drawEnemyBars();// reused buffer: no per-frame array copies
   drawNoEntry();// v13: the only EACS visual - a no-entry sign over each intruder it is holding
-  drawDispatch();drawBombs();drawCones();
+  drawDispatch();drawBombs();drawCones();if(G.defeat)drawDefeat();
   for(const f of G.fx){const a=f.life/f.max;
     if(f.splat){const k=1-f.life/f.max,z=cs*(0.5+k*0.6);ctx.globalAlpha=f.life/f.max;ctx.drawImage(SPR.splat,X(f.x)-z/2,Y(f.y)-z/2,z,z);ctx.globalAlpha=1}
     else if(f.boom){const k=1-a,r=cs*(0.35+k*1.25);ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=rgCtx(X(f.x),Y(f.y),r,['rgba(255,250,210,'+a+')','rgba(255,150,40,'+a*0.9+')','rgba(200,40,10,'+a*0.5+')','rgba(120,20,0,0)']);ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,0,TAU);ctx.fill();ctx.restore();
       ctx.strokeStyle=`rgba(255,200,120,${a*0.8})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(X(f.x),Y(f.y),cs*(0.3+k*1.8),0,TAU);ctx.stroke()}
     else if(f.smoke){const r=f.s*cs*(1+(1-a)*2.2);ctx.fillStyle=`rgba(70,66,64,${a*0.45})`;ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,0,TAU);ctx.fill()}
     else if(f.fire){const r=f.s*cs*(0.6+a*0.8);ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=rgCtx(X(f.x),Y(f.y),r,['rgba(255,240,170,'+a+')','rgba(255,120,30,'+a*0.8+')','rgba(255,60,10,0)']);ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,0,TAU);ctx.fill();ctx.restore()}
+    else if(f.ring&&f.roarRing){const r=Math.min(f.r,f.maxR)*cs;ctx.strokeStyle=`rgba(255,170,90,${a*0.75})`;ctx.lineWidth=cs*0.1*a+2;ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r,-2.6,-0.5);ctx.stroke();ctx.strokeStyle=`rgba(255,255,230,${a*0.6})`;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(X(f.x),Y(f.y),r*0.8,-2.4,-0.7);ctx.stroke()}
     else if(f.ring&&f.dustRing){const r=Math.min(f.r,f.maxR)*cs;ctx.strokeStyle=`rgba(210,200,185,${a*0.6})`;ctx.lineWidth=cs*0.12*a+1.5;ctx.beginPath();ctx.ellipse(X(f.x),Y(f.y),r,r*0.45,0,0,TAU);ctx.stroke()}
     else if(f.ring){const r=Math.min(f.r,f.maxR)*cs,x=X(f.x),y=Y(f.y);ctx.fillStyle=`rgba(111,211,255,${a*0.12})`;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();
       ctx.strokeStyle=`rgba(111,211,255,${a*0.35})`;ctx.lineWidth=cs*0.16*a+2;ctx.stroke();ctx.strokeStyle=`rgba(220,250,255,${a})`;ctx.lineWidth=2;ctx.stroke()}
@@ -1696,6 +1728,36 @@ function drawFrozen(t){const x=X(t.c),y=Y(t.r),cs=L.cs,f=t.frozen/(t.frozenMax||
   ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=5;ctx.beginPath();ctx.arc(x+cs/2,y+cs/2,cs*0.4,0,TAU);ctx.stroke();
   ctx.strokeStyle='#ffffff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x+cs/2,y+cs/2,cs*0.4,-Math.PI/2,-Math.PI/2+TAU*f);ctx.stroke();
   ctx.font=`900 ${Math.round(cs*0.34)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='#5a2140';const s=Math.ceil(t.frozen)+'';ctx.strokeText(s,x+cs/2,y+cs/2);ctx.fillStyle='#fff';ctx.fillText(s,x+cs/2,y+cs/2);ctx.restore()}
+// v14: boss defeat animations
+function rockSprite(){const k=SPR.key;if(SPR.rock&&SPR.rockK===k)return SPR.rock;SPR.rockK=k;
+  return SPR.rock=sprite(L.cs*0.6,g=>{const gr=g.createRadialGradient(50,50,4,50,50,50);gr.addColorStop(0,'rgba(255,240,170,1)');gr.addColorStop(0.3,'rgba(255,140,30,.95)');gr.addColorStop(0.55,'rgba(200,50,10,.55)');gr.addColorStop(1,'rgba(120,20,0,0)');g.fillStyle=gr;g.fillRect(0,0,100,100);
+    g.beginPath();const R=rng(5);for(let i=0;i<9;i++){const a=i/9*TAU,r=17+R()*7;g.lineTo(50+Math.cos(a)*r,50+Math.sin(a)*r)}g.closePath();g.fillStyle='#3a1a10';g.fill();
+    g.strokeStyle='#ffb347';g.lineWidth=3;g.beginPath();g.moveTo(40,44);g.lineTo(50,52);g.lineTo(58,46);g.moveTo(50,52);g.lineTo(52,62);g.stroke()})}
+function partPos(p){const u=p.t/p.T;return [p.x0+(p.x1-p.x0)*u,p.y0+(p.y1-p.y0)*u-p.h*4*u*(1-u),u]}
+function drawMetal(p,cs){const z=p.s*cs;ctx.fillStyle=p.col;ctx.strokeStyle='#1d2027';ctx.lineWidth=1.4;ctx.beginPath();
+  if(p.shape==='plate'){ctx.moveTo(-z,-z*0.6);ctx.lineTo(z*0.3,-z*0.9);ctx.lineTo(z,-z*0.2);ctx.lineTo(z*0.6,z*0.7);ctx.lineTo(-z*0.2,z*0.45);ctx.lineTo(-z*0.8,z*0.8);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#2b3038';ctx.fillRect(-z*0.5,-z*0.35,z*0.18,z*0.18)}
+  else if(p.shape==='gear'){for(let i=0;i<16;i++){const a=i/16*TAU,r=i%2?z*0.75:z;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#1d2027';ctx.beginPath();ctx.arc(0,0,z*0.28,0,TAU);ctx.fill()}
+  else if(p.shape==='bolt'){ctx.rect(-z*0.18,-z*0.15,z*0.9,z*0.3);ctx.fill();ctx.stroke();ctx.beginPath();for(let i=0;i<6;i++){const a=i/6*TAU;ctx.lineTo(-z*0.35+Math.cos(a)*z*0.35,Math.sin(a)*z*0.35)}ctx.closePath();ctx.fillStyle='#c9ced8';ctx.fill();ctx.stroke()}
+  else{ctx.moveTo(-z,0);for(let i=1;i<=8;i++)ctx.lineTo(-z+i*z/4,i%2?-z*0.4:z*0.4);ctx.strokeStyle=p.col;ctx.lineWidth=2.2;ctx.stroke()}}
+function drawCube(p,cs){const z=p.s*cs,h=z*0.58;// isometric cube: top, left and right faces
+  ctx.fillStyle=p.col;ctx.beginPath();ctx.moveTo(0,-z);ctx.lineTo(h*1.7,-z*0.5);ctx.lineTo(0,0);ctx.lineTo(-h*1.7,-z*0.5);ctx.closePath();ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,.22)';ctx.beginPath();ctx.moveTo(-h*1.7,-z*0.5);ctx.lineTo(0,0);ctx.lineTo(0,z);ctx.lineTo(-h*1.7,z*0.5);ctx.closePath();ctx.fill();
+  ctx.fillStyle=p.col;ctx.globalAlpha*=0.999;ctx.beginPath();ctx.moveTo(h*1.7,-z*0.5);ctx.lineTo(0,0);ctx.lineTo(0,z);ctx.lineTo(h*1.7,z*0.5);ctx.closePath();ctx.fill();ctx.fillStyle='rgba(0,0,0,.42)';ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.moveTo(0,-z);ctx.lineTo(h*1.7,-z*0.5);ctx.lineTo(0,0);ctx.lineTo(-h*1.7,-z*0.5);ctx.closePath();ctx.globalAlpha*=0.6;ctx.fill()}
+function drawDefeat(){const D=G.defeat,cs=L.cs,fade=Math.min(1,(D.T-D.t)/0.5);ctx.save();
+  if(D.kind!=='kaiju'){for(const p of D.parts){const [x,y,u]=partPos(p);ctx.save();ctx.globalAlpha=fade;ctx.translate(X(x),Y(y));ctx.rotate(p.rot+p.vr*p.t);
+      if(D.kind==='metal')drawMetal(p,cs);else drawCube(p,cs);ctx.restore()}}
+  else{const S=SPR.bossS.kaiju,px=X(D.x),py=Y(D.y),img=SPR.enemy.kaiju[1].n,ER=KAIJU_ROAR+KAIJU_FALL;
+    if(D.t<ER+0.7){let rot,al=1,sink=0;if(D.t<KAIJU_ROAR){const k=Math.min(1,D.t/0.35);rot=-0.38*k+0.03*Math.sin(D.t*40)}else{const k=Math.min(1,(D.t-KAIJU_ROAR)/KAIJU_FALL);rot=-0.38+1.75*k*k;sink=k*S*0.1}
+      if(D.t>ER)al=Math.max(0,1-(D.t-ER)/0.7);ctx.globalAlpha=al;ctx.translate(px,py+sink);if(D.face<0)ctx.scale(-1,1);ctx.rotate(rot);ctx.drawImage(img,-S/2,-S*0.78,S,S);ctx.setTransform(ctx.getTransform());ctx.restore();ctx.save()}
+    if(D.t>=ER){const k=D.t-ER,f=Math.max(0,1-k/KAIJU_ERUPT);
+      // crater glow + lava fountain
+      ctx.globalCompositeOperation='lighter';ctx.fillStyle=rgCtx(px,py,cs*2.2,['rgba(255,200,80,'+(0.75*f+0.15)+')','rgba(255,90,20,'+(0.45*f)+')','rgba(120,20,0,0)']);ctx.beginPath();ctx.arc(px,py,cs*2.2,0,TAU);ctx.fill();
+      const hgt=cs*(2.2+1.4*Math.sin(Math.min(1,k/0.4)*Math.PI/2))*f;if(hgt>2){const gr=ctx.createLinearGradient(px,py,px,py-hgt);gr.addColorStop(0,'rgba(255,230,140,.95)');gr.addColorStop(0.5,'rgba(255,120,30,.7)');gr.addColorStop(1,'rgba(200,40,10,0)');ctx.fillStyle=gr;
+        ctx.beginPath();ctx.moveTo(px-cs*0.5,py);ctx.quadraticCurveTo(px-cs*0.25,py-hgt*0.6,px+Math.sin(G.time*9)*cs*0.15,py-hgt);ctx.quadraticCurveTo(px+cs*0.25,py-hgt*0.6,px+cs*0.5,py);ctx.closePath();ctx.fill()}
+      ctx.globalCompositeOperation='source-over';
+      const R=rockSprite();for(const p of D.rocks){const [x,y,u]=partPos(p),z=p.s*cs*(u>=1?2.2:2.6);ctx.globalAlpha=Math.min(1,(D.T-D.t)/0.8)*(u>=1?0.85:1);ctx.drawImage(R,X(x)-z/2,Y(y)-z/2,z,z)}}}
+  ctx.restore()}
 function drawBombs(){
   for(const b of G.bombs){const u=Math.min(1,b.t/b.T),x=b.x0+(b.x1-b.x0)*u,yg=b.y0+(b.y1-b.y0)*u,h=1.8*4*u*(1-u),px=X(x),py=Y(yg-h),cs=L.cs;
     ctx.fillStyle='rgba(0,0,0,.3)';ctx.beginPath();ctx.ellipse(X(x),Y(yg),cs*0.14,cs*0.06,0,0,TAU);ctx.fill();
@@ -1744,10 +1806,11 @@ function drawDance(){
     ctx.strokeStyle=ol;ctx.lineWidth=0.21*u;ctx.beginPath();ctx.moveTo(sx*u,sy);ctx.lineTo(ex,ey);ctx.lineTo(hx,hy);ctx.stroke();
     ctx.strokeStyle='#d8232a';ctx.lineWidth=0.15*u;ctx.beginPath();ctx.moveTo(sx*u,sy);ctx.lineTo(ex,ey);ctx.stroke();ctx.strokeStyle='#e9b48f';ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(hx,hy);ctx.stroke();
     ctx.fillStyle='#e9b48f';ctx.beginPath();ctx.arc(hx,hy,0.1*u,0,TAU);ctx.fill()}
-  // head: Toby's photo in a circle (back of the head while turned away in the spin)
+  // head: Toby's photo in a circle (always the face)
   const hr=0.56*u,hy=shY-hipY-hr*0.92,head=tobyHead(hr*2);ctx.rotate(-tilt*0.6+(t>=DANCE_RUN?Math.sin((t-DANCE_RUN)*TAU/0.625)*0.08:0));
-  if(back||!head){ctx.fillStyle=back?'#2a2420':'#e9b48f';ctx.beginPath();ctx.arc(0,hy,hr,0,TAU);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(2,hr*0.09);ctx.stroke()}
-  else ctx.drawImage(head,-hr,hy-hr,hr*2,hr*2);
+  // v14: Toby's face stays visible through the whole spin (no dark back-of-head disc); un-mirror it while turned
+  if(!head){ctx.fillStyle='#e9b48f';ctx.beginPath();ctx.arc(0,hy,hr,0,TAU);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(2,hr*0.09);ctx.stroke()}
+  else{if(back)ctx.scale(-1,1);ctx.drawImage(head,-hr,hy-hr,hr*2,hr*2)}
   ctx.restore();ctx.restore();
   // floating music notes
   if(t>=DANCE_RUN){const d=t-DANCE_RUN;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`bold ${Math.round(u*0.5)}px sans-serif`;
@@ -1879,7 +1942,7 @@ function frame(now){
 }
 newGame();layout();requestAnimationFrame(frame);
 window.__TD={get G(){return G},get L(){return L},blocked,computeFlow,placementProblem,tryPlace,sellTower,upgradeTower,startWave,handleCellTap,stageComplete,update,layout,
-  cellCenter:(c,r)=>({x:X(c+.5),y:Y(r+.5)}),selPop,UI,TOWERS,ENEMIES,COLS,ROWS,SPR,openInfo,closeInfo,bossStats,ICE_X,FREEZE_T,VEH_BOX,bodyBox,throwCone,STAGE_SUB,isBossStage,hpMultAt,BOSS,BOSSES,TOBY_MSG,swarmOf,SWARM_F,RIDER_PARTY,RIDER_WIND,pickBuild,SIREN,get sirensActive(){return SIRENS.size},setMuted:v=>{muted=!!v},get winScreen(){return winScreen},showWin,WIN_AUTO,WIN_TAP_DELAY,get muted(){return muted},waveList,atLimit,countOf,CAM_FOV,DISPATCH_SPD,DOCK,isLocked,damage,dispatch,throwBomb,spawnBoss,BUILD_KEYS,VULN_T,draw,DANCE_RUN,DANCE_T,GOOD_JOB_T,endDance,CAVE,VAULT,AI_UNLOCK,CC_UNLOCK,POLICE_STROBE,tobyHead,get infoOpen(){return infoOpen}};
+  cellCenter:(c,r)=>({x:X(c+.5),y:Y(r+.5)}),selPop,UI,TOWERS,ENEMIES,COLS,ROWS,SPR,openInfo,closeInfo,bossStats,DEFEAT_KIND,DEFEAT_T,ICE_X,FREEZE_T,VEH_BOX,bodyBox,throwCone,STAGE_SUB,isBossStage,hpMultAt,BOSS,BOSSES,TOBY_MSG,swarmOf,SWARM_F,RIDER_PARTY,RIDER_WIND,pickBuild,SIREN,get sirensActive(){return SIRENS.size},setMuted:v=>{muted=!!v},get winScreen(){return winScreen},showWin,WIN_AUTO,WIN_TAP_DELAY,get muted(){return muted},waveList,atLimit,countOf,CAM_FOV,DISPATCH_SPD,DOCK,isLocked,damage,dispatch,throwBomb,spawnBoss,BUILD_KEYS,VULN_T,draw,DANCE_RUN,DANCE_T,GOOD_JOB_T,endDance,CAVE,VAULT,AI_UNLOCK,CC_UNLOCK,POLICE_STROBE,tobyHead,get infoOpen(){return infoOpen}};
 })();
 </script>
 </body>
